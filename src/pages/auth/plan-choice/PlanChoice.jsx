@@ -1,10 +1,24 @@
 import "./PlanChoice.css";
 import FreeIcon from "../../../assets/free.svg";
 import PremiumIcon from "../../../assets/premium.svg";
+import ReturnArrow from "../../../components/return-arrow/ReturnArrow";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 function PlanChoice() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    document.title = "Cadastro";
+  }, []);
+
+  const navigatePremiumChoice = () => {
+    navigate("/escolher-premium");
+  };
+
   return (
     <section className="plan-section">
+      <ReturnArrow lastEndpoint={"/inserir-codigo"} />
       <h1 className="plan-title">Bem vindo(a)! Escolha seu plano:</h1>
       <div className="plan-choices">
         <div className="plan-choice-card">
@@ -20,7 +34,7 @@ function PlanChoice() {
             <li>Limite de 5 Planilhas</li>
           </ul>
         </div>
-        <div className="plan-choice-card">
+        <div className="plan-choice-card" onClick={navigatePremiumChoice}>
           <div className="plan-icon-title">
             <img src={PremiumIcon} alt="" />
             <h2 className="plan-choice-name">PREMIUM</h2>

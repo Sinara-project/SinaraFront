@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./LogonInsertCode.css";
+import ReturnArrow from "../../../components/return-arrow/ReturnArrow";
 
 function LogonInsertCode() {
   const navigate = useNavigate();
@@ -8,6 +9,8 @@ function LogonInsertCode() {
   const email = "friboi@gmail.com";
 
   useEffect(() => {
+    document.title = "Cadastro";
+
     const inputs = document.querySelectorAll(".code-input");
 
     inputs.forEach((input, index) => {
@@ -27,20 +30,16 @@ function LogonInsertCode() {
         }
       });
     });
-
-    return () => {
-      inputs.forEach((input) => {
-        input.replaceWith(input.cloneNode(true));
-      });
-    };
   }, []);
 
   const navigatePlanChoice = () => {
+    localStorage.setItem("lastEndpoint", "/inserir-codigo");
     navigate("/escolher-plano");
   }
 
   return (
     <section className="code-section">
+      <ReturnArrow lastEndpoint={"/"} />
       <div className="code-container">
         <span className="code-text-group">
           <h1 className="code-h1">Conclua o cadastro</h1>

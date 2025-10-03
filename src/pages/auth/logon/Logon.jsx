@@ -1,10 +1,17 @@
 import "./Logon.css";
 import { useNavigate } from "react-router-dom";
+import { use, useEffect } from "react";
+import ReturnArrow from "../../../components/return-arrow/ReturnArrow";
 
 function Logon() {
   const navigate = useNavigate();
 
+  useEffect(() => {
+    document.title = "Cadastro";
+  }, []);
+
   const navigateInsertCode = () => {
+    localStorage.setItem("lastEndpoint", "/");
     navigate("/inserir-codigo");
   }
   return (
@@ -20,7 +27,7 @@ function Logon() {
             <input
               className="logon-input"
               type="text"
-              placeholder="Ramo de atuação"
+              placeholder="Setor"
             />
           </span>
           <input
