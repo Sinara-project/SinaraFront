@@ -1,4 +1,4 @@
-import "./PlanChoice.css";
+import "./PremiumChoice.css";
 
 function PremiumChoice() {
     return (
