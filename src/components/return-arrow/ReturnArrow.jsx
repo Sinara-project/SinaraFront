@@ -10,14 +10,12 @@ function ReturnArrow({ lastEndpoint }) {
   };
 
   return (
-    <section className="return-arrow-section">
       <img
         className="return-arrow"
         src={ReturnArrowIcon}
         alt="Seta de retorno"
         onClick={navigateBack}
       />
-    </section>
   );
 }
 

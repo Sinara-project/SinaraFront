@@ -1,12 +1,7 @@
-.return-arrow-section {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-    pointer-events: none;
-}
-
 .return-arrow {
+    position: fixed;
+    top: 20px;
+    left: 20px;
     width: 30px;
     height: 30px;
     cursor: pointer;

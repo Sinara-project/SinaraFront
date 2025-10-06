@@ -33,13 +33,12 @@ function LogonInsertCode() {
   }, []);
 
   const navigatePlanChoice = () => {
-    localStorage.setItem("lastEndpoint", "/inserir-codigo");
     navigate("/escolher-plano");
   }
 
   return (
     <section className="code-section">
-      <ReturnArrow lastEndpoint={"/"} />
+      <ReturnArrow lastEndpoint={"/cadastrar"} />
       <div className="code-container">
         <span className="code-text-group">
           <h1 className="code-h1">Conclua o cadastro</h1>

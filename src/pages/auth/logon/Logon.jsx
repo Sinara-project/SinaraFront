@@ -1,7 +1,6 @@
 import "./Logon.css";
 import { useNavigate } from "react-router-dom";
 import { use, useEffect } from "react";
-import ReturnArrow from "../../../components/return-arrow/ReturnArrow";
 
 function Logon() {
   const navigate = useNavigate();
@@ -11,9 +10,13 @@ function Logon() {
   }, []);
 
   const navigateInsertCode = () => {
-    localStorage.setItem("lastEndpoint", "/");
     navigate("/inserir-codigo");
-  }
+  };
+
+  const navigateLogin = () => {
+    navigate("/entrar");
+  };
+
   return (
     <section className="logon-section">
       <div className="logon-container">
@@ -24,11 +27,7 @@ function Logon() {
         <form className="logon-form" action="submit">
           <span className="logon-input-group">
             <input className="logon-input" type="text" placeholder="CNPJ" />
-            <input
-              className="logon-input"
-              type="text"
-              placeholder="Setor"
-            />
+            <input className="logon-input" type="text" placeholder="Setor" />
           </span>
           <input
             className="logon-input"
@@ -41,11 +40,17 @@ function Logon() {
             type="password"
             placeholder="Confirmar senha"
           />
-          <button className="logon-navigate-code" onClick={navigateInsertCode} type="button">
+          <button
+            className="logon-navigate-code"
+            onClick={navigateInsertCode}
+            type="button"
+          >
             Avançar
           </button>
         </form>
-        <p className="logon-navigate-login">Já tem uma conta? Faça login!</p>
+        <p className="logon-navigate-login" onClick={navigateLogin}>
+          Já tem uma conta? <strong>Faça login!</strong>
+        </p>
       </div>
     </section>
   );

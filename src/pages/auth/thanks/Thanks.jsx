@@ -1,11 +1,17 @@
 import "./Thanks.css";
 import Sucess from "../../../assets/sucs1-thanks.svg";
-import ReturnArrow from "../../../components/return-arrow/ReturnArrow";
+import { useNavigate } from "react-router-dom";
 
 function Thanks() {
+  const navigate = useNavigate()
+
+  
+  function navigateRestrictPassword() {
+    navigate("/senha-restrita")
+  }
+
   return (
     <section className="thanks-section">
-        <ReturnArrow lastEndpoint={"/escolher-premium"}/>
       <div className="thanks-warning">
         <img src={Sucess} alt="Ícone de sucesso" />
         <h1>Obrigado!</h1>
@@ -13,7 +19,7 @@ function Thanks() {
           A equipe do Sinara agradece o apoio e o suporte para melhorias no app!
         </h2>
       </div>
-      <button className="thanks-navigate">
+      <button className="thanks-navigate" onClick={navigateRestrictPassword}>
         Criar senha para a área restrita
       </button>
     </section>

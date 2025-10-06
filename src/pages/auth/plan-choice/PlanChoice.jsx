@@ -12,8 +12,12 @@ function PlanChoice() {
     document.title = "Cadastro";
   }, []);
 
+  const navigateRestrictPassword = () => {
+    navigate("/senha-restrita", {state: { lastPage: "plan-choice" }});
+  };
+
   const navigatePremiumChoice = () => {
-    navigate("/escolher-premium");
+    navigate("/pagamento");
   };
 
   return (
@@ -21,7 +25,7 @@ function PlanChoice() {
       <ReturnArrow lastEndpoint={"/inserir-codigo"} />
       <h1 className="plan-title">Bem vindo(a)! Escolha seu plano:</h1>
       <div className="plan-choices">
-        <div className="plan-choice-card">
+        <div className="plan-choice-card" onClick={navigateRestrictPassword}>
           <div className="plan-icon-title">
             <img src={FreeIcon} alt="" />
             <h2 className="plan-choice-name">GRATUITO</h2>
