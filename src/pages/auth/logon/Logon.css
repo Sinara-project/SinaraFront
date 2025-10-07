@@ -86,6 +86,10 @@
     outline: none;
 }
 
+.logon-input.error {
+    border: 2px solid #D20D0D;
+}
+
 .logon-navigate-login {
     color: #F5F5F5;
     margin-top: 10px;

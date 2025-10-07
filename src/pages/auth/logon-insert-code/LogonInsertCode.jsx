@@ -1,12 +1,28 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./LogonInsertCode.css";
 import ReturnArrow from "../../../components/return-arrow/ReturnArrow";
+import Snackbar from "../../../components/snackbar/Snackbar";
 
 function LogonInsertCode() {
   const navigate = useNavigate();
+  const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
   const email = "friboi@gmail.com";
+
+  const trueCode = "1234";
+
+  const [code, setCode] = useState("");
+  const [snackbar, setSnackbar] = useState({
+    title: "",
+    message: "",
+    type: "",
+    visible: false,
+  });
+
+  const removeAt = (value, index) => {
+    return value.slice(0, index) + value.slice(index + 1);
+  };
 
   useEffect(() => {
     document.title = "Cadastro";
@@ -19,25 +35,62 @@ function LogonInsertCode() {
           input.value = "";
           return;
         }
+        setCode((prev) => {
+          const arr = prev.split("");
+          arr[index] = input.value;
+          return arr.join("").slice(0, inputs.length);
+        });
         if (input.value.length === 1 && index < inputs.length - 1) {
           inputs[index + 1].focus();
         }
       });
 
       input.addEventListener("keydown", (event) => {
-        if (event.key === "Backspace" && !input.value && index > 0) {
-          inputs[index - 1].focus();
+        if (event.key === "Backspace") {
+          input.value = "";
+          setCode((prev) => {
+            const arr = prev.split("");
+            arr[index] = "";
+            return arr.join("").slice(0, inputs.length);
+          });
+          if (index > 0) {
+            inputs[index - 1].focus();
+          }
         }
       });
     });
   }, []);
 
+  const showSnackbar = async (title, message, type) => {
+    setSnackbar({ title, message, type, visible: true });
+    await sleep(4000);
+    setSnackbar((prev) => ({ ...prev, visible: false }));
+  };
+
   const navigatePlanChoice = () => {
+    console.log(code);
+
+    if (!code) {
+      showSnackbar("Erro", "O código está vazio.", "error");
+      return;
+    }
+
+    if (code != trueCode) {
+      showSnackbar("Erro", "O código informado está incorreto.", "error");
+      return;
+    }
+
     navigate("/escolher-plano");
-  }
+  };
 
   return (
     <section className="code-section">
+      <Snackbar
+        type={snackbar.type}
+        title={snackbar.title}
+        message={snackbar.message}
+        isVisible={snackbar.visible}
+      />
       <ReturnArrow lastEndpoint={"/cadastrar"} />
       <div className="code-container">
         <span className="code-text-group">
@@ -54,7 +107,13 @@ function LogonInsertCode() {
             <input className="code-input" type="text" maxLength="1" />
             <input className="code-input" type="text" maxLength="1" />
           </div>
-          <button className="code-advance" onClick={navigatePlanChoice} type="button">Fazer cadastro</button>
+          <button
+            className="code-advance"
+            onClick={navigatePlanChoice}
+            type="button"
+          >
+            Fazer cadastro
+          </button>
         </form>
         <p className="code-resend">Reenviar código</p>
       </div>

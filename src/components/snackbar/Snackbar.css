@@ -28,9 +28,11 @@
 
     h1 {
         color: #0B1B54;
+        font-size: 22px;
     }
 
     h2 {
+        font-size: 17px;
         font-weight: 500;
         color: #0B1B54;
     }
