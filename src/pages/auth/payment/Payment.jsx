@@ -16,9 +16,46 @@ function Payment() {
   const [minutesLeft, setMinutesLeft] = useState(`15`);
   const [secondsLeft, setSecondsLeft] = useState(`00`);
 
-  let [errorSnackbar, setErrorSnackbar] = useState(false);
-  let [successSnackbar, setSuccessSnackbar] = useState(false);
-  let [isFunctionExecuted, setFunctionExecute] = useState(false);
+  const [cardNumber, setCardNumber] = useState("");
+  const [cvv, setCvv] = useState("");
+  const [expireDate, setExpireDate] = useState("");
+  const [nameInCard, setNameInCard] = useState("");
+  const [receiptName, setReceiptName] = useState("");
+
+  const [isFunctionExecuted, setFunctionExecute] = useState(false);
+
+  const [snackbar, setSnackbar] = useState({
+    title: "",
+    message: "",
+    type: "",
+    visible: false,
+  });
+  const [errors, setErrors] = useState({
+    cnpj: false,
+    email: false,
+    password: false,
+    confirm: false,
+  });
+
+  const showSnackbar = async (title, message, type, timeSleeping) => {
+    setSnackbar({ title, message, type, visible: true });
+    await sleep(4000);
+    setSnackbar((prev) => ({ ...prev, visible: false }));
+  };
+
+  const adjustCardNumber = (e) => {
+    let value = e.target.value.replace(/\D/g, "");
+    value = value.slice(0, 16);
+    value = value.replace(/(\d{4})(?=\d)/g, "$1 ");
+    setCardNumber(value);
+  };
+
+  const adjustExpireDate = (e) => {
+    let value = e.target.value.replace(/\D/g, "");
+    value = value.slice(0, 4);
+    value = value.replace(/(\d{2})(?=\d)/g, "$1/");
+    setExpireDate(value);
+  };
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -37,34 +74,33 @@ function Payment() {
     return () => clearInterval(interval);
   }, []);
 
-  async function navigateThanks() {    
+  async function navigateThanks() {
+    if (paymentMethod == "cartao") {
+      if (!cardNumber || !cvv || !expireDate || !nameInCard || !receiptName) {
+        showSnackbar("Erro", "Preencha os campos corretamente.", "error", 2000);
+        return;
+      }
+    }
+
     if (isFunctionExecuted) {
-      setErrorSnackbar(true);
-      await sleep(1500)
-      setErrorSnackbar(false);
+      showSnackbar("Erro", "Pagamento em andamento. Aguarde.", "error", 1500);
     } else {
       setFunctionExecute(true);
       await sleep(3000);
-      setSuccessSnackbar(true);
+      showSnackbar("Sucesso", "Pagamento efetuado! Redirecionando...", "success", 2000);
       await sleep(2000);
       navigate("/obrigado");
     }
-  };
+  }
 
   return (
     <section className="payment-section">
-        <Snackbar
-          type={"success"}
-          title={"Sucesso"}
-          message={"Pagamento efetuado! Continuando cadastro..."}
-          isVisible={successSnackbar}
-        />
-        <Snackbar
-          type={"error"}
-          title={"Erro"}
-          message={"Pagamento em andamento. Aguarde..."}
-          isVisible={errorSnackbar}
-        />
+      <Snackbar
+        type={snackbar.type}
+        title={snackbar.title}
+        message={snackbar.message}
+        isVisible={snackbar.visible}
+      />
       <ReturnArrow lastEndpoint={"/escolher-plano"} />
       <div className="payment-card">
         <h1 className="payment-title">Pagamento</h1>
@@ -162,6 +198,9 @@ function Payment() {
                 placeholder="N° do cartão*"
                 required
                 id="cardNumber"
+                maxLength={19}
+                value={cardNumber}
+                onChange={adjustCardNumber}
                 className="payment-input"
               />
               <div className="payment-input-group">
@@ -170,12 +209,17 @@ function Payment() {
                   placeholder="CVV*"
                   required
                   id="cvv"
+                  maxLength={3}
+                  onChange={(e) => setCvv(e.target.value)}
                   className="payment-input"
                 />
                 <input
                   type="text"
                   placeholder="Validade*"
                   required
+                  maxLength={5}
+                  value={expireDate}
+                  onChange={adjustExpireDate}
                   id="cardExpireDate"
                   className="payment-input"
                 />
@@ -185,15 +229,22 @@ function Payment() {
                 placeholder="Nome no cartão*"
                 required
                 id="cardEnterpriseName"
+                onChange={(e) => setNameInCard(e.target.value)}
                 className="payment-input"
               />
               <input
                 type="text"
                 placeholder="Nome no recibo"
                 id="receiptEnterpriseName"
+                onChange={(e) => setReceiptName(e.target.value)}
                 className="payment-input"
               />
-              <button className="payment-navigate-thanks" onClick={navigateThanks}>Avançar</button>
+              <button
+                className="payment-navigate-thanks"
+                onClick={navigateThanks}
+              >
+                Avançar
+              </button>
             </div>
           )}
           {paymentMethod === "pix" && (

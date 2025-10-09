@@ -27,6 +27,9 @@ function Logon() {
 
   useEffect(() => {
     document.title = "Cadastro";
+
+    localStorage.removeItem("currentCNPJ");
+    sessionStorage.removeItem("inLogonCNPJ");
   }, []);
 
   const adjustCNPJ = (e) => {
@@ -39,9 +42,9 @@ function Logon() {
     setCnpj(value);
   };
 
-  const testCnpj = () => cnpj.length === 18;
+  const testCnpj = () => /[0-9]{2}\.?[0-9]{3}\.?[0-9]{3}\/0001-?[0-9]{2}/.test(cnpj);
 
-  const testEmail = () => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const testEmail = () => /.+@.+\.com/.test(email);
 
   const testPassword = () =>
     /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}\[\]:;<>,.?~\\/\-]).{8,}$/.test(
@@ -100,6 +103,8 @@ function Logon() {
       showSnackbar("Erro", "As senhas não conferem.", "error");
       return;
     }
+
+    sessionStorage.setItem("inLogonCNPJ", cnpj);
 
     navigate("/inserir-codigo");
   };
