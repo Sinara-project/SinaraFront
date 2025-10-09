@@ -1,15 +1,22 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
-import Cadastro from './pages/auth/cadastro/Cadastro'
+import { Outlet, useNavigate } from 'react-router-dom'
+import { useEffect } from 'react'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    const currentUser = localStorage.getItem("currentUser");
+    if (currentUser) {
+      // Navegar para home
+    } else {
+      navigate("/cadastrar")
+    }
+  }, [])
 
   return (
     <>
-      <Cadastro/>
+      <Outlet/>
     </>
   )
 }
