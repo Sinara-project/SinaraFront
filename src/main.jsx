@@ -10,19 +10,23 @@ import Thanks from './pages/auth/thanks/Thanks.jsx';
 import RestrictPassword from './pages/auth/restrict-password/RestrictPassword.jsx';
 import Login from './pages/auth/login/Login.jsx';
 import LoginConfirm from './pages/auth/login-confirm/LoginConfirm.jsx';
+import Splash from './pages/splash/Splash.jsx';
+import Home from './pages/home/Home.jsx';
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
     <Routes>
       <Route path='/' element={<App />}>
-        <Route path="cadastrar" element={<Logon />} />
-        <Route path="inserir-codigo" element={<LogonInsertCode />} />
-        <Route path="escolher-plano" element={<PlanChoice />} />
-        <Route path="pagamento" element={<Payment />} />
-        <Route path="obrigado" element={<Thanks />} />
-        <Route path="senha-restrita" element={<RestrictPassword />} />
-        <Route path="entrar" element={<Login />} />
-        <Route path="confirmar-entrada" element={<LoginConfirm />} />
+      <Route path='splash' element={<Splash />} />
+        <Route path='cadastrar' element={<Logon />} />
+        <Route path='inserir-codigo' element={<LogonInsertCode />} />
+        <Route path='escolher-plano' element={<PlanChoice />} />
+        <Route path='pagamento' element={<Payment />} />
+        <Route path='obrigado' element={<Thanks />} />
+        <Route path='senha-restrita' element={<RestrictPassword />} />
+        <Route path='entrar' element={<Login />} />
+        <Route path='confirmar-entrada' element={<LoginConfirm />} />
+        <Route path='home' element={<Home />} />
       </Route>
     </Routes>
   </BrowserRouter>
