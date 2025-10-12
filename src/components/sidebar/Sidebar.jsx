@@ -19,6 +19,10 @@ function Sidebar() {
     navigate("/home");
   }
 
+  const navigateDashboards = () => {
+    navigate("/dashboards");
+  }
+
   return (
     <section
       className={`sidebar-section ${extended ? "extended" : ""}`}
@@ -35,7 +39,7 @@ function Sidebar() {
           <p className={`sidebar-text ${extended ? "extended" : ""}`}>Home</p>
           <img src={Home} alt="" className="sidebar-icon" />
         </span>
-        <span className={`sidebar-option ${extended ? "extended" : ""}`}>
+        <span className={`sidebar-option ${extended ? "extended" : ""}`} onClick={navigateDashboards}>
           <p className={`sidebar-text ${extended ? "extended" : ""}`}>
             Acessar dashboards
           </p>

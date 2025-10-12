@@ -7,34 +7,34 @@
     background-color: #0B1B54;
 }
 
-.splash-logo{
+.splash-content {
     position: relative;
-    transform: translateX(20px);
-    width: 90px;
-    margin-right: 10px;
+    display: flex;
+    justify-content: start;
+    align-items: end;
+    width: 74px;
+    overflow: hidden;
+    transition: width 0.4s ease;
     background-color: #0B1B54;
+}
+
+.splash-content.change {
+    width: 245px;
+}
+
+.splash-logo {
+    background-color: #0B1B54;
+    width: 74px;
     transition: 0.4s ease;
     z-index: 1;
-    padding-left: 50px;
 }
-
-.splash-logo.change {
-    transform: translateX(0);
-    padding: 0;
-} 
 
 .splash-text {
-    position: relative;
-    opacity: 0;
-    transform: translateX(-100px);
-    width: 160px;
+    position: absolute;
+    right: 0;               
+    bottom: 0;              
     height: 45.6px;
-    transition: 0.4s ease;
-    z-index: 0;
-}
-
-.splash-text.change {
     opacity: 1;
-    transform: translateX(0);
-    width: 160px;
+    transition: all 0.4s ease;
+    z-index: 0;
 }
