@@ -4,14 +4,20 @@ import ETAImage from "../../assets/eta-image.png";
 import Dashboards from "../../assets/dashboards.svg";
 import Sheet from "../../assets/sheet.svg";
 import History from "../../assets/clock.svg";
+import { useNavigate } from "react-router-dom";
 
 function Home() {
+  const navigate = useNavigate();
+
   const registeredReports = 30;
   const lastResponse = "João Batista";
 
+  const navigateDashboards = () => {
+    navigate("/dashboards");
+  }
+
   return (
     <section className="home-section">
-      <Sidebar />
       <div className="home-content">
         <section className="home-pone">
           <div className="home-pone-content">
@@ -41,7 +47,7 @@ function Home() {
         <section className="home-pthree">
           <h1>Principais ações</h1>
           <div className="home-options">
-            <div className="home-option">
+            <div className="home-option" onClick={navigateDashboards}>
               <img
                 src={Dashboards}
                 alt="Imagem de dashboard"

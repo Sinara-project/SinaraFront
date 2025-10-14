@@ -1,0 +1,19 @@
+.dashboards-section {
+    width: 100vw;
+    height: 100vh;
+    overflow-x: hidden;
+    background-color: #FFF6F4;
+}
+
+.dashboards-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 65px;
+    color: #FF7655;
+    h1 {
+        font-size: 45px;
+        margin-top: 60px;
+        margin-bottom: 60px;
+    }
+}

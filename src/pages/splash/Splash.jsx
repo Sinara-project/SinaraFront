@@ -29,7 +29,7 @@ function Splash() {
     
     return (
         <section className="splash-section">
-            <div className="splash-content">
+            <div className={`splash-content ${changeElements ? "change" : ""}`}>
                 <img src={Logo} alt="" className={`splash-logo ${changeElements ? "change" : ""}`} />
                 <img src={LogoEnd} alt="" className={`splash-text ${changeElements ? "change" : ""}`} />
             </div>

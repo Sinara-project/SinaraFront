@@ -12,6 +12,7 @@ import Login from './pages/auth/login/Login.jsx';
 import LoginConfirm from './pages/auth/login-confirm/LoginConfirm.jsx';
 import Splash from './pages/splash/Splash.jsx';
 import Home from './pages/home/Home.jsx';
+import Dashboards from './pages/dashboards/Dashboards.jsx';
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
@@ -27,6 +28,7 @@ createRoot(document.getElementById('root')).render(
         <Route path='entrar' element={<Login />} />
         <Route path='confirmar-entrada' element={<LoginConfirm />} />
         <Route path='home' element={<Home />} />
+        <Route path='dashboards' element={<Dashboards />} />
       </Route>
     </Routes>
   </BrowserRouter>

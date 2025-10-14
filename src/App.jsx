@@ -1,17 +1,25 @@
 import './App.css'
-import { Outlet, useNavigate } from 'react-router-dom'
+import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
+import Sidebar from './components/sidebar/Sidebar';
 
 function App() {
-  const navigate = useNavigate()
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const currentCNPJ = localStorage.getItem("currentCNPJ");
+
+  const testSidebar = () => {
+    return currentCNPJ && location.pathname != '/splash';
+  }
 
   useEffect(() => {
-    const currentUser = localStorage.getItem("currentUser");
     navigate("/splash");
   }, [])
 
   return (
     <>
+      {testSidebar() && (<Sidebar/>) }
       <Outlet/>
     </>
   )
