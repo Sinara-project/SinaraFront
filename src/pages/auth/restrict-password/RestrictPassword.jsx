@@ -2,10 +2,11 @@ import { useState } from "react";
 import ReturnArrow from "../../../components/return-arrow/ReturnArrow";
 import "./RestrictPassword.css";
 import Snackbar from "../../../components/snackbar/Snackbar";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 function RestrictPassword() {
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  const navigate = useNavigate();
   const location = useLocation()
   const { lastPage } = location.state || {};
 
@@ -49,7 +50,7 @@ function RestrictPassword() {
 
     // Buscar nome da empresa por CNPJ e colocar no localStorage para garantir login
     localStorage.setItem("currentCNPJ", sessionStorage.getItem("inLogonCNPJ"));
-    // Navegação para a home;
+    navigate("/home");
   }
 
   return (

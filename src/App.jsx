@@ -7,11 +7,7 @@ function App() {
 
   useEffect(() => {
     const currentUser = localStorage.getItem("currentUser");
-    if (currentUser) {
-      // Navegar para home
-    } else {
-      navigate("/cadastrar")
-    }
+    navigate("/splash");
   }, [])
 
   return (
