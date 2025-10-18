@@ -23,6 +23,10 @@ function Sidebar() {
     navigate("/dashboards");
   }
 
+  const navigateSheets = () => {
+    navigate("/planilhas");
+  }
+
   return (
     <section
       className={`sidebar-section ${extended ? "extended" : ""}`}
@@ -45,7 +49,7 @@ function Sidebar() {
           </p>
           <img src={Dashboard} alt="" className="sidebar-icon" />
         </span>
-        <span className={`sidebar-option ${extended ? "extended" : ""}`}>
+        <span className={`sidebar-option ${extended ? "extended" : ""}`} onClick={navigateSheets}>
           <p className={`sidebar-text ${extended ? "extended" : ""}`}>
             Acessar planilhas
           </p>
