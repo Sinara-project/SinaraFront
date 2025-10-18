@@ -13,7 +13,7 @@ import LoginConfirm from './pages/auth/login-confirm/LoginConfirm.jsx';
 import Splash from './pages/splash/Splash.jsx';
 import Home from './pages/home/Home.jsx';
 import Dashboards from './pages/dashboards/Dashboards.jsx';
-import SheetsList from './pages/sheets/sheets-list/SheetsList.jsx';
+import SheetsList from './pages/sheets-list/SheetsList.jsx';
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>

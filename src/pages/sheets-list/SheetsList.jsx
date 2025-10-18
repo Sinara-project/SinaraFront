@@ -1,6 +1,10 @@
+import { useState } from "react";
+import SheetsContent from "../../components/sheets-content/SheetsContent";
 import "./SheetsList.css";
 
 function SheetsList() {
+  const [contentVisibility, setContentVisibility] = useState(false);
+  const [sheetName, setSheetName] = useState();
   const sheets = [
     {
       id: 1,
@@ -34,13 +38,23 @@ function SheetsList() {
     },
   ];
 
+  const closeSheet = () => {
+    setContentVisibility(false);
+  }
+
+  const openSheet = (name, visibility) => {
+    setSheetName(name);
+    setContentVisibility(visibility);
+  }
+
   return (
     <section className="sheets-section">
+      <SheetsContent sheetName={sheetName} isVisible={contentVisibility} closeSheet={closeSheet} />
       <section className="sheets-content">
         <h1>Planilhas</h1>
         <div className="sheets-options">
           {sheets.map((planilha) => (
-            <div className={`sheets-option ${planilha.id % 2 == 0 ? "rose" : "white"}`}>
+            <div className={`sheets-option ${planilha.id % 2 == 0 ? "rose" : "white"}`} onClick={() => {openSheet(planilha.name, true)}}>
               <h2>{planilha.name}</h2>
               <div className="sheets-img"></div>
             </div>
