@@ -3,21 +3,30 @@ import "./Home.css";
 import ETAImage from "../../assets/eta-image.png";
 import Dashboards from "../../assets/dashboards.svg";
 import Sheet from "../../assets/sheet.svg";
-import History from "../../assets/clock.svg";
+import HistoryIcon from "../../assets/clock.svg";
 import { useNavigate } from "react-router-dom";
+import History from "../../components/history/History";
+import { useState } from "react";
 
 function Home() {
   const navigate = useNavigate();
 
   const registeredReports = 30;
   const lastResponse = "João Batista";
+  
+  const [historyVisibility, setHistory] = useState(false);
 
-  const navigateDashboards = () => {
-    navigate("/dashboards");
+  const openHistory = () => {
+    setHistory(true);
+  }
+
+  const closeHistory = () => {
+    setHistory(false);
   }
 
   return (
     <section className="home-section">
+      <History isVisible={historyVisibility} closeHistory={closeHistory} />
       <div className="home-content">
         <section className="home-pone">
           <div className="home-pone-content">
@@ -47,7 +56,7 @@ function Home() {
         <section className="home-pthree">
           <h1>Principais ações</h1>
           <div className="home-options">
-            <div className="home-option" onClick={navigateDashboards}>
+            <div className="home-option" onClick={() => {navigate("/dashboards")}}>
               <img
                 src={Dashboards}
                 alt="Imagem de dashboard"
@@ -55,7 +64,7 @@ function Home() {
               />
               <h3 className="home-option-text">Acessar dashboards</h3>
             </div>
-            <div className="home-option">
+            <div className="home-option" onClick={() => {navigate("/planilhas")}}>
               <img
                 src={Sheet}
                 alt="Imagem de planilha"
@@ -63,9 +72,9 @@ function Home() {
               />
               <h3 className="home-option-text">Abrir planilhas</h3>
             </div>
-            <div className="home-option">
+            <div className="home-option" onClick={openHistory}>
               <img
-                src={History}
+                src={HistoryIcon}
                 alt="Imagem de histórico/relógio"
                 className="home-option-img"
               />
