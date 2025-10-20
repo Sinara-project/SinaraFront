@@ -8,7 +8,7 @@ function Splash() {
     const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
     const navigate = useNavigate();
 
-    const currentUser = localStorage.getItem("currentCNPJ");
+    const currentUser = localStorage.getItem("user");
 
     const [changeElements, setChange] = useState(false);
 

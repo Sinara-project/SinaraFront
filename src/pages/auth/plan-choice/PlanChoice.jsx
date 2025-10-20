@@ -2,21 +2,56 @@ import "./PlanChoice.css";
 import FreeIcon from "../../../assets/free.svg";
 import PremiumIcon from "../../../assets/premium.svg";
 import ReturnArrow from "../../../components/return-arrow/ReturnArrow";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function PlanChoice() {
   const navigate = useNavigate();
+
+  const [plan, setPlan] = useState("");
 
   useEffect(() => {
     document.title = "Cadastro";
   }, []);
 
   const navigateRestrictPassword = () => {
-    navigate("/senha-restrita", {state: { lastPage: "plan-choice" }});
+    setPlan("gratis");
+    let onLogon = JSON.parse(sessionStorage.getItem("onLogon"));
+    onLogon.plano_inicial = plan;
+    onLogon.id_plano = 1;
+    // createEmpresa(coisas)
+    const id = 1;
+    // getIdDeEmpresaPorCnpj(cnpj)
+    onLogon = {
+      id: id,
+      cnpj: onLogon.cnpj,
+      email: onLogon.email,
+      image: onLogon.imagem_url,
+      name: onLogon.nome
+    }
+    sessionStorage.setItem("onLogon", JSON.stringify(onLogon));
+
+    navigate("/senha-restrita");
   };
 
   const navigatePremiumChoice = () => {
+    setPlan("premium");
+    const onLogon = JSON.parse(sessionStorage.getItem("onLogon"));
+    onLogon.plano_inicial = plan;
+    onLogon.id_plano = 2;
+    // createEmpresa(coisas)
+    const id = 1;
+    // getIdDeEmpresaPorCnpj(cnpj)
+    onLogon = {
+      id: id,
+      cnpj: onLogon.cnpj,
+      email: onLogon.email,
+      image: onLogon.imagem_url,
+      name: onLogon.nome
+    }
+    sessionStorage.setItem("onLogon", JSON.stringify(onLogon));
+
+    setPlan("premium");
     navigate("/pagamento");
   };
 

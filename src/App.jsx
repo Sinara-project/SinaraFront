@@ -8,10 +8,10 @@ function App() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const currentCNPJ = localStorage.getItem("currentCNPJ");
+  const user = localStorage.getItem("user");
 
   const testSidebar = () => {
-    return currentCNPJ && location.pathname != '/splash';
+    return user && location.pathname != '/splash';
   }
 
   const [historyVisibility, setHistory] = useState(false);

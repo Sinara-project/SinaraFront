@@ -1,0 +1,313 @@
+.create-form-section {
+    width: 100vw;
+    height: 100vh;
+    background-color: #FFF6F4;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+
+.create-form-content {
+    margin-top: 30px;
+    margin-left: 65px;
+    padding: 40px 100px;
+    background-color: #FFF6F4;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow-x: hidden;
+    box-sizing: border-box;
+}
+
+.create-form-title {
+    color: #FF7655;
+    font-size: 24px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 10px;
+    background-color: #FFF6F4;
+}
+
+.create-form-input-title,
+.create-form-input-desc {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 2px solid #0B1B54;
+    background-color: transparent;
+    font-size: 14px;
+    color: #0B1B54;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease;
+    font-weight: 600;
+}
+
+.create-form-input-title {
+    font-size: 18px;
+}
+
+.create-form-input-title::placeholder,
+.create-form-input-desc::placeholder {
+    color: #0B1B54;
+    opacity: 0.6;
+}
+
+.create-form-question {
+    background-color: #BFD4E3;
+    border-radius: 16px;
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.create-form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.create-form-header button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 2px;
+}
+
+.create-form-header img {
+    width: 20px;
+}
+
+.create-form-select-perm {
+    position: relative;
+
+    button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 5px;   
+        width: 180px;
+        height: 30px;
+        border-radius: 50px;
+        background-color: #0B1B54;
+        z-index: 2;
+        border: none;
+        transition: all 0.3s ease;
+
+        h4 {
+            font-size: 15px;
+        }
+
+        img {
+            width: 17px;
+        }
+    }
+
+    button:hover {
+        background-color: #384994;
+    }
+}
+
+.create-form-type-toggle {
+    display: flex;
+    gap: 6px;
+
+    h4 {
+        margin-right: 5px;
+        color: #0B1B54;
+    }
+}
+
+.create-form-type-toggle button {
+    font-size: 13px;
+    font-weight: 600;
+    padding: 5px;
+    border-radius: 50px;
+    border: 2px solid #FF7655;
+    cursor: pointer;
+    background-color: #F5F5F5;
+    transition: all 0.2s ease;
+    color: #FF7655;
+    width: 90px;
+}
+
+.create-form-type-toggle button.active {
+    background-color: #FF7655;
+    padding: 5px;
+    color: #FFF6F4;
+}
+
+
+.create-form-mandatory {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    gap: 6px;
+    font-size: 14px;
+    color: #0B1B54;
+}
+
+.create-form-mandatory-select {
+    height: 15px;
+    width: 15px;
+    border-radius: 50%;
+    border: 3px solid #F5F5F5;
+    box-sizing: border-box;
+    display: inline-block;
+    position: relative;
+    margin-right: 10px;
+    vertical-align: middle;
+    cursor: pointer;
+    background-color: #F5F5F5;
+    margin-left: 5px;
+}
+
+.create-form-mandatory input[type="checkbox"] {
+    display: none;
+}
+
+.create-form-mandatory input[type="checkbox"]:checked+.create-form-mandatory-select {
+    background-color: #FF7655;
+}
+
+
+.create-form-input-field {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1.5px solid #0B1B54;
+    background-color: transparent;
+    border: 2px solid #0B1B54;
+    color: #0B1B54;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s ease;
+    font-weight: 600;
+    width: 90%;
+}
+
+.create-form-input-field::placeholder {
+    opacity: 0.6;
+    color: #0B1B54;
+}
+
+.create-form-choice {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 40%;
+}
+
+.create-form-choice input {
+    flex: 1;
+    padding: 8px 10px;
+    border-radius: 50px;
+    background-color: #FFFFFF;
+    color: #0B1B54;
+    font-size: 14px;
+    outline: none;
+    border: none;
+    font-weight: 600;
+}
+
+.create-form-choice input::placeholder {
+    opacity: 0.6;
+    color: #0B1B54;
+}
+
+.create-form-choice img {
+    width: 20px;
+    background-color: transparent;
+    border: none;
+    color: #FFF6F4;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    cursor: pointer;
+
+}
+
+.create-form-choice button:hover {
+    background-color: #FF7655;
+}
+
+
+.create-form-add-option {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    background-color: #0B1B54;
+    color: #FFF6F4;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    align-self: flex-start;
+    transition: all 0.2s ease;
+    border-radius: 50px;
+
+    img {
+        width: 15px;
+    }
+}
+
+.create-form-add-option:hover {
+    background-color: #384994;
+}
+
+
+.create-form-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-start;
+    margin-top: 5px;
+}
+
+.create-form-add-question {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    background-color: #0B1B54;
+    color: #FFF6F4;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 50px;
+
+    img {
+        width: 15px;
+    }
+}
+
+.create-form-add-question:hover {
+    background-color: #384994;
+}
+
+
+.create-form-submit {
+    background-color: #0B1B54;
+    color: #FFF6F4;
+    font-weight: 600;
+    font-size: 15px;
+    border-radius: 12px;
+    border: none;
+    padding: 12px 20px;
+    align-self: center;
+    cursor: pointer;
+    margin-top: 25px;
+    transition: all 0.2s ease;
+    width: 200px;
+    border-radius: 50px;
+}
+
+.create-form-submit:hover {
+    background-color: #384994;
+}
