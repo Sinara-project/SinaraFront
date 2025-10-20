@@ -44,13 +44,13 @@
 
 .sheets-img {
     -webkit-mask: url("../../assets/enter-blue-arrow.svg") no-repeat center;
-  mask: url("../../assets/enter-blue-arrow.svg") no-repeat center;
-  -webkit-mask-size: contain;
-  mask-size: contain;
-  
-  background-color: #0B1B54; 
-  width: 25px;
-  height: 25px;
+    mask: url("../../assets/enter-blue-arrow.svg") no-repeat center;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+
+    background-color: #0B1B54;
+    width: 25px;
+    height: 25px;
 }
 
 .sheets-option.rose {

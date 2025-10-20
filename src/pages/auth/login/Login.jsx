@@ -25,7 +25,8 @@ function Login() {
       email: "friboi@gmail.com",
       nome: "Friboi",
       senha: "Friboi@123",
-      senhaRestrita: "Friboi@123"
+      senhaRestrita: "Friboi@123",
+      codigo: "aaa001"
     },
   ];
 
@@ -80,11 +81,17 @@ function Login() {
       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7R72IzYtgQMU72EdMg1Gyy1AGX9Rp7eu5Dg&s";
       // getImagemDeEmpresaPorCnpjNoGoverno(empresa.cnpj)
 
+      const ramoDeAtuacao = "Alimentício";
+      // getRamoAtuacaoPorId(empresa.id)
+
     const onLogin = {
       id: empresa.id,
       cnpj: empresa.cnpj,
       name: empresa.nome,
       image: imagemEmpresa,
+      email: empresa.email,
+      sector: ramoDeAtuacao,
+      code: empresa.codigo,
       restrictPassword: empresa.senhaRestrita
     };
 

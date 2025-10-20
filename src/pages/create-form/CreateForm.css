@@ -7,9 +7,9 @@
 }
 
 .create-form-content {
-    margin-top: 30px;
     margin-left: 65px;
     padding: 40px 100px;
+    padding-top: 0;
     background-color: #FFF6F4;
     display: flex;
     flex-direction: column;
@@ -19,12 +19,12 @@
 }
 
 .create-form-title {
-    color: #FF7655;
-    font-size: 24px;
-    font-weight: 700;
-    text-align: center;
-    margin-bottom: 10px;
-    background-color: #FFF6F4;
+    font-size: 45px;
+        margin-top: 60px;
+        margin-bottom: 60px;
+        color: #FF7655;
+        width: 100%;
+        text-align: center;
 }
 
 .create-form-input-title,
