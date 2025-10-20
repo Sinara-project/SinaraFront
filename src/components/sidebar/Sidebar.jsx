@@ -11,20 +11,12 @@ import Config from "../../assets/config.svg";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-function Sidebar() {
+function Sidebar({ openHistory }) {
     const navigate = useNavigate();
   const [extended, setExtend] = useState(false);
 
-  const navigateHome = () => {
-    navigate("/home");
-  }
-
-  const navigateDashboards = () => {
-    navigate("/dashboards");
-  }
-
-  const navigateSheets = () => {
-    navigate("/planilhas");
+  const history = () => {
+    openHistory();
   }
 
   return (
@@ -39,23 +31,23 @@ function Sidebar() {
     >
       <img src={Logo} alt="" className="sidebar-logo" />
       <div className="sidebar-functions">
-        <span className={`sidebar-option ${extended ? "extended" : ""}`} onClick={navigateHome}>
+        <span className={`sidebar-option ${extended ? "extended" : ""}`} onClick={(() => {navigate("/home")})}>
           <p className={`sidebar-text ${extended ? "extended" : ""}`}>Home</p>
           <img src={Home} alt="" className="sidebar-icon" />
         </span>
-        <span className={`sidebar-option ${extended ? "extended" : ""}`} onClick={navigateDashboards}>
+        <span className={`sidebar-option ${extended ? "extended" : ""}`} onClick={(() => {navigate("/dashboards")})}>
           <p className={`sidebar-text ${extended ? "extended" : ""}`}>
             Acessar dashboards
           </p>
           <img src={Dashboard} alt="" className="sidebar-icon" />
         </span>
-        <span className={`sidebar-option ${extended ? "extended" : ""}`} onClick={navigateSheets}>
+        <span className={`sidebar-option ${extended ? "extended" : ""}`} onClick={(() => {navigate("/planilhas")})}>
           <p className={`sidebar-text ${extended ? "extended" : ""}`}>
             Acessar planilhas
           </p>
           <img src={Sheet} alt="" className="sidebar-icon" />
         </span>
-        <span className={`sidebar-option ${extended ? "extended" : ""}`}>
+        <span className={`sidebar-option ${extended ? "extended" : ""}`} onClick={history}>
           <p className={`sidebar-text ${extended ? "extended" : ""}`}>
             Abrir histórico
           </p>
