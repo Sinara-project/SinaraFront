@@ -7,8 +7,11 @@ import { useLocation, useNavigate } from "react-router-dom";
 function RestrictPassword() {
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   const navigate = useNavigate();
-  const location = useLocation()
+  const location = useLocation();
   const { lastPage } = location.state || {};
+
+  const onLogin = JSON.parse(sessionStorage.getItem("onLogin"));
+  const onLogon = JSON.parse(sessionStorage.getItem("onLogon"));
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirm] = useState("");
@@ -35,12 +38,17 @@ function RestrictPassword() {
   };
 
   const navigateHome = () => {
-    if(!confirmPassword || !password) {
+    if (!confirmPassword || !password) {
       showSnackbar("Erro", "Preencha todos os campos.", "error", 2000);
       return;
     }
     if (!testPassword()) {
-      showSnackbar("Erro", "A senha deve ter pelo menos 8 caracteres, 1 símbolo, 1 letra maiúscula e 1 número.", "error", 2000);
+      showSnackbar(
+        "Erro",
+        "A senha deve ter pelo menos 8 caracteres, 1 símbolo, 1 letra maiúscula e 1 número.",
+        "error",
+        2000
+      );
       return;
     }
     if (confirmPassword != password) {
@@ -48,10 +56,22 @@ function RestrictPassword() {
       return;
     }
 
-    // Buscar nome da empresa por CNPJ e colocar no localStorage para garantir login
-    localStorage.setItem("currentCNPJ", sessionStorage.getItem("inLogonCNPJ"));
+    let empresa = {};
+
+    if (onLogin) {
+      empresa = onLogin;
+    } else if (onLogon) {
+      empresa = onLogon;
+    }
+
+    // saveSenhaRestritaPorId(empresa.id, password)
+
+    localStorage.setItem("user", JSON.stringify(empresa));
+    sessionStorage.removeItem("onLogon");
+    sessionStorage.removeItem("onLogin");
+
     navigate("/home");
-  }
+  };
 
   return (
     <section className="restrict-password-section">
@@ -90,7 +110,11 @@ function RestrictPassword() {
             placeholder="Confirmar senha"
             id="confirmPassword"
           />
-          <button className="restrict-password-navigate-code" type="button" onClick={navigateHome}>
+          <button
+            className="restrict-password-navigate-code"
+            type="button"
+            onClick={navigateHome}
+          >
             Avançar
           </button>
         </form>

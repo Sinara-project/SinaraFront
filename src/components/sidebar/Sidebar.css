@@ -4,6 +4,7 @@
     align-items: start;
     flex-direction: column;
     position: fixed;
+    z-index: 10;
     width: 65px;
     height: 100vh;
     background-color: #0B1B54;

@@ -7,6 +7,8 @@ function Logon() {
   const navigate = useNavigate();
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+  const [empresa, setEmpresa] = useState("");
+
   const [cnpj, setCnpj] = useState("");
   const [sector, setSector] = useState("");
   const [email, setEmail] = useState("");
@@ -42,7 +44,8 @@ function Logon() {
     setCnpj(value);
   };
 
-  const testCnpj = () => /[0-9]{2}\.?[0-9]{3}\.?[0-9]{3}\/0001-?[0-9]{2}/.test(cnpj);
+  const testCnpj = () =>
+    /[0-9]{2}\.?[0-9]{3}\.?[0-9]{3}\/0001-?[0-9]{2}/.test(cnpj);
 
   const testEmail = () => /.+@.+\.com/.test(email);
 
@@ -104,7 +107,22 @@ function Logon() {
       return;
     }
 
-    sessionStorage.setItem("inLogonCNPJ", cnpj);
+    const nome = "Friboi";
+    // getNomePorCnpjNoGoverno(cnpj)
+
+    const imagemEmpresa =
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7R72IzYtgQMU72EdMg1Gyy1AGX9Rp7eu5Dg&s";
+      // getImagemDeEmpresaPorCnpjNoGoverno(empresa.cnpj)
+
+    const onLogon = {
+      cnpj: cnpj,
+      nome: nome,
+      imagem_url: imagemEmpresa,
+      ramo_atuacao: sector,
+      senha: password,
+    };
+
+    sessionStorage.setItem("onLogon", JSON.stringify(onLogon));
 
     navigate("/inserir-codigo");
   };

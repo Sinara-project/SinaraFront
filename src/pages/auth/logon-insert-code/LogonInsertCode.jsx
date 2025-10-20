@@ -8,6 +8,8 @@ function LogonInsertCode() {
   const navigate = useNavigate();
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+  const actualLogon = JSON.parse(sessionStorage.getItem("onLogon"));
+
   const email = "friboi@gmail.com";
 
   const trueCode = "1234";
@@ -19,10 +21,6 @@ function LogonInsertCode() {
     type: "",
     visible: false,
   });
-
-  const removeAt = (value, index) => {
-    return value.slice(0, index) + value.slice(index + 1);
-  };
 
   useEffect(() => {
     document.title = "Cadastro";
@@ -68,8 +66,6 @@ function LogonInsertCode() {
   };
 
   const navigatePlanChoice = () => {
-    console.log(code);
-
     if (!code) {
       showSnackbar("Erro", "O código está vazio.", "error");
       return;
@@ -80,6 +76,9 @@ function LogonInsertCode() {
       return;
     }
 
+    // salvarEmpresa(cnpj, email, nome, oscarai tudo)
+    const id = 1;
+    // const id = buscarIdDeEmpresaPorCnpj(actualLogon.cnpj)
     navigate("/escolher-plano");
   };
 

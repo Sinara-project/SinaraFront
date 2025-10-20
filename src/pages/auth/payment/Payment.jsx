@@ -30,6 +30,7 @@ function Payment() {
     type: "",
     visible: false,
   });
+  
   const [errors, setErrors] = useState({
     cnpj: false,
     email: false,
