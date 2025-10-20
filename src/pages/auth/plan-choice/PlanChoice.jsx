@@ -22,13 +22,17 @@ function PlanChoice() {
     // createEmpresa(coisas)
     const id = 1;
     // getIdDeEmpresaPorCnpj(cnpj)
+    const code = "aaa001";
+    // getEmpresaCodigoPorCnpj(cnpj)
     onLogon = {
       id: id,
       cnpj: onLogon.cnpj,
       email: onLogon.email,
       image: onLogon.imagem_url,
-      name: onLogon.nome
-    }
+      name: onLogon.nome,
+      sector: onLogon.ramo_atuacao,
+      code: code
+    };
     sessionStorage.setItem("onLogon", JSON.stringify(onLogon));
 
     navigate("/senha-restrita");

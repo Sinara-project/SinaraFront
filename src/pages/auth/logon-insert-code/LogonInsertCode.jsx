@@ -8,8 +8,6 @@ function LogonInsertCode() {
   const navigate = useNavigate();
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-  const actualLogon = JSON.parse(sessionStorage.getItem("onLogon"));
-
   const email = "friboi@gmail.com";
 
   const trueCode = "1234";
@@ -77,8 +75,6 @@ function LogonInsertCode() {
     }
 
     // salvarEmpresa(cnpj, email, nome, oscarai tudo)
-    const id = 1;
-    // const id = buscarIdDeEmpresaPorCnpj(actualLogon.cnpj)
     navigate("/escolher-plano");
   };
 

@@ -85,8 +85,11 @@ function LoginConfirm() {
       const data = {
         id: onLogin.id,
         cnpj: onLogin.cnpj,
+        email: onLogin.email,
+        code: onLogin.code,
         name: onLogin.name,
         image: onLogin.image,
+        sector: onLogin.sector
       };
       localStorage.setItem("user", JSON.stringify(data));
       sessionStorage.removeItem("onLogin");
@@ -95,8 +98,11 @@ function LoginConfirm() {
       const data = {
         id: onLogin.id,
         cnpj: onLogin.cnpj,
+        email: onLogin.email,
+        code: onLogin.code,
         name: onLogin.name,
         image: onLogin.image,
+        sector: onLogin.sector
       };
       sessionStorage.setItem("onLogin", JSON.stringify(data));
       navigate("/senha-restrita");

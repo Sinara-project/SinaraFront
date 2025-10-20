@@ -90,7 +90,7 @@ function Sidebar({ openHistory }) {
         </span>
       </div>
       <div className="sidebar-basics">
-        <span className={`sidebar-option ${extended ? "extended" : ""}`}>
+        <span className={`sidebar-option ${extended ? "extended" : ""}`} onClick={() => {navigate("/perfil")}}>
           <p className={`sidebar-text ${extended ? "extended" : ""}`}>Perfil</p>
           <img src={User} alt="" className="sidebar-icon" />
         </span>

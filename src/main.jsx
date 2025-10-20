@@ -15,6 +15,7 @@ import Home from './pages/home/Home.jsx';
 import Dashboards from './pages/dashboards/Dashboards.jsx';
 import SheetsList from './pages/sheets-list/SheetsList.jsx';
 import CreateForm from './pages/create-form/CreateForm.jsx';
+import Profile from './pages/profile/Profile.jsx';
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
@@ -33,6 +34,7 @@ createRoot(document.getElementById('root')).render(
         <Route path='dashboards' element={<Dashboards />} />
         <Route path='planilhas' element={<SheetsList />} />
         <Route path='criar-formulario' element={<CreateForm />} />
+        <Route path='perfil' element={<Profile />} />
       </Route>
     </Routes>
   </BrowserRouter>
