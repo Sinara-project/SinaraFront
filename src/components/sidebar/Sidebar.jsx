@@ -82,7 +82,12 @@ function Sidebar({ openHistory }) {
           </p>
           <img src={Create} alt="" className="sidebar-icon" />
         </span>
-        <span className={`sidebar-option ${extended ? "extended" : ""}`}>
+        <span
+          className={`sidebar-option ${extended ? "extended" : ""}`}
+          onClick={() => {
+            navigate("/entrar-area-restrita");
+          }}
+        >
           <p className={`sidebar-text ${extended ? "extended" : ""}`}>
             Área Restrita
           </p>
@@ -90,11 +95,21 @@ function Sidebar({ openHistory }) {
         </span>
       </div>
       <div className="sidebar-basics">
-        <span className={`sidebar-option ${extended ? "extended" : ""}`} onClick={() => {navigate("/perfil")}}>
+        <span
+          className={`sidebar-option ${extended ? "extended" : ""}`}
+          onClick={() => {
+            navigate("/perfil");
+          }}
+        >
           <p className={`sidebar-text ${extended ? "extended" : ""}`}>Perfil</p>
           <img src={User} alt="" className="sidebar-icon" />
         </span>
-        <span className={`sidebar-option ${extended ? "extended" : ""}`} onClick={() => {navigate("/configuracoes")}}>
+        <span
+          className={`sidebar-option ${extended ? "extended" : ""}`}
+          onClick={() => {
+            navigate("/configuracoes");
+          }}
+        >
           <p className={`sidebar-text ${extended ? "extended" : ""}`}>
             Configurações
           </p>
