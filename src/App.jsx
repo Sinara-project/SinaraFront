@@ -11,7 +11,11 @@ function App() {
   const user = localStorage.getItem("user");
 
   const testSidebar = () => {
-    return user && location.pathname != '/splash';
+    const endpoints = [
+      '/splash',
+      '/editar'
+    ]
+    return user && !endpoints.includes(location.pathname);
   }
 
   const [historyVisibility, setHistory] = useState(false);

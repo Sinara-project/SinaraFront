@@ -16,6 +16,8 @@ import Dashboards from './pages/dashboards/Dashboards.jsx';
 import SheetsList from './pages/sheets-list/SheetsList.jsx';
 import CreateForm from './pages/create-form/CreateForm.jsx';
 import Profile from './pages/profile/Profile.jsx';
+import Settings from './pages/edit/settings/Settings.jsx';
+import EditData from './pages/edit/editData/EditData.jsx';
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
@@ -35,6 +37,8 @@ createRoot(document.getElementById('root')).render(
         <Route path='planilhas' element={<SheetsList />} />
         <Route path='criar-formulario' element={<CreateForm />} />
         <Route path='perfil' element={<Profile />} />
+        <Route path='configuracoes' element={<Settings/>} />
+        <Route path='editar' element={<EditData/>} />
       </Route>
     </Routes>
   </BrowserRouter>

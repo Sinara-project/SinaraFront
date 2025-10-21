@@ -94,7 +94,7 @@ function Sidebar({ openHistory }) {
           <p className={`sidebar-text ${extended ? "extended" : ""}`}>Perfil</p>
           <img src={User} alt="" className="sidebar-icon" />
         </span>
-        <span className={`sidebar-option ${extended ? "extended" : ""}`}>
+        <span className={`sidebar-option ${extended ? "extended" : ""}`} onClick={() => {navigate("/configuracoes")}}>
           <p className={`sidebar-text ${extended ? "extended" : ""}`}>
             Configurações
           </p>

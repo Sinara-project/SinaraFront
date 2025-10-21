@@ -39,6 +39,7 @@
             mask: url("../../assets/exit.svg") no-repeat center;
             -webkit-mask-size: contain;
             mask-size: contain;
+            transition: all 0.3s ease;
 
             background-color: #FF7655;
             width: 25px;

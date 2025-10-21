@@ -129,7 +129,7 @@ function Login() {
           <input
             className={`login-input ${errors.password ? "error" : ""}`}
             type="password"
-            placeholder="Confirmar senha"
+            placeholder="Senha"
             onChange={(e) => setPassword(e.target.value)}
           />
           <button
@@ -140,7 +140,7 @@ function Login() {
             Avançar
           </button>
         </form>
-        <p className="logon-navigate-login" onClick={navigateLogon}>
+        <p className="login-navigate-logon" onClick={navigateLogon}>
           Não possui uma conta? <strong>Cadastre-se!</strong>
         </p>
       </div>
