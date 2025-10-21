@@ -1,0 +1,50 @@
+.settings-section {
+    background-color: #FFF6F4;
+    width: 100vw;
+    height: 100vh;
+    box-sizing: border-box;
+}
+
+.settings-content {
+    box-sizing: border-box;
+    margin-left: 65px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 50px;
+    h1 {
+        font-size: 45px;
+        margin-top: 60px;
+        margin-bottom: 60px;
+        color: #FF7655;
+    }
+
+    div {
+        display: flex;
+        justify-content: center;
+        align-items: start;
+        flex-direction: column;
+        gap: 15px;
+        width: 70%;
+
+        button {
+            background-color: #0B1B54;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            border: none;
+            transition: all 0.3s ease;
+            border-radius: 20px;
+
+            img {
+                height: 22px;
+            }
+        }
+
+        button:hover {
+            background-color: #384994;
+        }
+    }
+}
