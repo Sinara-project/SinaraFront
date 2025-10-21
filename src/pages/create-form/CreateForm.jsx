@@ -8,6 +8,8 @@ import Snackbar from "../../components/snackbar/Snackbar";
 import PermissionsDropdown from "../../components/permissions-dropdown/PermissionsDropdown";
 
 function CreateForm() {
+  const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
   const user = JSON.parse(localStorage.getItem("user"));
 
   const [formTitle, setTitle] = useState("");
@@ -19,8 +21,6 @@ function CreateForm() {
 
   const [selectPerms, setSelectPerms] = useState(false);
   const [perms, setPerms] = useState([]);
-
-  const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   const [snackbar, setSnackbar] = useState({
     title: "",
     message: "",
@@ -61,10 +61,9 @@ function CreateForm() {
 
   const togglePermission = (permId) => {
     if (formPerms.includes(permId)) {
-        setFormPerms(prev => prev.filter(item => item !== permId));
-    }
-    else {
-        setFormPerms(prev => [...prev, permId]);
+      setFormPerms((prev) => prev.filter((item) => item !== permId));
+    } else {
+      setFormPerms((prev) => [...prev, permId]);
     }
   };
 
@@ -88,7 +87,7 @@ function CreateForm() {
 
   const removeQuestion = (index) => {
     if (form.length <= 1) {
-      showSnackbar("Erro", "O formulário precisa ter pelo menos uma pergunta.");
+      showSnackbar("Erro", "O formulário precisa ter pelo menos uma pergunta");
       return;
     }
     editForm((prev) => prev.filter((_, i) => i !== index));
@@ -144,7 +143,7 @@ function CreateForm() {
       if ((field.choices?.length || 0) <= 2) {
         showSnackbar(
           "Erro",
-          "Uma pergunta de escolha precisa ter pelo menos duas opções."
+          "Uma pergunta de escolha precisa ter pelo menos duas opções"
         );
         return newForm;
       }
@@ -157,11 +156,14 @@ function CreateForm() {
 
   const createForm = () => {
     if (!formTitle.trim()) {
-      return showSnackbar("Erro", "O formulário precisa de um título.");
+      return showSnackbar("Erro", "O formulário precisa de um título");
     }
 
     if (formPerms.length === 0) {
-        return showSnackbar("Erro", "O formulário precisa de permissões para ser respondido.");
+      return showSnackbar(
+        "Erro",
+        "O formulário precisa de permissões para ser respondido"
+      );
     }
 
     for (let i = 0; i < form.length; i++) {
@@ -169,7 +171,7 @@ function CreateForm() {
       if (!field.name.trim()) {
         return showSnackbar(
           "Erro",
-          `A pergunta ${i + 1} precisa ter um campo preenchido.`
+          `A pergunta ${i + 1} precisa ter um campo preenchido`
         );
       }
 
@@ -178,20 +180,18 @@ function CreateForm() {
         if (emptyChoice) {
           return showSnackbar(
             "Erro",
-            `A pergunta ${
-              i + 1
-            } possui opções vazias. Preencha todas as opções.`
+            `A pergunta ${i + 1} possui opções vazias. Preencha todas as opções`
           );
         }
       }
     }
 
     const dataForm = {
-        idCriador: user.id,
-        titulo: formTitle,
-        descricao: formDesc,
-        permissoes: formPerms,
-        campos: form
+      idCriador: user.id,
+      titulo: formTitle,
+      descricao: formDesc,
+      permissoes: formPerms,
+      campos: form,
     };
 
     // criarFormulario(dataForm)
@@ -231,7 +231,11 @@ function CreateForm() {
             <h4>Quem verá?</h4>
             <img src={Dropdown} alt="" />
           </button>
-          <PermissionsDropdown isVisible={selectPerms} permissions={perms} togglePermissions={togglePermission} />
+          <PermissionsDropdown
+            isVisible={selectPerms}
+            permissions={perms}
+            togglePermissions={togglePermission}
+          />
         </div>
         {form.map((field, i) => (
           <div key={field.id} className="create-form-question">

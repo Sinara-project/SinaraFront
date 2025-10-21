@@ -1,5 +1,5 @@
 import { createRoot } from 'react-dom/client'
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Router } from "react-router-dom";
 import './index.css'
 import App from './App.jsx'
 import Logon from './pages/auth/logon/Logon.jsx';
@@ -18,6 +18,8 @@ import CreateForm from './pages/create-form/CreateForm.jsx';
 import Profile from './pages/profile/Profile.jsx';
 import Settings from './pages/edit/settings/Settings.jsx';
 import EditData from './pages/edit/editData/EditData.jsx';
+import RestrictedAreaEnter from './pages/restricted-area/enter/RestrictedAreaEnter.jsx';
+import RestrictedAreaMenu from './pages/restricted-area/menu/RestrictedAreaMenu.jsx';
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
@@ -39,6 +41,8 @@ createRoot(document.getElementById('root')).render(
         <Route path='perfil' element={<Profile />} />
         <Route path='configuracoes' element={<Settings/>} />
         <Route path='editar' element={<EditData/>} />
+        <Route path='entrar-area-restrita' element={<RestrictedAreaEnter />} />
+        <Route path='menu-area-restrita' element={<RestrictedAreaMenu />} />
       </Route>
     </Routes>
   </BrowserRouter>

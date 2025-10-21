@@ -20,11 +20,11 @@
 
 .create-form-title {
     font-size: 45px;
-        margin-top: 60px;
-        margin-bottom: 60px;
-        color: #FF7655;
-        width: 100%;
-        text-align: center;
+    margin-top: 60px;
+    margin-bottom: 60px;
+    color: #FF7655;
+    width: 100%;
+    text-align: center;
 }
 
 .create-form-input-title,
@@ -66,17 +66,17 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-}
 
-.create-form-header button {
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    padding: 2px;
-}
+    button {
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        padding: 2px;
+    }
 
-.create-form-header img {
+    img {
     width: 20px;
+}
 }
 
 .create-form-select-perm {
@@ -86,7 +86,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        gap: 5px;   
+        gap: 5px;
         width: 180px;
         height: 30px;
         border-radius: 50px;
@@ -117,9 +117,8 @@
         margin-right: 5px;
         color: #0B1B54;
     }
-}
 
-.create-form-type-toggle button {
+    button {
     font-size: 13px;
     font-weight: 600;
     padding: 5px;
@@ -132,10 +131,11 @@
     width: 90px;
 }
 
-.create-form-type-toggle button.active {
+button.active {
     background-color: #FF7655;
     padding: 5px;
     color: #FFF6F4;
+}
 }
 
 
@@ -196,9 +196,8 @@
     align-items: center;
     gap: 6px;
     width: 40%;
-}
 
-.create-form-choice input {
+    input {
     flex: 1;
     padding: 8px 10px;
     border-radius: 50px;
@@ -210,12 +209,12 @@
     font-weight: 600;
 }
 
-.create-form-choice input::placeholder {
+input::placeholder {
     opacity: 0.6;
     color: #0B1B54;
 }
 
-.create-form-choice img {
+img {
     width: 20px;
     background-color: transparent;
     border: none;
@@ -227,10 +226,10 @@
 
 }
 
-.create-form-choice button:hover {
+button:hover {
     background-color: #FF7655;
 }
-
+}
 
 .create-form-add-option {
     display: flex;
