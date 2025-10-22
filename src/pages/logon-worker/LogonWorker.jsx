@@ -203,7 +203,7 @@ function LogonWorker() {
     console.log("Funcionário criado:", worker);
     showSnackbar(
       "Funcionário criado",
-      "Funcionário criado com sucesso!",
+      `Funcionário criado com sucesso! A senha padrão da sua empresa é: ${generateDefaultPassword()}`,
       "success"
     );
   };
