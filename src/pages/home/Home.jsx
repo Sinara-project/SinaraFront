@@ -13,6 +13,23 @@ function Home() {
 
   const registeredReports = 30;
   const lastResponse = "João Batista";
+
+  const notifications = [
+    {
+      _id: 1,
+      data: new Date(2025, 9, 12, 13, 40),
+      mensagem: "O(a) operário(a) João Batista respondeu um formulário!",
+      tipo: "Operário",
+      categoria: "Formulário respondido",
+    },
+    {
+      _id: 2,
+      data: new Date(2025, 9, 12, 13, 40),
+      mensagem: "O(a) operário(a) Lucas Silvestre registrou um relatório!",
+      tipo: "Operário",
+      categoria: "Formulário registrado",
+    },
+  ];
   
   const [notificationsVisibility, setNotifications] = useState(false);
 
@@ -26,7 +43,7 @@ function Home() {
 
   return (
     <section className="home-section">
-      <Notifications isVisible={notificationsVisibility} closeNotifications={closeNotifications} />
+      <Notifications isVisible={notificationsVisibility} closeNotifications={closeNotifications} notifications={notifications} />
       <div className="home-content">
         <section className="home-pone">
           <div className="home-pone-content">

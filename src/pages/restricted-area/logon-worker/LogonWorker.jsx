@@ -1,9 +1,9 @@
 import "./LogonWorker.css";
 import { use, useEffect, useState } from "react";
-import Snackbar from "../../components/snackbar/Snackbar";
-import ReturnArrow from "../../components/return-arrow/ReturnArrow";
-import Enter from "../../assets/enter-blue.svg";
-import DataDropdown from "../../components/data-dropdown/DataDropdown";
+import Snackbar from "../../../components/snackbar/Snackbar";
+import ReturnArrow from "../../../components/return-arrow/ReturnArrow";
+import Enter from "../../../assets/enter-blue.svg";
+import DataDropdown from "../../../components/data-dropdown/DataDropdown";
 
 function LogonWorker() {
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));

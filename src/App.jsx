@@ -10,6 +10,23 @@ function App() {
 
   const user = localStorage.getItem("user");
 
+  const notifications = [
+    {
+      _id: 1,
+      data: new Date(2025, 9, 12, 13, 40),
+      mensagem: "O(a) operário(a) João Batista respondeu um formulário!",
+      tipo: "Operário",
+      categoria: "Formulário respondido",
+    },
+    {
+      _id: 2,
+      data: new Date(2025, 9, 12, 13, 40),
+      mensagem: "O(a) operário(a) Lucas Silvestre registrou um relatório!",
+      tipo: "Operário",
+      categoria: "Formulário registrado",
+    },
+  ];
+
   const testSidebar = () => {
     const endpoints = [
       '/splash',
@@ -36,7 +53,7 @@ function App() {
 
   return (
     <>
-      <Notifications isVisible={notificationsVisibility} closeHistory={closeNotifications} />
+      <Notifications isVisible={notificationsVisibility} closeNotifications={closeNotifications} notifications={notifications} />
       { testSidebar() && (<Sidebar openNotifications={openNotifications} />) }
       <Outlet/>
     </>

@@ -58,7 +58,7 @@
     }
 }
 
-.data-dropdown-content {
+.data-dropdown-content.has-close {
     margin-top: 60px;
 }
 

@@ -1,4 +1,4 @@
-.logon-worker-section {
+.edit-worker-section {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -7,7 +7,7 @@
     background-color: #FFF6F4;
 }
 
-.logon-worker-datadropdown-container {
+.edit-worker-permsdropdown-container {
     margin-right: calc(-25% - 40px);
     position: relative;
     width: 25%;
@@ -15,7 +15,16 @@
     margin-top: -509px;
 }
 
-.logon-worker-container {
+.edit-worker-vacationdropdown-container {
+    position: relative;
+    width: 360px;
+    margin-left: -400px;
+    margin-top: 40px;
+    transform: translateX(450.5px);
+    z-index: 5;
+}
+
+.edit-worker-container {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -37,7 +46,7 @@
     }
 }
 
-.logon-worker-text-group {
+.edit-worker-text-group {
     width: 90%;
     display: flex;
     flex-direction: column;
@@ -47,14 +56,14 @@
     margin-bottom: 5px;
 }
 
-.logon-worker-form {
+.edit-worker-form {
     width: 90%;
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-.logon-worker-navigate-code {
+.edit-worker-navigate-code {
     background-color: #FF7655;
     height: 45px;
     border: none;
@@ -68,12 +77,12 @@
     text-decoration: none;
 }
 
-.logon-worker-navigate-code:hover {
+.edit-worker-navigate-code:hover {
     background-color: #384994;
     color: #F5F5F5
 }
 
-.logon-worker-input {
+.edit-worker-input {
     height: 47px;
     width: 100%;
     background-color: #DDE6FB;
@@ -82,20 +91,20 @@
     border-radius: 12px;
     color: #0B1B54;
     padding-left: 10px;
+    font-size: 14px;
     box-sizing: border-box;
 }
 
-.logon-worker-input::placeholder {
+.edit-worker-input::placeholder {
     color: #0B1B54;
-    font-size: 14px;
     opacity: 0.7;
 }
 
-.logon-worker-input:focus {
+.edit-worker-input:focus {
     outline: none;
 }
 
-.logon-worker-select-perms {
+.edit-worker-select-perms {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -106,10 +115,12 @@
     color: #0B1B54;
     font-size: 14px;
     border-radius: 12px;
+    padding-left: 10px;
 
     h4 {
         opacity: 0.7;
         font-weight: 400;
+        font-size: 14px;
     }
 
     img {
@@ -117,13 +128,13 @@
     }
 }
 
-.logon-worker-navigate-login {
+.edit-worker-navigate-login {
     color: #F5F5F5;
     margin-top: 10px;
     cursor: pointer;
 }
 
-.logon-worker-input-group {
+.edit-worker-input-group {
     width: 100%;
     display: grid;
     grid-template-columns: 1fr 1fr;

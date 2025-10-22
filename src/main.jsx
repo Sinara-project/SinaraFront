@@ -20,8 +20,10 @@ import Settings from './pages/edit/settings/Settings.jsx';
 import EditData from './pages/edit/editData/EditData.jsx';
 import RestrictedAreaEnter from './pages/restricted-area/enter/RestrictedAreaEnter.jsx';
 import RestrictedAreaMenu from './pages/restricted-area/menu/RestrictedAreaMenu.jsx';
-import PermissionsMenu from './pages/restricted-area/permissions/menu/PermissionsMenu.jsx';
-import LogonWorker from './pages/logon-worker/LogonWorker.jsx';
+import Permissions from './pages/restricted-area/permissions/Permissions.jsx';
+import Workers from './pages/restricted-area/workers/Workers.jsx';
+import LogonWorker from './pages/restricted-area/logon-worker/LogonWorker.jsx';
+import EditWorker from './pages/restricted-area/edit-worker/EditWorker.jsx';
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
@@ -45,8 +47,10 @@ createRoot(document.getElementById('root')).render(
         <Route path='editar' element={<EditData/>} />
         <Route path='entrar-area-restrita' element={<RestrictedAreaEnter />} />
         <Route path='menu-area-restrita' element={<RestrictedAreaMenu />} />
-        <Route path='menu-permissoes' element={<PermissionsMenu />} />
+        <Route path='permissoes' element={<Permissions />} />
+        <Route path='operarios' element={<Workers />} />
         <Route path='cadastrar-operario' element={<LogonWorker />} />
+        <Route path='editar-operario' element={<EditWorker />} />
       </Route>
     </Routes>
   </BrowserRouter>
