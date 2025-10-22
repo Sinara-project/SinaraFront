@@ -1,0 +1,90 @@
+.data-dropdown-section {
+    position: absolute;
+    top: 40px;
+    background-color: #BFD4E3;
+    width: 100%;
+    border-radius: 20px;
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 1;
+    pointer-events: none;
+    max-height: 380px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+
+    label {
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        height: 40px;
+        padding: 10px 20px;
+        transition: all 0.3s ease;
+
+        h4 {
+            font-size: 15px;
+            font-weight: 600;
+            color: #0B1B54;
+        }
+    }
+
+    label:hover {
+        background-color: #8594D4;
+    }
+
+    hr {
+        transform: translateX(-26px);
+        border: 1px solid #0B1B54;
+        width: 100%;
+        padding-left: 50px;
+    }
+}
+
+.data-dropdown-close {
+    position: absolute;
+    width: 100%;
+    height: 40px;
+    padding-left: 20px;
+    padding-top: 20px;
+    div {
+        cursor: pointer;
+        mask: url("../../assets/return-arrow.svg");
+        mask-size: contain;
+        mask-repeat: no-repeat;
+        background-color: #0B1B54;
+        width: 20px;
+        height: 20px;
+    }
+}
+
+.data-dropdown-content {
+    margin-top: 60px;
+}
+
+.data-dropdown-section.active {
+    pointer-events: all;
+    opacity: 1;
+}
+
+.data-dropdown-checkbox {
+    display: none;
+}
+
+.data-dropdown-checkbox-icon {
+    mask: url("../../assets/unchecked-white.svg");
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    background-color: #0B1B54;
+    width: 17px;
+    height: 17px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    transition: all 0.1s ease;
+}
+
+.data-dropdown-checkbox:checked + .data-dropdown-checkbox-icon {
+    mask: url("../../assets/checked-white.svg");
+    mask-size: contain;
+    background-color: #0B1B54;
+}

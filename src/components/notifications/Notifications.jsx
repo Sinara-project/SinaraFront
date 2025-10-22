@@ -1,8 +1,8 @@
-import "./History.css";
+import "./Notifications.css";
 import Register from "../../assets/register.svg";
 import Answer from "../../assets/sucs1.svg";
 
-function History({ isVisible, closeHistory }) {
+function Notifications({ isVisible, closeNotifications }) {
   const data = [
     {
       worker: "Lucas Silveira",
@@ -37,20 +37,20 @@ function History({ isVisible, closeHistory }) {
   ];
 
   const close = () => {
-    closeHistory();
+    closeNotifications();
   };
 
   return (
     <section
-      className={`history-section ${isVisible ? "active" : ""}`}
+      className={`notification-section ${isVisible ? "active" : ""}`}
       onClick={close}
     >
-      <div className={`history-content ${isVisible ? "active" : ""}`}>
+      <div className={`notification-content ${isVisible ? "active" : ""}`}>
         {data.map((usage, index) => {
           return usage.action === "register" ? (
             <div
               key={index}
-              className="history-card"
+              className="notification-card"
             >
               <h2>Relatório registrado!</h2>
               <h4>
@@ -66,7 +66,7 @@ function History({ isVisible, closeHistory }) {
               </div>
             </div>
           ) : (
-            <div key={index} className="history-card">
+            <div key={index} className="notification-card">
               <h2>Formulário respondido!</h2>
               <h4>
                 O(a) operário(a) <strong>{usage.worker}</strong> respondeu o seu formulário{" "}
@@ -88,4 +88,4 @@ function History({ isVisible, closeHistory }) {
   );
 }
 
-export default History;
+export default Notifications;

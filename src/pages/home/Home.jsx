@@ -3,9 +3,9 @@ import "./Home.css";
 import ETAImage from "../../assets/eta-image.png";
 import Dashboards from "../../assets/dashboards.svg";
 import Sheet from "../../assets/sheet.svg";
-import HistoryIcon from "../../assets/clock.svg";
+import Notification from "../../assets/notification.svg";
+import Notifications from "../../components/notifications/Notifications";
 import { useNavigate } from "react-router-dom";
-import History from "../../components/history/History";
 import { useState } from "react";
 
 function Home() {
@@ -14,19 +14,19 @@ function Home() {
   const registeredReports = 30;
   const lastResponse = "João Batista";
   
-  const [historyVisibility, setHistory] = useState(false);
+  const [notificationsVisibility, setNotifications] = useState(false);
 
-  const openHistory = () => {
-    setHistory(true);
+  const openNotifications = () => {
+    setNotifications(true);
   }
 
-  const closeHistory = () => {
-    setHistory(false);
+  const closeNotifications = () => {
+    setNotifications(false);
   }
 
   return (
     <section className="home-section">
-      <History isVisible={historyVisibility} closeHistory={closeHistory} />
+      <Notifications isVisible={notificationsVisibility} closeNotifications={closeNotifications} />
       <div className="home-content">
         <section className="home-pone">
           <div className="home-pone-content">
@@ -72,9 +72,9 @@ function Home() {
               />
               <h3 className="home-option-text">Abrir planilhas</h3>
             </div>
-            <div className="home-option" onClick={openHistory}>
+            <div className="home-option" onClick={openNotifications}>
               <img
-                src={HistoryIcon}
+                src={Notification}
                 alt="Imagem de histórico/relógio"
                 className="home-option-img"
               />

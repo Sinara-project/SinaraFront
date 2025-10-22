@@ -3,7 +3,7 @@ import Logo from "../../assets/logo-transparent.svg";
 import Home from "../../assets/home.svg";
 import Dashboard from "../../assets/dashboards.svg";
 import Sheet from "../../assets/sheet.svg";
-import Clock from "../../assets/clock.svg";
+import Notification from "../../assets/notification.svg";
 import Create from "../../assets/create.svg";
 import Worker from "../../assets/worker.svg";
 import User from "../../assets/user.svg";
@@ -11,12 +11,12 @@ import Config from "../../assets/config.svg";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-function Sidebar({ openHistory }) {
+function Sidebar({ openNotifications }) {
   const navigate = useNavigate();
   const [extended, setExtend] = useState(false);
 
-  const history = () => {
-    openHistory();
+  const notifications = () => {
+    openNotifications();
   };
 
   return (
@@ -64,12 +64,12 @@ function Sidebar({ openHistory }) {
         </span>
         <span
           className={`sidebar-option ${extended ? "extended" : ""}`}
-          onClick={history}
+          onClick={notifications}
         >
           <p className={`sidebar-text ${extended ? "extended" : ""}`}>
-            Abrir histórico
+            Abrir notificações
           </p>
-          <img src={Clock} alt="" className="sidebar-icon" />
+          <img src={Notification} alt="" className="sidebar-icon" />
         </span>
         <span
           className={`sidebar-option ${extended ? "extended" : ""}`}
