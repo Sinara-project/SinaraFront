@@ -250,9 +250,8 @@ function LogonWorker() {
           </span>
           <input
             className={`logon-worker-input`}
-            type="password"
+            type="text"
             placeholder="Nome"
-            id="text"
             onChange={(e) => {
               setName(e.target.value);
             }}

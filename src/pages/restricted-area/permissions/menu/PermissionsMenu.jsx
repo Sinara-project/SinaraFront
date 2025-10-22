@@ -40,6 +40,7 @@ function PermissionsMenu() {
       id: 1,
       nome: "João Batista",
       // Supondo que há query pra isso
+      setor: "Abatimento",
       ultimo_ponto: {
         horario_saida: new Date(2025, 9, 21, 18, 30),
       },
@@ -47,12 +48,14 @@ function PermissionsMenu() {
     {
       id: 2,
       nome: "Júlia Ramos",
+      setor: "Tratamento de água",
       ultimo_ponto: {
         horario_saida: new Date(2025, 9, 21, 19, 0),
       },
     },
     {
       id: 3,
+      setor: "Tratamento de água",
       nome: "Rodrigo Soares",
       ultimo_ponto: {
         horario_saida: new Date(2025, 9, 21, 20, 30),
@@ -140,6 +143,7 @@ function PermissionsMenu() {
                       <div>
                         <span>
                           <h3>{func.nome}</h3>
+                          <p>Setor: {func.setor}</p>
                           <p>
                             Último turno:{" "}
                             {func.ultimo_ponto.horario_saida
