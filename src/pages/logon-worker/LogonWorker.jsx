@@ -185,7 +185,6 @@ function LogonWorker() {
       ferias: false,
       ativo: true,
       senha: generateDefaultPassword(),
-      permissoes: selectedPerms,
     };
 
     // criarFuncionario(worker) => {
@@ -194,9 +193,9 @@ function LogonWorker() {
       id: 1,
     };
 
-    selectedPerms.forEach((perm) => {
+    selectedPerms.forEach((id) => {
       // salvarFuncionarioNaPermissao(funcionario.id)
-      console.log(`A permissão ${perm.id} recebeu o id do funcionário!`);
+      console.log(`A permissão ${id} recebeu o id do funcionário!`);
     });
     // }
     // }
