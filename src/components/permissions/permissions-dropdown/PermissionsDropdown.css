@@ -8,9 +8,11 @@
     transition: all 0.3s ease;
     z-index: 1;
     pointer-events: none;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: scroll;
 
     label {
+        cursor: pointer;
         display: flex;
         justify-content: space-between;
         align-items: center;

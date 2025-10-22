@@ -27,7 +27,7 @@ function RestrictedAreaMenu() {
               <img src={Info} alt="" />
               <h4>Visualizar permissões</h4>
             </button>
-            <button>
+            <button onClick={() => {navigate("/cadastrar-operario")}}>
               <img src={Worker} alt="" />
               <h4>Cadastrar novo operário</h4>
             </button>

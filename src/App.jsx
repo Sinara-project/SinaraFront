@@ -2,7 +2,7 @@ import './App.css'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import Sidebar from './components/sidebar/Sidebar';
-import History from './components/history/History';
+import Notifications from './components/notifications/Notifications';
 
 function App() {
   const location = useLocation();
@@ -18,16 +18,16 @@ function App() {
     return user && !endpoints.includes(location.pathname);
   }
 
-  const [historyVisibility, setHistory] = useState(false);
+  const [notificationsVisibility, setNotifications] = useState(false);
 
-  const openHistory = () => {
-    console.log(historyVisibility);
+  const openNotifications = () => {
+    console.log(notificationsVisibility);
     
-    setHistory(true);
+    setNotifications(true);
   }
 
-  const closeHistory = () => {
-    setHistory(false);
+  const closeNotifications = () => {
+    setNotifications(false);
   }
 
   useEffect(() => {
@@ -36,8 +36,8 @@ function App() {
 
   return (
     <>
-      <History isVisible={historyVisibility} closeHistory={closeHistory} />
-      { testSidebar() && (<Sidebar openHistory={openHistory} />) }
+      <Notifications isVisible={notificationsVisibility} closeHistory={closeNotifications} />
+      { testSidebar() && (<Sidebar openNotifications={openNotifications} />) }
       <Outlet/>
     </>
   )
