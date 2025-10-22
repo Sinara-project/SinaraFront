@@ -5,7 +5,7 @@ import CloseRose from "../../assets/close-rose.svg";
 import Add from "../../assets/create.svg";
 import Dropdown from "../../assets/dropdown.svg";
 import Snackbar from "../../components/snackbar/Snackbar";
-import PermissionsDropdown from "../../components/permissions-dropdown/PermissionsDropdown";
+import PermissionsDropdown from "../../components/permissions/permissions-dropdown/PermissionsDropdown";
 
 function CreateForm() {
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));

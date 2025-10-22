@@ -3,8 +3,11 @@ import Info from "../../../assets/info.svg";
 import Worker from "../../../assets/worker.svg";
 import History from "../../../assets/clock.svg";
 import Management from "../../../assets/management.svg";
+import { useNavigate } from "react-router-dom";
 
 function RestrictedAreaMenu() {
+    const navigate = useNavigate();
+
   const registeredWorkers = 8;
   const lastResponse = "Júlia Ramos";
 
@@ -20,7 +23,7 @@ function RestrictedAreaMenu() {
             <h3>Operários registrados</h3>
           </div>
           <div className={`${classPrefix}-horizontal`}>
-            <button>
+            <button onClick={() => {navigate("/menu-permissoes")}}>
               <img src={Info} alt="" />
               <h4>Visualizar permissões</h4>
             </button>
