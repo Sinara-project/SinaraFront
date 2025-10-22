@@ -3,6 +3,8 @@ import { useState } from "react";
 import Snackbar from "../../snackbar/Snackbar";
 
 function CreatePermission({ isVisible, closeCard }) {
+    const [permName, setPermName] = useState();
+
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   const [snackbar, setSnackbar] = useState({
     title: "",
@@ -17,17 +19,17 @@ function CreatePermission({ isVisible, closeCard }) {
     setSnackbar((prev) => ({ ...prev, visible: false }));
   };
 
-  const createPerm = (name) => {
+  const createPerm = () => {
     // criarPermissão(name)
 
-    if (!name) {
+    if (!permName) {
       showSnackbar("Erro", "A permissão deve ter um nome", "error");
       return;
     }
 
     showSnackbar(
       "Permissão criada",
-      "A permissão foi criada com sucesso!",
+      `A permissão ${permName} foi criada com sucesso!`,
       "success"
     );
   };
@@ -43,7 +45,7 @@ function CreatePermission({ isVisible, closeCard }) {
       />
       <div className={`create-permission-card ${isVisible ? "active" : ""}`}>
         <h1>Crie uma permissão</h1>
-        <input type="text" placeholder="Nome da permissão" />
+        <input type="text" placeholder="Nome da permissão" onChange={(e) => { setPermName(e.target.value) }} />
         <span>
           <button
             className="create-permission-cancel"
@@ -56,7 +58,7 @@ function CreatePermission({ isVisible, closeCard }) {
           <button
             className="create-permission-create"
             onClick={(e) => {
-              createPerm(e.target.value);
+              createPerm();
             }}
           >
             <h2>Criar permissão</h2>
