@@ -1,0 +1,104 @@
+.create-permission-section {
+    opacity: 0;
+    pointer-events: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    z-index: 5;
+    background-color: rgb(0, 0, 0, 0.4);
+    width: 100vw;
+    height: 100vh;
+    transition: all 0.3s ease;
+}
+
+.create-permission-section.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.create-permission-card {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: column;
+    background-color: #FFF6F4;
+    width: 25vw;
+    height: 25vw;
+    margin-left: 65px;
+    border-radius: 20px;
+    transition: all 0.5s ease;
+    opacity: 0;
+
+    h1 {
+        color: #FF7655;
+        font-size: 22px;
+        font-weight: 800;
+        transition: all 0.5s ease;
+    }
+
+    input {
+        width: 60%;
+        color: #0B1B54;
+
+        border-radius: 50px;
+        border: none;
+        padding: 10px;
+        background-color: #BFD4E3;
+    }
+
+    input::placeholder {
+        color: #8193B1;
+    }
+
+    input:focus {
+        outline: none;
+    }
+
+    span {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 35px;
+        transition: all 0.3s ease;
+        border-radius: 50px;
+
+        h2 {
+            font-size: 15px;
+        }
+    }
+}
+
+.create-permission-card.active {
+    opacity: 1;
+}
+
+.create-permission-cancel {
+    background-color: transparent;
+    border: 2px solid #FF7655;
+    color: #FF7655;
+}
+
+.create-permission-cancel:hover {
+    background-color: #FF7655;
+    color: #FFF6F4;
+    border: 2px solid #FF7655;
+}
+
+.create-permission-create {
+    background-color: #0B1B54;
+    border: 2px solid #0B1B54;
+}
+
+.create-permission-create:hover {
+    background-color: #384994;
+    border: 2px solid #384994;
+}

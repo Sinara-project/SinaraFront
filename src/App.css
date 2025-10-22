@@ -4,6 +4,11 @@
   margin: 0;
   padding: 0;
   user-select: none;
+  scrollbar-width: 0;
+}
+
+::-webkit-scrollbar {
+  display: none;
 }
 
 body {

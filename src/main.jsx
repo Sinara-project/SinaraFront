@@ -20,6 +20,7 @@ import Settings from './pages/edit/settings/Settings.jsx';
 import EditData from './pages/edit/editData/EditData.jsx';
 import RestrictedAreaEnter from './pages/restricted-area/enter/RestrictedAreaEnter.jsx';
 import RestrictedAreaMenu from './pages/restricted-area/menu/RestrictedAreaMenu.jsx';
+import PermissionsMenu from './pages/restricted-area/permissions/menu/PermissionsMenu.jsx';
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
@@ -43,6 +44,7 @@ createRoot(document.getElementById('root')).render(
         <Route path='editar' element={<EditData/>} />
         <Route path='entrar-area-restrita' element={<RestrictedAreaEnter />} />
         <Route path='menu-area-restrita' element={<RestrictedAreaMenu />} />
+        <Route path='menu-permissoes' element={<PermissionsMenu />} />
       </Route>
     </Routes>
   </BrowserRouter>
