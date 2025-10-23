@@ -24,6 +24,8 @@ import Permissions from './pages/restricted-area/permissions/Permissions.jsx';
 import Workers from './pages/restricted-area/workers/Workers.jsx';
 import LogonWorker from './pages/restricted-area/logon-worker/LogonWorker.jsx';
 import EditWorker from './pages/restricted-area/edit-worker/EditWorker.jsx';
+import PointMenu from './pages/restricted-area/points/point-menu/PointMenu.jsx';
+import PointWorker from './pages/restricted-area/points/point-worker/PointWorker.jsx';
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
@@ -51,6 +53,8 @@ createRoot(document.getElementById('root')).render(
         <Route path='operarios' element={<Workers />} />
         <Route path='cadastrar-operario' element={<LogonWorker />} />
         <Route path='editar-operario' element={<EditWorker />} />
+        <Route path='visualizar-pontos' element={<PointMenu/>} />
+        <Route path='visualizar-pontos/:workerID' element={<PointWorker/>} />
       </Route>
     </Routes>
   </BrowserRouter>

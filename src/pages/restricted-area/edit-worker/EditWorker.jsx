@@ -94,18 +94,28 @@ function EditWorker() {
   };
 
   const togglePerm = (permId) => {
-    if (selectedPerms.includes(permId)) {
-      selectPerms((prev) => prev.filter((item) => item !== permId));
-    } else {
-      selectPerms((prev) => [...prev, permId]);
-    }
+    const newSelected = selectedPerms.includes(permId)
+      ? selectedPerms.filter((id) => id !== permId)
+      : [...selectedPerms, permId];
+    selectPerms(newSelected);
 
-    console.log(selectedPerms);
+    setAdaptedPerms((prev) =>
+      prev.map((perm) => ({
+        ...perm,
+        isChecked: newSelected.includes(perm.value),
+      }))
+    );
   };
 
   const toggleVacation = (value) => {
     setVacation(value);
-  }
+    setAdaptedVacation((prev) =>
+      prev.map((item) => ({
+        ...item,
+        isChecked: item.value === value,
+      }))
+    );
+  };
 
   const showSnackbar = async (title, message, type) => {
     setSnackbar({ title, message, type, visible: true });
@@ -123,31 +133,31 @@ function EditWorker() {
 
     const newPerms = [];
     permsBD.forEach((perm) => {
-        let checked = false;
-        if (perm.id_funcionario.includes(worker.id)) {
-            checked = true;
-        }
+      let checked = false;
+      if (perm.id_funcionario.includes(worker.id)) {
+        checked = true;
+      }
       const data = {
         name: perm.nome_permissao,
         value: perm.id,
-        isChecked: checked
+        isChecked: checked,
       };
 
       newPerms.push(data);
     });
 
     const newVacation = [
-        {
-            name: "Férias",
-            value: true,
-            isChecked: worker.ferias
-        },
-        {
-            name: "Sem férias",
-            value: false,
-            isChecked: !worker.ferias
-        }
-    ]
+      {
+        name: "Férias",
+        value: true,
+        isChecked: worker.ferias,
+      },
+      {
+        name: "Sem férias",
+        value: false,
+        isChecked: !worker.ferias,
+      },
+    ];
 
     setAdaptedPerms(newPerms);
     setAdaptedVacation(newVacation);
@@ -249,15 +259,15 @@ function EditWorker() {
 
   return (
     <section className="edit-worker-section">
-        <div className="edit-worker-vacationdropdown-container">
-          <DataDropdown
-            isVisible={vacationDropdown}
-            datas={adaptedVacation}
-            toggleValue={toggleVacation}
-            closeCard={() => {
-                setVacationDropdown(!vacationDropdown);
-            }}
-          />
+      <div className="edit-worker-vacationdropdown-container">
+        <DataDropdown
+          isVisible={vacationDropdown}
+          datas={adaptedVacation}
+          toggleValue={toggleVacation}
+          closeCard={() => {
+            setVacationDropdown(!vacationDropdown);
+          }}
+        />
       </div>
       <ReturnArrow lastEndpoint={"/operarios"} sidebar={true} />
       <Snackbar
@@ -273,20 +283,20 @@ function EditWorker() {
         </span>
         <form className="edit-worker-form">
           <span className="edit-worker-input-group">
-              <input
-                className={`edit-worker-input`}
-                type="text"
-                placeholder="Nome"
-                id="text"
-                value={name}
-              />
-              <input
-                className={`edit-worker-input`}
-                type="text"
-                placeholder="Setor"
-                id="text"
-                value={setor}
-              />
+            <input
+              className={`edit-worker-input`}
+              type="text"
+              placeholder="Nome"
+              id="text"
+              value={name}
+            />
+            <input
+              className={`edit-worker-input`}
+              type="text"
+              placeholder="Setor"
+              id="text"
+              value={setor}
+            />
           </span>
           <input
             className={`edit-worker-input`}
@@ -300,9 +310,13 @@ function EditWorker() {
             }}
             value={email}
           />
-          <button className={`edit-worker-select-perms`} type="button" onClick={() => {
-            setVacationDropdown(!vacationDropdown);
-        }}>
+          <button
+            className={`edit-worker-select-perms`}
+            type="button"
+            onClick={() => {
+              setVacationDropdown(!vacationDropdown);
+            }}
+          >
             <h4>Férias</h4>
             <img src={Dropdown} alt="" />
           </button>

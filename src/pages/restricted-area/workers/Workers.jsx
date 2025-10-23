@@ -116,7 +116,7 @@ function Workers() {
             />
           </div>
 
-          <button>
+          <button onClick={() => {navigate("/visualizar-pontos")}}>
             <h4>Registros de ponto</h4>
           </button>
         </div>

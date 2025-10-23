@@ -303,6 +303,7 @@ function LogonWorker() {
           closeCard={() => {
             setPermsDropdown(!permsDropdown);
           }}
+          hasCloseNav={true}
         />
       </div>
     </section>

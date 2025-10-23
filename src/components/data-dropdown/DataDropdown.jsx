@@ -19,7 +19,7 @@ function DataDropdown({
         </nav>
       )}
       <div className={`data-dropdown-content ${hasCloseNav ? "has-close" : ""}`}>
-        <hr />
+        <hr style={{opacity: hasCloseNav ? 1 : 0}}/>
         {datas.map((data, i) => (
           <div key={data.id ? data.id : i}>
             <label className="data-dropdown-choice">
