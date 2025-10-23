@@ -24,9 +24,8 @@ function EditWorker() {
 
   const { worker } = location.state;
 
-  const [cpf, setCpf] = useState("");
   const [name, setName] = useState("");
-  const [setor, setSetor] = useState("");
+  const [sector, setSector] = useState("");
   const [email, setEmail] = useState("");
   const [selectedPerms, selectPerms] = useState([]);
   const [vacation, setVacation] = useState();
@@ -54,19 +53,6 @@ function EditWorker() {
       id_funcionario: [2],
     },
   ];
-
-  const adjustCPF = (value) => {
-    const digits = (value || "").replace(/\D/g, "");
-
-    const limited = digits.slice(0, 11);
-
-    const formatted = limited
-      .replace(/^(\d{3})(\d)/, "$1.$2")
-      .replace(/^(\d{3})\.(\d{3})(\d)/, "$1.$2.$3")
-      .replace(/\.(\d{3})(\d{1,2})$/, ".$1-$2");
-
-    setCpf(formatted);
-  };
 
   const adjustWorkload = (value) => {
     if (!value) {
@@ -124,70 +110,51 @@ function EditWorker() {
   };
 
   useEffect(() => {
-    setName(worker.nome);
-    setSetor(worker.setor);
-    setEmail(worker.email);
-    setVacation(worker.ferias);
-    setWorkload(worker.horas_previstas);
-    adjustWorkload(worker.horas_previstas);
+  setName(worker.nome);
+  setSector(worker.setor);
+  setEmail(worker.email);
+  setVacation(worker.ferias);
+  setWorkload(worker.horas_previstas);
+  adjustWorkload(worker.horas_previstas);
 
-    const newPerms = [];
-    permsBD.forEach((perm) => {
-      let checked = false;
-      if (perm.id_funcionario.includes(worker.id)) {
-        checked = true;
-      }
-      const data = {
-        name: perm.nome_permissao,
-        value: perm.id,
-        isChecked: checked,
-      };
+  // montar adaptedPerms
+  const newPerms = permsBD.map((perm) => {
+    const isChecked = perm.id_funcionario.includes(worker.id);
+    return {
+      name: perm.nome_permissao,
+      value: perm.id,
+      isChecked,
+    };
+  });
 
-      newPerms.push(data);
-    });
+  const initialSelectedPerms = newPerms
+    .filter((perm) => perm.isChecked)
+    .map((perm) => perm.value);
 
-    const newVacation = [
-      {
-        name: "Férias",
-        value: true,
-        isChecked: worker.ferias,
-      },
-      {
-        name: "Sem férias",
-        value: false,
-        isChecked: !worker.ferias,
-      },
-    ];
+  setAdaptedPerms(newPerms);
+  selectPerms(initialSelectedPerms);
 
-    setAdaptedPerms(newPerms);
-    setAdaptedVacation(newVacation);
-    console.log(adaptedPerms);
-  }, []);
+  const newVacation = [
+    {
+      name: "Férias",
+      value: true,
+      isChecked: worker.ferias,
+    },
+    {
+      name: "Sem férias",
+      value: false,
+      isChecked: !worker.ferias,
+    },
+  ];
+  setAdaptedVacation(newVacation);
+}, []);
 
-  const generateDefaultPassword = () => {
-    const letters = "abcdefghijklmnopqrstuvwxyz";
-    const id = JSON.parse(localStorage.getItem("user")).id;
 
-    const l1 = letters[(id >> 0) % 26];
-    const l2 = letters[(id >> 5) % 26];
-    const l3 = letters[(id >> 10) % 26];
-
-    const digits = String(id % 1000).padStart(3, "0");
-
-    return `${l1}${l2}${l3}${digits}`;
-  };
-
-  const createWorker = () => {
-    const trueCpf = cpf.replace(/\D/g, "");
+  const editWorker = () => {
     const workerEmail = email.trim();
     const workerName = name.trim();
     const workerSector = sector.trim();
     const workerWorkload = parseInt(workload, 10);
-
-    if (!trueCpf || trueCpf.length !== 11) {
-      showSnackbar("Erro", "O CPF deve ter 11 caracteres", "error");
-      return;
-    }
 
     if (!workerName) {
       showSnackbar("Erro", "O nome é obrigatório", "error");
@@ -225,34 +192,22 @@ function EditWorker() {
     }
 
     const worker = {
-      cpf: trueCpf,
       nome: workerName,
       email: workerEmail,
       setor: workerSector,
-      id_empresa: JSON.parse(localStorage.getItem("user")).id,
       horas_previstas: workerWorkload,
-      ferias: false,
-      ativo: true,
-      senha: generateDefaultPassword(),
+      ferias: vacation,
     };
 
-    // criarFuncionario(worker) => {
+    // editarFuncionario(worker) => {
     // getFuncionarioPorCPF(cpf) => {
     const funcionario = {
       id: 1,
     };
 
-    selectedPerms.forEach((id) => {
-      // salvarFuncionarioNaPermissao(funcionario.id)
-      console.log(`A permissão ${id} recebeu o id do funcionário!`);
-    });
-    // }
-    // }
-
-    console.log("Funcionário criado:", worker);
     showSnackbar(
-      "Funcionário criado",
-      `Funcionário criado com sucesso! A senha padrão da sua empresa é: ${generateDefaultPassword()}`,
+      "Funcionário editado",
+      `Funcionário editado com sucesso!`,
       "success"
     );
   };
@@ -288,6 +243,7 @@ function EditWorker() {
               type="text"
               placeholder="Nome"
               id="text"
+              onChange={(e) => {setName(e.target.value)}}
               value={name}
             />
             <input
@@ -295,7 +251,8 @@ function EditWorker() {
               type="text"
               placeholder="Setor"
               id="text"
-              value={setor}
+              onChange={(e) => {setSector(e.target.value)}}
+              value={sector}
             />
           </span>
           <input
@@ -346,7 +303,7 @@ function EditWorker() {
           <button
             className="edit-worker-navigate-code"
             type="button"
-            onClick={createWorker}
+            onClick={editWorker}
           >
             Editar
           </button>
