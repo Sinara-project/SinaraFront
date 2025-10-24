@@ -99,3 +99,36 @@
     align-items: center;
     gap: 5px;
 }
+
+/* Responsividade */
+@media (max-width: 480px) {
+    .login-container {
+        width: 80%;
+        height: 290px;
+        padding: 20px 10px;
+        gap: 10px;
+    }
+
+    .login-input-group {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .login-navigate-code {
+        font-size: 14px;
+        height: 40px;
+    }
+
+    .login-navigate-logon {
+        font-size: 7px;
+    }
+
+    .login-text-group p {
+        text-align: start;
+        font-size: 14px;
+    }
+
+    .login-input {
+        height: 40px;
+    }
+}
