@@ -40,22 +40,20 @@ function PlanChoice() {
 
   const navigatePremiumChoice = () => {
     setPlan("premium");
-    const onLogon = JSON.parse(sessionStorage.getItem("onLogon"));
+    let onLogon = JSON.parse(sessionStorage.getItem("onLogon"));
     onLogon.plano_inicial = plan;
     onLogon.id_plano = 2;
-    // createEmpresa(coisas)
-    const id = 1;
+
     // getIdDeEmpresaPorCnpj(cnpj)
     onLogon = {
-      id: id,
       cnpj: onLogon.cnpj,
       email: onLogon.email,
       image: onLogon.imagem_url,
-      name: onLogon.nome
+      name: onLogon.nome,
+      firstPlan: plan
     }
     sessionStorage.setItem("onLogon", JSON.stringify(onLogon));
 
-    setPlan("premium");
     navigate("/pagamento");
   };
 

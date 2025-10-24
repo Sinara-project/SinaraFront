@@ -293,3 +293,105 @@
     background-color: #384994;
     color: #F5F5F5
 }
+
+/* Responsividade */
+@media (max-width: 900px) {
+    .payment-title {
+        width: 100%;
+        text-align: right;
+    }
+
+    .payment-container {
+        flex-direction: column;
+        gap: 20px;
+        height: auto;
+    }
+
+    .payment-input-group {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .payment-input {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .payment-inputs {
+        width: 100%;
+    }
+
+    .payment-infos {
+        width: 100%;
+        gap: 5px;
+        text-align: right;
+    }
+
+    .payment-info {
+        width: 100%;
+        h3 {
+            width: 100%;
+            text-align: right;
+        }
+    }
+
+    .payment-card {
+        padding: 15px;
+        width: 70%;
+        height: auto;
+    }
+
+    .payment-title {
+        font-size: 24px;
+        margin-bottom: 15px;
+    }
+
+    .payment-time-select {
+        width: 100%;
+    }
+
+    .payment-time-container {
+        width: 66%;
+    }
+
+    .payment-select-ptype {
+        width: 100%;
+    }
+
+    .payment-ptype-container {
+        width: 100%;
+    }
+}
+
+@media (max-width: 500px) {
+    .payment-title {
+        font-size: 20px;
+    }
+
+    .payment-info {
+        h3 {
+            font-size: 12px;
+        }
+    }
+
+    .payment-time-select, .payment-select-ptype {
+        h3 {
+            font-size: 12px;
+        }
+    }
+
+    .payment-regressive-time {
+        font-size: 20px;
+    }
+
+    .payment-time-toggle,
+    .payment-ptype-toggle {
+        font-size: 14px;
+    }
+}
+
+@media(max-width: 300px) {
+    .payment-title {
+        margin-bottom: 50px;
+    }
+}

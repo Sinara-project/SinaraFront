@@ -12,6 +12,7 @@
     flex-direction: column;
     margin-left: 65px;
     color: #FF7655;
+    box-sizing: border-box;
 
     h1 {
         font-size: 45px;
@@ -21,6 +22,7 @@
 }
 
 .sheets-options {
+    box-sizing: border-box;
     width: 80%;
 }
 
@@ -32,6 +34,7 @@
     padding: 10px 20px;
     transition: all 0.2s ease;
     cursor: pointer;
+    box-sizing: border-box;
 
     h2 {
         color: #0B1B54;
@@ -70,5 +73,45 @@
 
     .sheets-img {
         background-color: #FFF6F4;
+    }
+}
+
+/* Responsividade */
+
+@media (max-width: 700px) {
+
+
+    .sheets-option {
+        h2 {
+            font-size: 15px;
+        }
+
+        .sheets-img {
+            width: 18px;
+            height: 18px;
+            /* padding-left: 14px; */
+        }
+    }
+}
+
+@media (max-width: 430px) {
+    .sheets-option {
+        h2 {
+            font-size: 12px;
+        }
+
+        .sheets-img {
+            width: 15px;
+            height: 15px;
+            /* padding-left: 14px; */
+        }
+    }
+}
+
+@media (max-width: 400px) {
+    .sheets-content {
+        h1 {
+            font-size: 28px;
+        }
     }
 }
