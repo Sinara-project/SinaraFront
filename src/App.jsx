@@ -3,6 +3,7 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import Sidebar from './components/sidebar/Sidebar';
 import Notifications from './components/notifications/Notifications';
+import { getAllNotifications } from './services/Notifications/Notifications';
 
 function App() {
   const location = useLocation();
@@ -10,7 +11,9 @@ function App() {
 
   const user = localStorage.getItem("user");
 
-  const notifications = [
+  const [notificationLoading, setNotificationLoading] = useState(true);
+
+  const [notifications, setNotifications] = useState([
     {
       _id: 1,
       data: new Date(2025, 9, 12, 13, 40),
@@ -25,7 +28,7 @@ function App() {
       tipo: "Operário",
       categoria: "Formulário registrado",
     },
-  ];
+  ]);
 
   const testSidebar = () => {
     const endpoints = [
@@ -35,25 +38,36 @@ function App() {
     return user && !endpoints.includes(location.pathname);
   }
 
-  const [notificationsVisibility, setNotifications] = useState(false);
+  const [notificationsVisibility, setNotificationsVis] = useState(false);
 
   const openNotifications = () => {
-    console.log(notificationsVisibility);
-    
-    setNotifications(true);
+    setNotificationsVis(true);
   }
 
   const closeNotifications = () => {
-    setNotifications(false);
+    setNotificationsVis(false);
   }
 
   useEffect(() => {
     navigate("/splash");
+
+    async function getNotifications() {
+      try {
+        const data = await getAllNotifications();
+        setNotifications(data);
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setNotificationLoading(false);
+      }
+    } 
+
+    getNotifications();
   }, [])
 
   return (
     <>
-      <Notifications isVisible={notificationsVisibility} closeNotifications={closeNotifications} notifications={notifications} />
+      <Notifications isVisible={notificationsVisibility} closeNotifications={closeNotifications} notifications={notifications} isLoading={notificationLoading} />
       { testSidebar() && (<Sidebar openNotifications={openNotifications} />) }
       <Outlet/>
     </>
