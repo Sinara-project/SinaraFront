@@ -35,10 +35,10 @@ function Notifications({
                 <h2>{usage.categoria}</h2>
                 <h4>{usage.mensagem}</h4>
                 <div>
-                  {usage.categoria == "Formulário respondido" && (
+                  {usage.categoria == "Formulario respondido" && (
                     <img src={Answer} alt="" />
                   )}{" "}
-                  {usage.categoria == "Formulário registrado" && (
+                  {usage.categoria == "Formulario registrado" && (
                     <img src={Register} />
                   )}
                   {usage.tipo?.toLowerCase() == "abrir ponto" && (
@@ -48,9 +48,9 @@ function Notifications({
                     <img src={Stop} />
                   )}
                   <p>
-                    {usage.data.getDate()}/{usage.data.getMonth() + 1}/
-                    {usage.data.getFullYear()} - {usage.data.getHours()}:
-                    {usage.data.getMinutes().toString().padStart(2, "0")}
+                    {new Date(usage.data).getDate()}/{new Date(usage.data).getMonth() + 1}/
+                    {new Date(usage.data).getFullYear()} - {new Date(usage.data).getHours().toString().padStart(2, "0")}:
+                    {new Date(usage.data).getMinutes().toString().padStart(2, "0")}
                   </p>
                 </div>
               </div>
