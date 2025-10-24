@@ -1,0 +1,40 @@
+.splash-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+    background-color: #0B1B54;
+}
+
+.splash-content {
+    position: relative;
+    display: flex;
+    justify-content: start;
+    align-items: end;
+    width: 74px;
+    overflow: hidden;
+    transition: width 0.4s ease;
+    background-color: #0B1B54;
+}
+
+.splash-content.change {
+    width: 245px;
+}
+
+.splash-logo {
+    background-color: #0B1B54;
+    width: 74px;
+    transition: 0.4s ease;
+    z-index: 1;
+}
+
+.splash-text {
+    position: absolute;
+    right: 0;               
+    bottom: 0;              
+    height: 45.6px;
+    opacity: 1;
+    transition: all 0.4s ease;
+    z-index: 0;
+}

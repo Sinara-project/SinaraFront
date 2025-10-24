@@ -1,0 +1,63 @@
+.permissions-dropdown-section {
+    position: absolute;
+    top: 40px;
+    background-color: #0B1B54;
+    width: 40%;
+    border-radius: 20px;
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 1;
+    pointer-events: none;
+    overflow-x: hidden;
+    overflow-y: scroll;
+
+    label {
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        height: 40px;
+        padding: 10px 20px;
+        transition: all 0.3s ease;
+
+        h4 {
+            font-size: 15px;
+            font-weight: 600;
+        }
+    }
+
+    label:hover {
+        background-color: #384994;
+    }
+
+    hr {
+        transform: translateX(-26px);
+        border: 1px solid #F5F5F5;
+        width: 100%;
+        padding-left: 50px;
+    }
+}
+
+.permissions-dropdown-section.active {
+    pointer-events: all;
+    opacity: 1;
+}
+
+.permissions-dropdown-checkbox {
+    display: none;
+}
+
+.permissions-dropdown-checkbox-icon {
+    background-image: url("../../../assets/unchecked-white.svg");
+    width: 17px;
+    height: 17px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    transition: all 0.1s ease;
+}
+
+.permissions-dropdown-checkbox:checked+.permissions-dropdown-checkbox-icon {
+    background-image: url("../../../assets/checked-white.svg");
+
+}

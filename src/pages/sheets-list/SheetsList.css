@@ -1,0 +1,74 @@
+.sheets-section {
+    width: 100vw;
+    height: 100vh;
+    overflow-x: hidden;
+    background-color: #FFF6F4;
+}
+
+.sheets-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-left: 65px;
+    color: #FF7655;
+
+    h1 {
+        font-size: 45px;
+        margin-top: 60px;
+        margin-bottom: 60px;
+    }
+}
+
+.sheets-options {
+    width: 80%;
+}
+
+.sheets-option {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 10px 20px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+
+    h2 {
+        color: #0B1B54;
+    }
+
+    img {
+        width: 25px;
+    }
+}
+
+.sheets-img {
+    -webkit-mask: url("../../assets/enter-blue-arrow.svg") no-repeat center;
+    mask: url("../../assets/enter-blue-arrow.svg") no-repeat center;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+
+    background-color: #0B1B54;
+    width: 25px;
+    height: 25px;
+}
+
+.sheets-option.rose {
+    background-color: #FFC3BD;
+}
+
+.sheets-option.white {
+    background-color: transparent;
+}
+
+.sheets-option:hover {
+    background-color: #0B1B54;
+
+    h2 {
+        color: #FFF6F4;
+    }
+
+    .sheets-img {
+        background-color: #FFF6F4;
+    }
+}

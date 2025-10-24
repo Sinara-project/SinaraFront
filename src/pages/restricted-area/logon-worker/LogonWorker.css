@@ -1,0 +1,133 @@
+.logon-worker-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+    background-color: #FFF6F4;
+}
+
+.logon-worker-datadropdown-container {
+    margin-right: calc(-25% - 40px);
+    position: relative;
+    width: 25%;
+    margin-left: 40px;
+    margin-top: -509px;
+}
+
+.logon-worker-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-left: 65px;
+    background-color: #0B1B54;
+    border-radius: 15px;
+    padding: 25px 5px 25px 5px;
+    width: 400px;
+    height: 380px;
+
+    h1 {
+        color: #F5F5F5;
+        margin-bottom: 10px;
+    }
+
+    p {
+        color: #F5F5F5
+    }
+}
+
+.logon-worker-text-group {
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+    gap: 5px;
+    margin-bottom: 5px;
+}
+
+.logon-worker-form {
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.logon-worker-navigate-code {
+    background-color: #FF7655;
+    height: 45px;
+    border: none;
+    transition: 0.1s ease-in;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    color: #F5F5F5;
+    border-radius: 12px;
+    text-decoration: none;
+}
+
+.logon-worker-navigate-code:hover {
+    background-color: #384994;
+    color: #F5F5F5
+}
+
+.logon-worker-input {
+    height: 47px;
+    width: 100%;
+    background-color: #DDE6FB;
+    color: #F5F5F5;
+    border: none;
+    border-radius: 12px;
+    color: #0B1B54;
+    padding-left: 10px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+.logon-worker-input::placeholder {
+    color: #0B1B54;
+    opacity: 0.7;
+}
+
+.logon-worker-input:focus {
+    outline: none;
+}
+
+.logon-worker-select-perms {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 47px;
+    border: none;
+    background-color: #DDE6FB;
+    color: #0B1B54;
+    font-size: 14px;
+    border-radius: 12px;
+    padding-left: 10px;
+
+    h4 {
+        opacity: 0.7;
+        font-weight: 400;
+        font-size: 14px;
+    }
+
+    img {
+        width: 18px;
+    }
+}
+
+.logon-worker-navigate-login {
+    color: #F5F5F5;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.logon-worker-input-group {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5px;
+}
