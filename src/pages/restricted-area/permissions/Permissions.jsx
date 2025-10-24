@@ -1,12 +1,12 @@
-import "./PermissionsMenu.css";
-import Add from "../../../../assets/create.svg";
-import Search from "../../../../assets/search.svg";
-import ReturnArrow from "../../../../components/return-arrow/ReturnArrow";
+import "./Permissions.css";
+import Add from "../../../assets/create.svg";
+import Search from "../../../assets/search.svg";
+import ReturnArrow from "../../../components/return-arrow/ReturnArrow";
 import { useEffect, useState } from "react";
-import CreatePermission from "../../../../components/permissions/create-permission/CreatePermission";
-import PermissionAddWorker from "../../../../components/permissions/add-worker/PermissionAddWorker";
+import CreatePermission from "../../../components/permissions/create-permission/CreatePermission";
+import PermissionAddWorker from "../../../components/permissions/add-worker/PermissionAddWorker";
 
-function PermissionsMenu() {
+function Permissions() {
   const [selectedPerm, selectPerm] = useState();
   const [addWorker, setAdd] = useState(false);
   const [createPerm, setCreate] = useState(false);
@@ -83,7 +83,7 @@ function PermissionsMenu() {
   };
 
   return (
-    <section className="permissions-menu-section">
+    <section className="permissions-section">
       <CreatePermission
         isVisible={createPerm}
         closeCard={() => {
@@ -97,11 +97,11 @@ function PermissionsMenu() {
         }}
         perm={selectedPerm}
       />
-      <section className="permissions-menu-content">
+      <section className="permissions-content">
         <ReturnArrow lastEndpoint={"/menu-area-restrita"} sidebar={true} />
         <h1>Permissões</h1>
-        <div className="permissions-menu-one">
-          <div className="permissions-menu-searchbar">
+        <div className="permissions-one">
+          <div className="permissions-searchbar">
             <img src={Search} alt="" />
             <input
               type="text"
@@ -121,10 +121,10 @@ function PermissionsMenu() {
             <img src={Add} alt="" />
           </button>
         </div>
-        <div className="permissions-menu-container">
+        <div className="permissions-container">
           {perms.map((perm) => (
             <div>
-              <span className="permissions-menu-main-actions">
+              <span className="permissions-main-actions">
                 <h2>{perm.nome_permissao}</h2>
                 <button
                   onClick={() => {
@@ -139,7 +139,7 @@ function PermissionsMenu() {
               {funcionariosBD.map(
                 (func) =>
                   perm.id_funcionario.includes(func.id) && (
-                    <span className="permissions-menu-worker">
+                    <span className="permissions-worker">
                       <div>
                         <span>
                           <h3>{func.nome}</h3>
@@ -159,7 +159,7 @@ function PermissionsMenu() {
                               .padStart(2, "0")}
                           </p>
                         </span>
-                        <span className="permissions-menu-delete">
+                        <span className="permissions-delete">
                           <span alt="" />
                         </span>
                       </div>
@@ -175,4 +175,4 @@ function PermissionsMenu() {
   );
 }
 
-export default PermissionsMenu;
+export default Permissions;

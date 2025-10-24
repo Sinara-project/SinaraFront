@@ -1,11 +1,14 @@
-import "./LogonWorker.css";
+import "./EditWorker.css";
 import { use, useEffect, useState } from "react";
-import Snackbar from "../../components/snackbar/Snackbar";
-import ReturnArrow from "../../components/return-arrow/ReturnArrow";
-import Enter from "../../assets/enter-blue.svg";
-import DataDropdown from "../../components/data-dropdown/DataDropdown";
+import Snackbar from "../../../components/snackbar/Snackbar";
+import ReturnArrow from "../../../components/return-arrow/ReturnArrow";
+import Enter from "../../../assets/enter-blue.svg";
+import Dropdown from "../../../assets/dropdown-blue.svg";
+import DataDropdown from "../../../components/data-dropdown/DataDropdown";
+import { useLocation } from "react-router-dom";
 
-function LogonWorker() {
+function EditWorker() {
+  const location = useLocation();
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   const [snackbar, setSnackbar] = useState({
     title: "",
@@ -14,13 +17,18 @@ function LogonWorker() {
     visible: false,
   });
   const [permsDropdown, setPermsDropdown] = useState(false);
-  const [adaptedPerms, setAdaptedPerms] = useState([]);
+  const [vacationDropdown, setVacationDropdown] = useState(false);
 
-  const [cpf, setCpf] = useState("");
+  const [adaptedPerms, setAdaptedPerms] = useState([]);
+  const [adaptedVacation, setAdaptedVacation] = useState([]);
+
+  const { worker } = location.state;
+
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
   const [sector, setSector] = useState("");
+  const [email, setEmail] = useState("");
   const [selectedPerms, selectPerms] = useState([]);
+  const [vacation, setVacation] = useState();
   const [workload, setWorkload] = useState("");
 
   const [styleWorkload, setStyleWorkload] = useState("");
@@ -46,19 +54,6 @@ function LogonWorker() {
     },
   ];
 
-  const adjustCPF = (value) => {
-    const digits = (value || "").replace(/\D/g, "");
-
-    const limited = digits.slice(0, 11);
-
-    const formatted = limited
-      .replace(/^(\d{3})(\d)/, "$1.$2")
-      .replace(/^(\d{3})\.(\d{3})(\d)/, "$1.$2.$3")
-      .replace(/\.(\d{3})(\d{1,2})$/, ".$1-$2");
-
-    setCpf(formatted);
-  };
-
   const adjustWorkload = (value) => {
     if (!value) {
       setWorkload("");
@@ -66,14 +61,14 @@ function LogonWorker() {
       return;
     }
 
-    const digits = value.replace(/\D/g, "");
+    const digits = value.toString().replace(/\D/g, "");
 
     const limited = digits.slice(0, 3);
 
     setWorkload(limited);
 
     const isDeletingH =
-      value.endsWith("h") === false && styleWorkload.endsWith("h");
+      value.toString().endsWith("h") === false && styleWorkload.endsWith("h");
 
     if (isDeletingH) {
       setStyleWorkload(limited);
@@ -85,13 +80,27 @@ function LogonWorker() {
   };
 
   const togglePerm = (permId) => {
-    if (selectedPerms.includes(permId)) {
-      selectPerms((prev) => prev.filter((item) => item !== permId));
-    } else {
-      selectPerms((prev) => [...prev, permId]);
-    }
+    const newSelected = selectedPerms.includes(permId)
+      ? selectedPerms.filter((id) => id !== permId)
+      : [...selectedPerms, permId];
+    selectPerms(newSelected);
 
-    console.log(selectedPerms);
+    setAdaptedPerms((prev) =>
+      prev.map((perm) => ({
+        ...perm,
+        isChecked: newSelected.includes(perm.value),
+      }))
+    );
+  };
+
+  const toggleVacation = (value) => {
+    setVacation(value);
+    setAdaptedVacation((prev) =>
+      prev.map((item) => ({
+        ...item,
+        isChecked: item.value === value,
+      }))
+    );
   };
 
   const showSnackbar = async (title, message, type) => {
@@ -101,44 +110,51 @@ function LogonWorker() {
   };
 
   useEffect(() => {
-    const newPerms = [];
-    permsBD.forEach((perm) => {
-      const data = {
-        name: perm.nome_permissao,
-        value: perm.id,
-      };
+  setName(worker.nome);
+  setSector(worker.setor);
+  setEmail(worker.email);
+  setVacation(worker.ferias);
+  setWorkload(worker.horas_previstas);
+  adjustWorkload(worker.horas_previstas);
 
-      newPerms.push(data);
-    });
+  // montar adaptedPerms
+  const newPerms = permsBD.map((perm) => {
+    const isChecked = perm.id_funcionario.includes(worker.id);
+    return {
+      name: perm.nome_permissao,
+      value: perm.id,
+      isChecked,
+    };
+  });
 
-    setAdaptedPerms(newPerms);
-    console.log(adaptedPerms);
-  }, []);
+  const initialSelectedPerms = newPerms
+    .filter((perm) => perm.isChecked)
+    .map((perm) => perm.value);
 
-  const generateDefaultPassword = () => {
-    const letters = "abcdefghijklmnopqrstuvwxyz";
-    const id = JSON.parse(localStorage.getItem("user")).id;
+  setAdaptedPerms(newPerms);
+  selectPerms(initialSelectedPerms);
 
-    const l1 = letters[(id >> 0) % 26];
-    const l2 = letters[(id >> 5) % 26];
-    const l3 = letters[(id >> 10) % 26];
+  const newVacation = [
+    {
+      name: "Férias",
+      value: true,
+      isChecked: worker.ferias,
+    },
+    {
+      name: "Sem férias",
+      value: false,
+      isChecked: !worker.ferias,
+    },
+  ];
+  setAdaptedVacation(newVacation);
+}, []);
 
-    const digits = String(id % 1000).padStart(3, "0");
 
-    return `${l1}${l2}${l3}${digits}`;
-  };
-
-  const createWorker = () => {
-    const trueCpf = cpf.replace(/\D/g, "");
+  const editWorker = () => {
     const workerEmail = email.trim();
     const workerName = name.trim();
     const workerSector = sector.trim();
     const workerWorkload = parseInt(workload, 10);
-
-    if (!trueCpf || trueCpf.length !== 11) {
-      showSnackbar("Erro", "O CPF deve ter 11 caracteres", "error");
-      return;
-    }
 
     if (!workerName) {
       showSnackbar("Erro", "O nome é obrigatório", "error");
@@ -176,96 +192,94 @@ function LogonWorker() {
     }
 
     const worker = {
-      cpf: trueCpf,
       nome: workerName,
       email: workerEmail,
       setor: workerSector,
-      id_empresa: JSON.parse(localStorage.getItem("user")).id,
       horas_previstas: workerWorkload,
-      ferias: false,
-      ativo: true,
-      senha: generateDefaultPassword(),
+      ferias: vacation,
     };
 
-    // criarFuncionario(worker) => {
+    // editarFuncionario(worker) => {
     // getFuncionarioPorCPF(cpf) => {
     const funcionario = {
       id: 1,
     };
 
-    selectedPerms.forEach((id) => {
-      // salvarFuncionarioNaPermissao(funcionario.id)
-      console.log(`A permissão ${id} recebeu o id do funcionário!`);
-    });
-    // }
-    // }
-
-    console.log("Funcionário criado:", worker);
     showSnackbar(
-      "Funcionário criado",
-      `Funcionário criado com sucesso! A senha padrão da sua empresa é: ${generateDefaultPassword()}`,
+      "Funcionário editado",
+      `Funcionário editado com sucesso!`,
       "success"
     );
   };
 
   return (
-    <section className="logon-worker-section">
-      <ReturnArrow lastEndpoint={"/menu-area-restrita"} sidebar={true} />
+    <section className="edit-worker-section">
+      <div className="edit-worker-vacationdropdown-container">
+        <DataDropdown
+          isVisible={vacationDropdown}
+          datas={adaptedVacation}
+          toggleValue={toggleVacation}
+          closeCard={() => {
+            setVacationDropdown(!vacationDropdown);
+          }}
+        />
+      </div>
+      <ReturnArrow lastEndpoint={"/operarios"} sidebar={true} />
       <Snackbar
         type={snackbar.type}
         title={snackbar.title}
         message={snackbar.message}
         isVisible={snackbar.visible}
       />
-      <div className="logon-worker-container">
-        <span className="logon-worker-text-group">
-          <h1 className="logon-worker-h1">Faça um cadastro</h1>
-          <p>Faça o cadastro de um operário!</p>
+      <div className="edit-worker-container">
+        <span className="edit-worker-text-group">
+          <h1 className="edit-worker-h1">Editar operário</h1>
+          <p>Edite um operário!</p>
         </span>
-        <form className="logon-worker-form">
-          <span className="logon-worker-input-group">
+        <form className="edit-worker-form">
+          <span className="edit-worker-input-group">
             <input
-              className={`logon-worker-input`}
+              className={`edit-worker-input`}
               type="text"
-              placeholder="CPF"
-              value={cpf}
-              maxLength={14}
+              placeholder="Nome"
               id="text"
-              onChange={(e) => {
-                adjustCPF(e.target.value);
-              }}
+              onChange={(e) => {setName(e.target.value)}}
+              value={name}
             />
             <input
-              className={`logon-worker-input`}
+              className={`edit-worker-input`}
               type="text"
               placeholder="Setor"
-              minLength={2}
-              maxLength={50}
               id="text"
-              onChange={(e) => {
-                setSector(e.target.value);
-              }}
+              onChange={(e) => {setSector(e.target.value)}}
+              value={sector}
             />
           </span>
           <input
-            className={`logon-worker-input`}
+            className={`edit-worker-input`}
             type="text"
-            placeholder="Nome"
-            onChange={(e) => {
-              setName(e.target.value);
-            }}
-          />
-          <input
-            className={`logon-worker-input`}
-            type="email"
             placeholder="E-mail"
+            minLength={2}
+            maxLength={50}
+            id="text"
             onChange={(e) => {
               setEmail(e.target.value);
             }}
+            value={email}
           />
-          <span className="logon-worker-input-group">
+          <button
+            className={`edit-worker-select-perms`}
+            type="button"
+            onClick={() => {
+              setVacationDropdown(!vacationDropdown);
+            }}
+          >
+            <h4>Férias</h4>
+            <img src={Dropdown} alt="" />
+          </button>
+          <span className="edit-worker-input-group">
             <button
-              className={`logon-worker-select-perms`}
+              className={`edit-worker-select-perms`}
               type="button"
               onClick={() => {
                 setPermsDropdown(!permsDropdown);
@@ -275,7 +289,7 @@ function LogonWorker() {
               <img src={Enter} alt="" />
             </button>
             <input
-              className="logon-worker-input"
+              className="edit-worker-input"
               type="text"
               placeholder="Carga Horária"
               id="sector"
@@ -287,15 +301,15 @@ function LogonWorker() {
             />
           </span>
           <button
-            className="logon-worker-navigate-code"
+            className="edit-worker-navigate-code"
             type="button"
-            onClick={createWorker}
+            onClick={editWorker}
           >
-            Cadastrar
+            Editar
           </button>
         </form>
       </div>
-      <div className="logon-worker-datadropdown-container">
+      <div className="edit-worker-permsdropdown-container">
         <DataDropdown
           isVisible={permsDropdown}
           datas={adaptedPerms}
@@ -303,10 +317,11 @@ function LogonWorker() {
           closeCard={() => {
             setPermsDropdown(!permsDropdown);
           }}
+          hasCloseNav={true}
         />
       </div>
     </section>
   );
 }
 
-export default LogonWorker;
+export default EditWorker;

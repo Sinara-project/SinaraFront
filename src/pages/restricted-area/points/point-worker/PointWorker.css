@@ -1,0 +1,166 @@
+.point-worker-section {
+    width: 100vw;
+    height: 100vh;
+    box-sizing: border-box;
+}
+
+.point-worker-content {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin-left: 65px;
+    background-color: #FFF6F4;
+    min-height: 100%;
+
+    h1 {
+        font-size: 45px;
+        color: #FF7655;
+        margin-top: 60px;
+        margin-bottom: 60px;
+    }
+
+    button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        background-color: #0B1B54;
+        border: none;
+        transition: all 0.3s ease;
+        border-radius: 50px;
+        width: 210px;
+
+        h4 {
+            color: #F5F5F5;
+            font-size: 12px;
+        }
+
+        img {
+            width: 15px;
+        }
+    }
+
+    button:hover {
+        background-color: #384994;
+    }
+}
+
+.point-worker-one {
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    flex-direction: column;
+    gap: 20px;
+    width: 65%;
+    margin-bottom: 20px
+}
+
+.point-worker-select-date {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+
+    button {
+        position: relative;
+        z-index: 5;
+        pointer-events: none;
+    }
+
+    input {
+        position: absolute;
+        width: 210px;
+        height: 32px;
+        border-radius: 25px;
+        outline: none;
+        box-sizing: border-box;
+        border: none;
+        left: 0;
+    }
+
+    input[type="date"] {
+        padding: 0.5rem;
+        box-sizing: border-box;
+        font-size: 1rem;
+    }
+
+    input[type="date"]::-webkit-calendar-picker-indicator {
+        cursor: pointer;
+        width: 100%;
+        height: 35px;
+    }
+
+    img {
+        cursor: pointer;
+        width: 20px;
+    }
+}
+
+.point-worker-bank {
+    color: #0B1B54;
+    font-weight: 500;
+
+    span {
+        font-weight: 700;
+    }
+}
+
+.point-worker-bank.minor {
+    span {
+        color: #D20D0D;
+    }
+}
+
+.point-worker-bank.bigger {
+    span {
+        color: #409346;
+    }
+}
+
+.point-worker-cards {
+    width: 65%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 20px;
+    padding-bottom: 60px;
+}
+
+.point-worker-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    width: 100%;
+    background-color: #8594D4;
+    padding: 15px;
+    box-sizing: border-box;
+    border-radius: 20px;
+}
+
+.point-worker-card-left {
+    width: 100%;
+
+    h2 {
+        margin-bottom: 20px;
+    }
+
+    p {
+        font-size: 15px;
+    }
+}
+
+.point-worker-card-diff {
+    padding: 5px 10px;
+    background-color: #E8EDFF;
+    border-radius: 50px;
+}
+
+.point-worker-card-diff.minor {
+    color: #D20D0D;
+}
+
+.point-worker-card-diff.bigger {
+    color: #409346;
+}
