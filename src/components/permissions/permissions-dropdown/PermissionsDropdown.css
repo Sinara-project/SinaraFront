@@ -1,6 +1,5 @@
 .permissions-dropdown-section {
-    position: absolute;
-    top: 40px;
+    position: relative;
     background-color: #0B1B54;
     width: 40%;
     border-radius: 20px;
@@ -10,6 +9,7 @@
     pointer-events: none;
     overflow-x: hidden;
     overflow-y: scroll;
+    max-height: 200px;
 
     label {
         cursor: pointer;
@@ -17,13 +17,14 @@
         justify-content: space-between;
         align-items: center;
         gap: 15px;
-        height: 40px;
+        min-height: 40px;
         padding: 10px 20px;
         transition: all 0.3s ease;
 
         h4 {
             font-size: 15px;
             font-weight: 600;
+            width: 60%;
         }
     }
 
@@ -60,4 +61,17 @@
 .permissions-dropdown-checkbox:checked+.permissions-dropdown-checkbox-icon {
     background-image: url("../../../assets/checked-white.svg");
 
+}
+
+/* Responsividade */
+@media (max-width: 1000px) {
+    .permissions-dropdown-section {
+        width: 70%;
+    }
+}
+
+@media (max-width: 600px) {
+    .permissions-dropdown-section {
+        width: 100%;
+    }
 }

@@ -11,9 +11,20 @@
     align-items: center;
     margin-left: 65px;
     color: #FF7655;
+
     h1 {
         font-size: 45px;
         margin-top: 60px;
         margin-bottom: 60px;
+    }
+}
+
+/* Responsividade */
+@media(max-width: 400px) {
+    .dashboards-content {
+        margin-left: 40px;
+        h1 {
+            font-size: 28px;
+        }
     }
 }

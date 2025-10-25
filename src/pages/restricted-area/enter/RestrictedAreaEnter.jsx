@@ -42,7 +42,6 @@ function RestrictedAreaEnter() {
 
   return (
     <section className="restricted-area-enter-section">
-      <ReturnArrow lastEndpoint={"/configuracoes"} />
       <Snackbar
         type={snackbar.type}
         title={snackbar.title}
