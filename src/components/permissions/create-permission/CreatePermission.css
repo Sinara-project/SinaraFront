@@ -5,7 +5,7 @@
     justify-content: center;
     align-items: center;
     position: fixed;
-    z-index: 5;
+    z-index: 13;
     background-color: rgb(0, 0, 0, 0.4);
     width: 100vw;
     height: 100vh;
@@ -25,7 +25,6 @@
     background-color: #FFF6F4;
     width: 25vw;
     height: 25vw;
-    margin-left: 65px;
     border-radius: 20px;
     transition: all 0.5s ease;
     opacity: 0;
@@ -101,4 +100,124 @@
 .create-permission-create:hover {
     background-color: #384994;
     border: 2px solid #384994;
+}
+
+/* Responsividade */
+@media (max-width: 1200px) {
+  .create-permission-card {
+    width: 35vw;
+    height: 35vw;
+  }
+}
+
+@media (max-width: 1000px) {
+  .create-permission-card {
+    width: 45vw;
+    height: 45vw;
+  }
+
+  .create-permission-card h1 {
+    font-size: 26px;
+  }
+
+  .create-permission-card input {
+    width: 70%;
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 800px) {
+  .create-permission-card {
+    width: 55vw;
+    height: 55vw;
+  }
+
+  .create-permission-card h1 {
+    font-size: 24px;
+  }
+
+  .create-permission-card input {
+    width: 75%;
+  }
+
+  .create-permission-card span {
+    gap: 8px;
+  }
+
+  .create-permission-card button {
+    height: 32px;
+  }
+}
+
+@media (max-width: 700px) {
+  .create-permission-card h1 {
+    font-size: 28px;
+  }
+}
+
+@media (max-width: 600px) {
+  .create-permission-card.active {
+    width: 65vw;
+    height: 65vw;
+
+    h1 {
+        font-size: 19px;
+        text-align: center;
+    }
+  }
+
+  .create-permission-card input {
+    width: 80%;
+    font-size: 14px;
+  }
+
+  .create-permission-card button h2 {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 500px) {
+  .create-permission-card {
+    width: 80vw;
+    height: auto;
+    padding: 25px;
+  }
+
+  .create-permission-card h1 {
+    font-size: 22px;
+    text-align: center;
+  }
+
+  .create-permission-card input {
+    width: 85%;
+  }
+
+  .create-permission-card span {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .create-permission-card button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 400px) {
+    .create-permission-card.active {
+        width: 70vw;
+        height: 70vw;
+    }
+
+  .create-permission-card h1 {
+    font-size: 20px;
+  }
+
+  .create-permission-card input {
+    width: 90%;
+    font-size: 13px;
+  }
+
+  .create-permission-card button h2 {
+    font-size: 13px;
+  }
 }

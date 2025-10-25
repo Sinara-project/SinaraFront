@@ -110,6 +110,7 @@
 
 @media (max-width: 400px) {
     .sheets-content {
+        margin-left: 40px;
         h1 {
             font-size: 28px;
         }

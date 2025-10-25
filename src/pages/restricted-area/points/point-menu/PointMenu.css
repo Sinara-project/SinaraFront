@@ -167,3 +167,64 @@
 .point-menu-card-diff.bigger {
     color: #409346;
 }
+
+/* Responsividade */
+@media (max-width: 700px) {
+    .point-menu-content {
+        h1 {
+            font-size: 28px;
+            margin-top: 120px;
+        }
+    }
+}
+
+@media (max-width: 550px) {
+    .point-menu-card {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+
+        h2,
+        p {
+            text-align: center;
+        }
+    }
+}
+
+@media (max-width: 400px) {
+    .point-menu-content {
+        margin-left: 40px;
+
+        h1 {
+            text-align: center;
+        }
+    }
+
+    .point-menu-one {
+        width: 80%;
+    }
+
+    .point-menu-searchbar {
+        input {
+            font-size: 12px;
+        }
+    }
+
+    .point-menu-cards {
+        width: 80%;
+
+        p {
+            font-size: 12px;
+        }
+    }
+
+    .point-menu-select-date {
+        button {
+            width: 180px;
+        }
+
+        input {
+            width: 180px;
+        }
+    }
+}

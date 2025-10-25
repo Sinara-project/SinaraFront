@@ -22,6 +22,7 @@
 /* Responsividade */
 @media(max-width: 400px) {
     .dashboards-content {
+        margin-left: 40px;
         h1 {
             font-size: 28px;
         }

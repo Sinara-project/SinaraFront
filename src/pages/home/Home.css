@@ -307,7 +307,7 @@
     }
 
     .home-pthree h1 {
-        font-size: 45px;
+        font-size: 37px;
     }
 }
 
@@ -352,6 +352,7 @@
     .home-pthree {
         h1 {
             text-align: center;
+            font-size: 30px;
         }
     }
 
@@ -368,9 +369,11 @@
     .home-option h3 {
         font-size: 15px;
     }
+}
 
-    .home-pthree h1 {
-        font-size: 36px;
+@media (max-width: 400px) {
+    .home-content {
+        padding-left: 40px;
     }
 }
 
