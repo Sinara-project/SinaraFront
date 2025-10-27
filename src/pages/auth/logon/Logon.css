@@ -36,6 +36,10 @@
     align-items: start;
     gap: 5px;
     margin-bottom: 5px;
+
+    p {
+        text-align: end;
+    }
 }
 
 .logon-form {
@@ -102,4 +106,37 @@
     justify-content: space-around;
     align-items: center;
     gap: 5px;
+}
+
+/* Responsividade */
+@media (max-width: 480px) {
+    .logon-container {
+        width: 80%;
+        height: 420px;
+        padding: 20px 10px;
+        gap: 10px;
+    }
+
+    .logon-input-group {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .logon-navigate-code {
+        font-size: 14px;
+        height: 40px;
+    }
+
+    .logon-navigate-login {
+        font-size: 10px;
+    }
+
+    .logon-text-group p {
+        text-align: start;
+        font-size: 14px;
+    }
+
+    .logon-input {
+        height: 40px;
+    }
 }

@@ -107,3 +107,42 @@
     align-items: center;
     gap: 5px;
 }
+
+/* Responsividade */
+@media (max-width: 480px) {
+    .restricted-area-enter-container {
+        width: 80%;
+        height: 290px;
+        padding: 20px 10px;
+        gap: 10px;
+    }
+
+    .restricted-area-enter-input-group {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .restricted-area-enter-navigate-code {
+        font-size: 14px;
+        height: 40px;
+    }
+
+    .restricted-area-enter-navigate-logon {
+        font-size: 7px;
+    }
+
+    .restricted-area-enter-text-group p {
+        text-align: start;
+        font-size: 14px;
+    }
+
+    .restricted-area-enter-input {
+        height: 40px;
+    }
+}
+
+@media (max-width: 400px) {
+    .restricted-area-enter-container {
+        margin-left: 40px;
+    }
+}

@@ -88,11 +88,47 @@
         border-radius: 50px;
         width: 100%;
         background-color: #FEC5B7;
-        height: 40px;
+        min-height: 40px;
 
         h4 {
             font-weight: 400;
             color: #0B1B54;
+        }
+    }
+}
+
+/* Responsividade */
+@media (max-width: 700px) {
+    .profile-content {
+        h1 {
+            font-size: 28px;
+        }
+    }
+}
+
+@media (max-width: 550px) {
+    .profile-sec-infos {
+        div {
+            h4 {
+                font-size: 11px;
+            }
+        }
+    }
+}
+
+@media (max-width: 400px) {
+    .profile-content {
+        margin-left: 40px;
+    }
+}
+
+@media (max-width: 360px) {
+    .profile-sec-infos {
+        width: 90%;
+        div {
+            h4 {
+                font-size: 10px;
+            }
         }
     }
 }

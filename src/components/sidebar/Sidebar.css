@@ -93,3 +93,14 @@
 .sidebar-option:hover {
     background-color: #384994;
 }
+
+/* Responsividade */
+@media (max-width: 400px) {
+    .sidebar-logo {
+        padding-left: 15%;
+    }
+
+    .sidebar-section {
+        width: 40px;
+    }
+}

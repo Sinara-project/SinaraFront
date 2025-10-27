@@ -9,7 +9,7 @@
     background-color: rgb(0, 0, 0, 0.3);
     opacity: 0;
     pointer-events: none;
-    z-index: 1;
+    z-index: 13;
     transition: all 0.3s ease;
 }
 
@@ -66,5 +66,26 @@
 
     img {
         width: 23px;
+    }
+}
+
+/* Responsividade */
+@media (max-width: 940px) {
+    .sheets-content-container.visible {
+        width: 70%;
+    }
+}
+
+@media (max-width: 700px) {
+    .sheets-content-container.visible {
+        h2 {
+            font-size: 17px;
+        }
+    }
+}
+
+@media (max-width: 400px) {
+    .sheets-content-container.visible {
+        width: 85%;
     }
 }

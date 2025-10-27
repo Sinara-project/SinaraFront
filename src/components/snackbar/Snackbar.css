@@ -7,10 +7,12 @@
     top: 20px;
     right: -400px;
     width: 350px;
-    height: 140px;
+    min-height: 140px;
+    max-height: 250px;   
     border-radius: 22px;
     background-color: #BFD4E3;
     transition: all 0.2s ease;
+    z-index: 20;
 }
 
 .snackbar-container.show {
@@ -40,7 +42,8 @@
 
 .snackbar-icon-container {
     width: 10%;
-    height: 100%;
+    min-height: 140px;
+    max-height: 250px;
     display: flex;
     justify-content: end;
     align-items: center;
@@ -49,4 +52,17 @@
 
 .snackbar-icon {
     width: 100%;
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+    .snackbar-container {
+        width: 55%;
+    }
+
+    .snackbar-text {
+        h2 {
+            font-size: 14px;
+        }
+    }
 }

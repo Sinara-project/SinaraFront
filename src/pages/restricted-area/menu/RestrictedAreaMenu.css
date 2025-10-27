@@ -31,11 +31,13 @@
         grid-template-rows: 1fr 1fr;
         gap: 40px;
         margin-top: 50px;
+        box-sizing: border-box;
 
         button {
             border: none;
             background-color: #0B1B54;
             transition: all 0.3s ease;
+            box-sizing: border-box;
         }
 
         button:hover {
@@ -51,6 +53,7 @@
     gap: 40px;
     border-radius: 25px;
     background-color: #FF7655;
+    box-sizing: border-box;
 
     h2 {
         font-size: 80px;
@@ -59,8 +62,9 @@
 
     h3 {
         font-weight: 500;
-        width: 197px;
+        min-width: 120px;
         font-size: 28px;
+        max-width: 250px;
     }
 }
 
@@ -69,6 +73,8 @@
     justify-content: space-between;
     align-items: center;
     flex-direction: column;
+    box-sizing: border-box;
+    width: 100%;
 
     button {
         width: 100%;
@@ -96,6 +102,8 @@
     justify-content: space-between;
     align-items: center;
     gap: 25px;
+    box-sizing: border-box;
+    width: 100%;
 
     button {
         width: 100%;
@@ -127,10 +135,153 @@
     align-items: center;
     border-radius: 25px;
     background-color: #FF7655;
+    box-sizing: border-box;
 
     h4 {
         font-size: 23px;
-        width: 370px;
+        width: 80%;
         font-weight: 400;
+    }
+}
+
+/* Responsividade */
+@media (max-width: 1300px) {
+    .restricted-area-menu-registered {
+        gap: 15px;
+
+        h3 {
+            text-align: center;
+        }
+    }
+}
+
+@media (max-width: 1024px) {
+    .restricted-area-menu-content span {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto;
+        gap: 30px;
+        height: auto;
+    }
+
+    .restricted-area-menu-horizontal {
+        gap: 20px;
+    }
+}
+
+@media (max-width: 950px) {
+
+    .restricted-area-menu-content span {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .restricted-area-menu-registered h2 {
+        font-size: 65px;
+    }
+
+    .restricted-area-menu-registered h3 {
+        font-size: 22px;
+    }
+
+    .restricted-area-menu-horizontal {
+        gap: 20px;
+    }
+
+    .restricted-area-menu-vertical {
+        button {
+            flex-direction: row;
+            align-items: center;
+        }
+    }
+
+    .restricted-area-menu-horizontal button,
+    .restricted-area-menu-vertical button {
+        height: 70px;
+        gap: 12px;
+        padding-left: 20px;
+    }
+
+    .restricted-area-menu-horizontal button img,
+    .restricted-area-menu-vertical button img {
+        width: 35px;
+    }
+
+    .restricted-area-menu-horizontal button h4,
+    .restricted-area-menu-vertical button h4 {
+        font-size: 14px;
+        text-align: start;
+    }
+
+    .restricted-area-menu-last-response {
+        min-height: 100px;
+    }
+
+    .restricted-area-menu-last-response h4 {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 700px) {
+    .restricted-area-menu-content {
+        h1 {
+            font-size: 28px;
+        }
+    }
+}
+
+@media (max-width: 570px) {
+    .restricted-area-menu-content span {
+        margin-top: 0;
+    }
+
+    .restricted-area-menu-vertical {
+        flex-direction: column;
+    }
+
+    .restricted-area-menu-registered {
+        gap: 15px;
+        padding: 8px;
+    }
+
+    .restricted-area-menu-registered h2 {
+        font-size: 55px;
+    }
+
+    .restricted-area-menu-registered h3 {
+        font-size: 16px;
+        text-align: center;
+    }
+
+    .restricted-area-menu-horizontal button,
+    .restricted-area-menu-vertical button {
+        height: 60px;
+        gap: 8px;
+        padding-left: 15px;
+    }
+
+    .restricted-area-menu-horizontal button img,
+    .restricted-area-menu-vertical button img {
+        width: 20px;
+    }
+
+    .restricted-area-menu-horizontal button h4,
+    .restricted-area-menu-vertical button h4 {
+        font-size: 12px;
+    }
+
+    .restricted-area-menu-last-response h4 {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 400px) {
+    .restricted-area-menu-content {
+        margin-left: 40px;
+    }
+
+    .restricted-area-menu-last-response {
+        h4 {
+            font-size: 12px;
+        }
     }
 }
