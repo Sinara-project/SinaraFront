@@ -20,7 +20,7 @@ function Login() {
 
   const empresas = [
     {
-      id: 1,
+      id: 2,
       cnpj: "43.442.344/0001-34",
       email: "friboi@gmail.com",
       nome: "Friboi",
@@ -81,8 +81,10 @@ function Login() {
       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7R72IzYtgQMU72EdMg1Gyy1AGX9Rp7eu5Dg&s";
       // getImagemDeEmpresaPorCnpjNoGoverno(empresa.cnpj)
 
-      const ramoDeAtuacao = "Alimentício";
+    const ramoDeAtuacao = "Alimentício";
       // getRamoAtuacaoPorId(empresa.id)
+
+    const hasRestrictPassword = empresa.senhaRestrita ? true : false;
 
     const onLogin = {
       id: empresa.id,
@@ -92,7 +94,7 @@ function Login() {
       email: empresa.email,
       sector: ramoDeAtuacao,
       code: empresa.codigo,
-      restrictPassword: empresa.senhaRestrita
+      restrictPassword: hasRestrictPassword
     };
 
     sessionStorage.setItem("onLogin", JSON.stringify(onLogin));

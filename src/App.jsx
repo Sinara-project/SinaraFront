@@ -3,7 +3,7 @@
   import { useEffect, useState } from 'react'
   import Sidebar from './components/sidebar/Sidebar';
   import Notifications from './components/notifications/Notifications';
-  import { getAllNotifications } from './services/Notifications/Notifications';
+  import { getAllNotifications } from './services/mongoDB/Notifications/Notifications';
 
   function App() {
     const location = useLocation();
@@ -54,8 +54,6 @@
       async function getNotifications() {
         try {
           const data = await getAllNotifications();
-          console.log(data);
-          
           setNotifications(data);
         } catch (err) {
           console.log(err);

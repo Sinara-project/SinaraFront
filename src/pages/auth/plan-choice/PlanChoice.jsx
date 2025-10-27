@@ -28,9 +28,9 @@ function PlanChoice() {
       id: id,
       cnpj: onLogon.cnpj,
       email: onLogon.email,
-      image: onLogon.imagem_url,
-      name: onLogon.nome,
-      sector: onLogon.ramo_atuacao,
+      image: onLogon.image,
+      name: onLogon.name,
+      sector: onLogon.sector,
       code: code
     };
     sessionStorage.setItem("onLogon", JSON.stringify(onLogon));
@@ -41,18 +41,7 @@ function PlanChoice() {
   const navigatePremiumChoice = () => {
     setPlan("premium");
     const onLogon = JSON.parse(sessionStorage.getItem("onLogon"));
-    onLogon.plano_inicial = plan;
-    onLogon.id_plano = 2;
-    // createEmpresa(coisas)
-    const id = 1;
-    // getIdDeEmpresaPorCnpj(cnpj)
-    onLogon = {
-      id: id,
-      cnpj: onLogon.cnpj,
-      email: onLogon.email,
-      image: onLogon.imagem_url,
-      name: onLogon.nome
-    }
+    onLogon.firstPlan = plan;
     sessionStorage.setItem("onLogon", JSON.stringify(onLogon));
 
     setPlan("premium");

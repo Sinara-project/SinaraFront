@@ -13,6 +13,7 @@ function Profile() {
 
   const exit = () => {
     localStorage.removeItem("user");
+    sessionStorage.removeItem("rAreaLogged");
 
     navigate("/cadastrar");
   };

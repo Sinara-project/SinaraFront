@@ -6,6 +6,12 @@
     overflow-x: hidden;
 }
 
+.create-form-loading {
+    position: absolute;
+    right: 50px;
+    top: 50px;
+}
+
 .create-form-content {
     margin-left: 65px;
     padding: 40px 100px;

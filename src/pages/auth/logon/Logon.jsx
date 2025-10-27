@@ -1,7 +1,9 @@
 import "./Logon.css";
-import { useNavigate } from "react-router-dom";
+import { data, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Snackbar from "../../../components/snackbar/Snackbar";
+import { getEnterprise } from "../../../services/external/enterprise/Enterprise";
+import { getEnterpriseLogo } from "../../../services/external/image/Image";
 
 function Logon() {
   const navigate = useNavigate();
@@ -63,6 +65,26 @@ function Logon() {
     setSnackbar((prev) => ({ ...prev, visible: false }));
   };
 
+  const getEnterpriseInExternal = async () => {
+    try {
+      const data = await getEnterprise(cnpj.replace(/\D/g, ""));
+      return data
+    } catch (e) {
+      console.log(e);
+      return null;
+    }
+  };
+
+  const getEnterpriseLogoInExternal = async (domain) => {
+    try {
+      const data = await getEnterpriseLogo(domain);
+      return data
+    } catch (e) {
+      console.log(e);
+      return null
+    }
+  };
+
   const navigateInsertCode = async () => {
     setErrors({ cnpj: false, email: false, password: false, confirm: false });
 
@@ -107,19 +129,24 @@ function Logon() {
       return;
     }
 
-    const nome = "Friboi";
-    // getNomePorCnpjNoGoverno(cnpj)
+    const enterprise = await getEnterpriseInExternal();
 
-    const imagemEmpresa =
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7R72IzYtgQMU72EdMg1Gyy1AGX9Rp7eu5Dg&s";
-      // getImagemDeEmpresaPorCnpjNoGoverno(empresa.cnpj)
+    if (enterprise.code == 404) {
+      showSnackbar("Erro", "A empresa não existe", "error");
+      return;
+    }
+
+    const image = await getEnterpriseLogoInExternal(
+      enterprise.emails[0].domain
+    );
 
     const onLogon = {
       cnpj: cnpj,
-      nome: nome,
-      imagem_url: imagemEmpresa,
-      ramo_atuacao: sector,
-      senha: password,
+      name: enterprise.name,
+      image: image,
+      sector: sector,
+      password: password,
+      email: email
     };
 
     sessionStorage.setItem("onLogon", JSON.stringify(onLogon));

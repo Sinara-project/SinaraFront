@@ -12,6 +12,12 @@
     transition: all 0.3s ease;
 }
 
+.create-permission-loading {
+    position: absolute;
+    top: 50px;
+    right: 50px;
+}
+
 .create-permission-section.active {
     opacity: 1;
     pointer-events: all;

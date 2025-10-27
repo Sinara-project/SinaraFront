@@ -3,9 +3,14 @@ import Return from "../../../assets/return-arrow.svg";
 import Search from "../../../assets/search.svg";
 import Add from "../../../assets/create.svg";
 import { useEffect, useState } from "react";
+import { editPermission } from "../../../services/mongoDB/Permissions/Permissions";
+import Snackbar from "../../snackbar/Snackbar";
+import Loading from "../../loading/Loading";
 
 function PermissionAddWorker({ isVisible, closeCard, perm }) {
   const [workers, setWorkers] = useState([]);
+  const [truePerm, setPerm] = useState(perm);
+  const [isLoading, setLoading] = useState(false);
   const [funcionariosBD, setFuncionariosBD] = useState([
     {
       id: 1,
@@ -31,12 +36,24 @@ function PermissionAddWorker({ isVisible, closeCard, perm }) {
     },
   ]);
 
+  const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  const [snackbar, setSnackbar] = useState({
+    title: "",
+    message: "",
+    type: "",
+    visible: false,
+  });
+
+  const showSnackbar = async (title, message, type) => {
+    setSnackbar({ title, message, type, visible: true });
+    await sleep(4000);
+    setSnackbar((prev) => ({ ...prev, visible: false }));
+  };
+
   useEffect(() => {
     setWorkers(funcionariosBD);
-    console.log(perm);
-    
-    
-  }, [funcionariosBD]);
+    setPerm(perm);
+  }, [funcionariosBD, perm]);
 
   const searchWorker = (item) => {
     const regex = new RegExp(item, "i");
@@ -46,19 +63,49 @@ function PermissionAddWorker({ isVisible, closeCard, perm }) {
     setWorkers(filteredWorkers);
   };
 
-  const addWorker = (id) => {
-    // salvarFuncNaPerm(id, perm.id)
-
-    const filteredWorkers = funcionariosBD.filter((func) => {
-        return func.id !== id;
-    });
-    setFuncionariosBD(filteredWorkers);
+  const addWorker = async (id) => {
+    setLoading(true);
+    const newPerm = truePerm;
+    if (!newPerm.idFuncionario.includes(id)) {
+      newPerm.idFuncionario.push(id);
+      try {
+        const data = await editPermission(
+          newPerm.id,
+          newPerm.idEmpresa,
+          newPerm.nomePermissao,
+          newPerm.idFuncionario
+        );
+      } catch (e) {
+        showSnackbar(
+          "Erro",
+          "Ocorreu um erro. Tente novamente mais tarde.",
+          "error"
+        );
+        newPerm.idFuncionario.filter((n) => n != id);
+        setLoading(false);
+        return;
+      }
+    }
+    showSnackbar("Funcionário adicionado", "O funcionário foi adicionado à permissão!", "success");
+    setPerm(newPerm);
+    setLoading(false);
   };
 
   return (
     <section
       className={`permission-add-worker-section ${isVisible ? "active" : ""}`}
     >
+      <Snackbar
+        type={snackbar.type}
+        title={snackbar.title}
+        message={snackbar.message}
+        isVisible={snackbar.visible}
+      />
+      {isLoading && (
+        <div className="permission-add-worker-loading">
+          <Loading />
+        </div>
+      )}
       <div
         className={`permission-add-worker-card ${isVisible ? "active" : ""}`}
       >
@@ -82,10 +129,10 @@ function PermissionAddWorker({ isVisible, closeCard, perm }) {
           />
         </div>
         <span className="permissions-add-worker-list">
-          {perm &&
+          {truePerm &&
             workers.map(
               (func) =>
-                !perm?.id_funcionario?.includes(func.id) && (
+                !perm?.idFuncionario?.includes(func.id) && (
                   <div className="permissions-add-worker-worker">
                     <h3>{func.nome}</h3>
                     <p>

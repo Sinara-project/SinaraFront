@@ -60,11 +60,22 @@ function RestrictPassword() {
 
     if (onLogin) {
       empresa = onLogin;
+      // saveSenhaRestritaPorId(empresa.id, password)
     } else if (onLogon) {
       empresa = onLogon;
-    }
 
-    // saveSenhaRestritaPorId(empresa.id, password)
+      if (empresa.plan == "gratis") {
+        // const basicInfos = inserirEmpresa(itens).id;
+        const basicInfos = {
+          id: 2,
+          code: "aaa001",
+        };
+        empresa.id = basicInfos.id;
+        empresa.code = basicInfos.code;
+      } else {
+        // saveSenhaRestritaPorId(empresa.id, password)
+      }
+    }
 
     localStorage.setItem("user", JSON.stringify(empresa));
     sessionStorage.removeItem("onLogon");

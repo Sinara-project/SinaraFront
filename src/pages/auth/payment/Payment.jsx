@@ -88,6 +88,16 @@ function Payment() {
     } else {
       setFunctionExecute(true);
       await sleep(3000);
+      let onLogon = JSON.parse(sessionStorage.getItem("onLogon"));
+      // const basicInfos = inserirEmpresa(itens).id;
+      const basicInfos = {
+        id: 2,
+        code: 'aaa001'
+      }
+      onLogon.id = basicInfos.id;
+      onLogon.code = basicInfos.code;
+      onLogon.password = null;
+      sessionStorage.setItem("onLogon", JSON.stringify(onLogon));
       showSnackbar("Sucesso", "Pagamento efetuado! Redirecionando...", "success", 2000);
       await sleep(2000);
       navigate("/obrigado");
