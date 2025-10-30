@@ -126,18 +126,18 @@ function Payment() {
     };
     sessionStorage.setItem("onLogon", JSON.stringify(onLogon));
 
-    try {
-      await insertCreditCard(cardNumber, nameInCard, expireDate, cvv, onLogon.id);
-    } catch (err) {
-      showSnackbar(
-        "Erro",
-        "Houve um erro. Tente novamente mais tarde.",
-        "error"
-      );
-      setIsLoading(false);
-      setFunctionExecute(false);
-      return;
-    }
+    // try {
+    //   await insertCreditCard(cardNumber, nameInCard, expireDate, cvv, onLogon.id);
+    // } catch (err) {
+    //   showSnackbar(
+    //     "Erro",
+    //     "Houve um erro. Tente novamente mais tarde.",
+    //     "error"
+    //   );
+    //   setIsLoading(false);
+    //   setFunctionExecute(false);
+    //   return;
+    // }
 
     showSnackbar("Sucesso", "Pagamento efetuado! Redirecionando...", "success");
     await sleep(2000);
