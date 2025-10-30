@@ -42,7 +42,6 @@ createRoot(document.getElementById('root')).render(
         <Route path='confirmar-entrada' element={<LoginConfirm />} />
         <Route path='home' element={<Home />} />
         <Route path='dashboards' element={<Dashboards />} />
-        <Route path='planilhas' element={<SheetsList />} />
         <Route path='criar-formulario' element={<CreateForm />} />
         <Route path='perfil' element={<Profile />} />
         <Route path='configuracoes' element={<Settings/>} />

@@ -5,102 +5,119 @@ import User from "../../../assets/user.svg";
 import Edit from "../../../assets/edit-blue.svg";
 import ReturnArrow from "../../../components/return-arrow/ReturnArrow";
 import { useEffect, useState } from "react";
-import CreatePermission from "../../../components/permissions/create-permission/CreatePermission";
-import PermissionAddWorker from "../../../components/permissions/add-worker/PermissionAddWorker";
 import { useNavigate } from "react-router-dom";
+import {
+  deleteWorkerById,
+  editWorker,
+  getWorkersByEnterpriseId,
+} from "../../../services/sql/workers/Workers";
+import { getWorkerLastTurn } from "../../../services/sql/points/Points";
+import Loading from "../../../components/loading/Loading";
 
 function Workers() {
   const navigate = useNavigate();
 
+  const [loadPage, setLoad] = useState(false);
+
+  const [isLoading, setLoading] = useState(false);
   const [selectedPerm, selectPerm] = useState();
   const [createPerm, setCreate] = useState(false);
   const [workers, setWorkers] = useState([]);
-
-  const permsBD = [
-    {
-      id: 1,
-      idEmpresa: 1,
-      nome_permissao: "Forms de captação",
-      id_funcionario: [1, 3],
-    },
-    {
-      id: 2,
-      idEmpresa: 1,
-      nome_permissao: "Forms de pré-tratamento",
-      id_funcionario: [3],
-    },
-    {
-      id: 3,
-      idEmpresa: 1,
-      nome_permissao: "Forms de tratamento primário",
-      id_funcionario: [2],
-    },
-  ];
-
-  // getAllOperarios()
-
-  const funcionariosBD = [
-    {
-      id: 1,
-      nome: "João Batista",
-      // Supondo que há query pra isso
-      setor: "Abatimento",
-      ultimo_ponto: {
-        horario_saida: new Date(2025, 9, 21, 18, 30),
-      },
-      ativo: true,
-      imagem_url: "",
-      email: "joaobatista@friboi.com",
-      horas_previstas: 230,
-      ferias: false,
-    },
-    {
-      id: 2,
-      nome: "Júlia Ramos",
-      setor: "Tratamento de água",
-      ultimo_ponto: {
-        horario_saida: new Date(2025, 9, 21, 19, 0),
-      },
-      ativo: false,
-      imagem_url:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQz5zW-5LyUpoue1GHUahmDU_g7AscE8wqbA&s",
-      email: "juliaramos@friboi.com",
-      horas_previstas: 0,
-      ferias: true,
-    },
-    {
-      id: 3,
-      setor: "Tratamento de água",
-      nome: "Rodrigo Soares",
-      ultimo_ponto: {
-        horario_saida: new Date(2025, 9, 21, 20, 30),
-      },
-      ativo: true,
-      imagem_url: "",
-      email: "rodrigosoares@friboi.com",
-      horas_previstas: 400,
-      ferias: false,
-    },
-  ];
+  const [allWorkers, setAllWorkers] = useState([]);
 
   const openAddWorker = (perm) => {
     selectPerm(perm);
   };
 
   useEffect(() => {
-    setWorkers(funcionariosBD);
-  }, []);
+    const fetchWorkers = async () => {
+      setLoading(true);
+      try {
+        const workersData = await getWorkersByEnterpriseId(
+          JSON.parse(localStorage.getItem("user")).id
+        );
+
+        const workersWithLastTurn = await Promise.all(
+          workersData.map(async (dat) => {
+            try {
+              const lastPoint = await getWorkerLastTurn(dat.id);
+              return { ...dat, ultimo_ponto: lastPoint };
+            } catch {
+              return { ...dat, ultimo_ponto: null };
+            }
+          })
+        );
+
+        setWorkers(workersWithLastTurn);
+        setAllWorkers(workersWithLastTurn);
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchWorkers();
+  }, [loadPage]);
 
   const searchWorker = (item) => {
-    const regex = new RegExp(item, "i");
-    const filteredWorkers = funcionariosBD.filter((func) => {
-      return regex.test(func.nome);
-    });
+    const query = item.trim();
+    if (!query) {
+      setWorkers(allWorkers);
+      return;
+    }
+
+    const regex = new RegExp(query, "i");
+    const filteredWorkers = allWorkers.filter((func) => regex.test(func.nome));
     setWorkers(filteredWorkers);
+  };
+
+  const deleteWorker = async (id) => {
+    try {
+      setLoading(true);
+      console.log(id);
+      
+      const data = await deleteWorkerById(id);
+
+      console.log(data);
+      
+      setLoad(!loadPage);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const toggleWorketActivity = async (worker) => {
+    try {
+      setLoading(true);
+      await editWorker(
+        worker.id,
+        worker.idEmpresa,
+        worker.url,
+        worker.imagemUrl,
+        worker.cpf,
+        worker.nome,
+        worker.email,
+        worker.cargo,
+        worker.setor,
+        worker.ferias,
+        !worker.ativo,
+        worker.senha,
+        worker.horasPrevistas
+      );
+      setLoad(!loadPage);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
     <section className="workers-section">
+      {isLoading && (
+        <div className="workers-loading">
+          <Loading />
+        </div>
+      )}
       <section className="workers-content">
         <ReturnArrow lastEndpoint={"/menu-area-restrita"} sidebar={true} />
         <h1>Gerenciar operários</h1>
@@ -110,26 +127,28 @@ function Workers() {
             <input
               type="text"
               placeholder="Pesquisar operário"
-              onChange={(e) => {
-                searchWorker(e.target.value);
-              }}
+              onChange={(e) => searchWorker(e.target.value)}
             />
           </div>
 
-          <button onClick={() => {navigate("/visualizar-pontos")}}>
+          <button
+            onClick={() => {
+              navigate("/visualizar-pontos");
+            }}
+          >
             <h4>Registros de ponto</h4>
           </button>
         </div>
+
         <div className="workers-container">
           {workers.map((worker) => (
-            <div className="workers-card">
+            <div key={worker.id} className="workers-card">
               <span className="workers-main-actions">
-                {worker.imagem_url ? (
-                  <img src={worker.imagem_url} className="workers-photo" />
-                ) : (
-                  <img src={User} className="workers-photo" />
-                )}
-
+                <img
+                  src={worker.imagemUrl || User}
+                  className="workers-photo"
+                  alt=""
+                />
                 <div className="workers-infos">
                   <nav className="workers-nav">
                     <div className="workers-main">
@@ -143,34 +162,43 @@ function Workers() {
                     <img
                       src={Edit}
                       className="workers-edit-icon"
-                      onClick={() => {
-                        navigate("/editar-operario", { state: { worker } });
-                      }}
-                    ></img>
+                      onClick={() =>
+                        navigate("/editar-operario", { state: { worker } })
+                      }
+                    />
                   </nav>
                   <div className="workers-sec">
                     <p>Setor: {worker.setor}</p>
                     <p>
                       Último turno:{" "}
-                      {worker.ultimo_ponto.horario_saida
-                        .getDate()
-                        .toString()
-                        .padStart(2, "0")}
-                      /{worker.ultimo_ponto.horario_saida.getMonth() + 1}/
-                      {worker.ultimo_ponto.horario_saida.getFullYear()} -{" "}
-                      {worker.ultimo_ponto.horario_saida.getHours()}:
-                      {worker.ultimo_ponto.horario_saida
-                        .getMinutes()
-                        .toString()
-                        .padStart(2, "0")}
+                      {worker.ultimo_ponto ? worker.ultimo_ponto : "-"}
                     </p>
                   </div>
                   <div className="workers-options">
-                    <button className="workers-delete">Deletar</button>
+                    <button
+                      className="workers-delete"
+                      onClick={() => {
+                        deleteWorker(worker.id);
+                      }}
+                    >
+                      Deletar
+                    </button>
                     {worker.ativo ? (
-                      <button>Desativar</button>
+                      <button
+                        onClick={() => {
+                          toggleWorketActivity(worker);
+                        }}
+                      >
+                        Desativar
+                      </button>
                     ) : (
-                      <button>Ativar</button>
+                      <button
+                        onClick={() => {
+                          toggleWorketActivity(worker);
+                        }}
+                      >
+                        Ativar
+                      </button>
                     )}
                   </div>
                 </div>

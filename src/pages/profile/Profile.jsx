@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import User from "../../assets/user-blue.svg";
 import "./Profile.css";
 
 function Profile() {
@@ -22,7 +23,7 @@ function Profile() {
     <section className="profile-section">
       <section className="profile-content">
         <h1>Perfil</h1>
-        <img src={image} alt="" />
+        {image ? <img src={image} alt="" /> : <img src={User} />}
         <div className="profile-main-infos">
           <h2>{name}</h2>
           <h3>Código: {code}</h3>

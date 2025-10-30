@@ -6,6 +6,12 @@
     overflow-x: hidden;
 }
 
+.home-loading {
+    position: absolute;
+    top: 50px;
+    right: 50px;
+}
+
 .home-content {
     width: 100%;
     padding-left: 65px;

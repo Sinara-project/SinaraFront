@@ -4,6 +4,9 @@ import Search from "../../../../assets/search.svg";
 import Dropdown from "../../../../assets/dropdown.svg";
 import ReturnArrow from "../../../../components/return-arrow/ReturnArrow";
 import { useNavigate } from "react-router-dom";
+import { getWorkersByEnterpriseId } from "../../../../services/sql/workers/Workers";
+import { getPoints } from "../../../../services/sql/points/Points";
+import Loading from "../../../../components/loading/Loading";
 
 function PointMenu() {
   const navigate = useNavigate();
@@ -11,81 +14,7 @@ function PointMenu() {
   const [allPoints, setAllPoints] = useState([]);
   const [points, setPoints] = useState([]);
   const [date, setDate] = useState(new Date());
-
-  const funcionariosBD = [
-    {
-      id: 1,
-      nome: "João Batista",
-      setor: "Abatimento",
-      ultimo_ponto: { horario_saida: new Date(2025, 9, 21, 18, 30) },
-      ativo: true,
-      imagem_url: "",
-      email: "joaobatista@friboi.com",
-      horas_previstas: 230,
-      ferias: false,
-    },
-    {
-      id: 2,
-      nome: "Júlia Ramos",
-      setor: "Tratamento de água",
-      ultimo_ponto: { horario_saida: new Date(2025, 9, 21, 19, 0) },
-      ativo: false,
-      imagem_url:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQz5zW-5LyUpoue1GHUahmDU_g7AscE8wqbA&s",
-      email: "juliaramos@friboi.com",
-      horas_previstas: 0,
-      ferias: true,
-    },
-    {
-      id: 3,
-      nome: "Rodrigo Soares",
-      setor: "Tratamento de água",
-      ultimo_ponto: { horario_saida: new Date(2025, 9, 21, 20, 30) },
-      ativo: true,
-      imagem_url: "",
-      email: "rodrigosoares@friboi.com",
-      horas_previstas: 280,
-      ferias: false,
-    },
-  ];
-
-  const pontosBD = [
-    {
-      id: 1,
-      horario_entrada: new Date("2025-10-23T08:00:00"),
-      horario_saida: new Date("2025-10-23T17:00:00"),
-      idOperario: 1,
-      idEmpresa: 1,
-    },
-    {
-      id: 2,
-      horario_entrada: new Date("2025-10-23T08:15:00"),
-      horario_saida: new Date("2025-10-23T17:10:00"),
-      idOperario: 2,
-      idEmpresa: 1,
-    },
-    {
-      id: 3,
-      horario_entrada: new Date("2025-10-23T07:50:00"),
-      horario_saida: new Date("2025-10-23T16:45:00"),
-      idOperario: 3,
-      idEmpresa: 1,
-    },
-    {
-      id: 4,
-      horario_entrada: new Date("2025-10-22T08:05:00"),
-      horario_saida: new Date("2025-10-22T17:05:00"),
-      idOperario: 1,
-      idEmpresa: 1,
-    },
-    {
-      id: 5,
-      horario_entrada: new Date("2025-10-22T08:10:00"),
-      horario_saida: new Date("2025-10-22T17:00:00"),
-      idOperario: 2,
-      idEmpresa: 1,
-    },
-  ];
+  const [isLoading, setLoading] = useState(false);
 
   const getDiffClass = (hoursDiff, minutesDiff) => {
     const h = parseFloat(hoursDiff) || 0;
@@ -96,22 +25,36 @@ function PointMenu() {
   };
 
   useEffect(() => {
-    let pontosArray = [];
+    async function fetchPoints() {
+      setLoading(true);
+      try {
+        const enterpriseId = JSON.parse(localStorage.getItem("user")).id;
 
-    pontosBD.forEach((ponto) => {
-      funcionariosBD.forEach((func) => {
-        if (ponto.idOperario === func.id) {
-          const diffMs = ponto.horario_saida
-            ? ponto.horario_saida - ponto.horario_entrada
-            : 0;
+        const [workersData, pointsData] = await Promise.all([
+          getWorkersByEnterpriseId(enterpriseId),
+          getPoints(),
+        ]);
 
+        const pontosBD = pointsData.filter(
+          (p) => p.idEmpresa === enterpriseId
+        );
+
+        const funcionariosBD = workersData;
+        let pontosArray = [];
+
+        pontosBD.forEach((ponto) => {
+          const func = funcionariosBD.find((f) => f.id === ponto.idOperario);
+          if (!func) return;
+
+          const entrada = new Date(ponto.horarioEntrada);
+          const saida = ponto.horarioSaida ? new Date(ponto.horarioSaida) : null;
+
+          const diffMs = saida ? saida - entrada : 0;
           const diffHoras = Math.floor(diffMs / (1000 * 60 * 60));
           const diffMinutos = Math.floor((diffMs / (1000 * 60)) % 60);
 
-          const horasPrevistasDia = Math.floor(func.horas_previstas / 22);
-
           const diferencaTotal =
-            diffHoras + diffMinutos / 60 - horasPrevistasDia;
+            diffHoras + diffMinutos / 60 - func.horasprevistas;
           const sign = diferencaTotal >= 0 ? "+" : "-";
           const absDiff = Math.abs(diferencaTotal);
           const horas = Math.floor(absDiff);
@@ -120,44 +63,44 @@ function PointMenu() {
           const newPonto = {
             workerID: func.id,
             workerName: func.nome,
-            settedHours: Math.floor(horasPrevistasDia),
-            firstPoint: `${ponto.horario_entrada
-              .getHours()
-              .toString()
-              .padStart(2, "0")}:${ponto.horario_entrada
+            settedHours: func.horasprevistas,
+            firstPoint: `${entrada.getHours().toString().padStart(2, "0")}:${entrada
               .getMinutes()
               .toString()
               .padStart(2, "0")}`,
-            lastPoint: ponto.horario_saida
-              ? `${ponto.horario_saida
-                  .getHours()
-                  .toString()
-                  .padStart(2, "0")}:${ponto.horario_saida
+            lastPoint: saida
+              ? `${saida.getHours().toString().padStart(2, "0")}:${saida
                   .getMinutes()
                   .toString()
                   .padStart(2, "0")}`
               : "-",
             hoursDiff: `${sign}${horas.toString().padStart(2, "0")}`,
             minutesDiff: minutos.toString().padStart(2, "0"),
-            entryDate: ponto.horario_entrada,
+            entryDate: entrada,
           };
 
           pontosArray.push(newPonto);
-        }
-      });
-    });
+        });
 
-    const target = new Date(date);
-    target.setHours(0, 0, 0, 0);
+        const target = new Date(date);
+        target.setHours(0, 0, 0, 0);
 
-    const filtered = pontosArray.filter((ponto) => {
-      const entrada = new Date(ponto.entryDate);
-      entrada.setHours(0, 0, 0, 0);
-      return entrada.getTime() === target.getTime();
-    });
+        const filtered = pontosArray.filter((ponto) => {
+          const entrada = new Date(ponto.entryDate);
+          entrada.setHours(0, 0, 0, 0);
+          return entrada.getTime() === target.getTime();
+        });
 
-    setPoints(filtered);
-    setAllPoints(filtered);
+        setPoints(filtered);
+        setAllPoints(filtered);
+      } catch (err) {
+        console.error("Erro ao buscar pontos:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchPoints();
   }, [date]);
 
   const searchByWorker = (item) => {
@@ -175,8 +118,10 @@ function PointMenu() {
   return (
     <section className="point-menu-section">
       <ReturnArrow lastEndpoint={"/operarios"} sidebar={true} />
+
       <section className="point-menu-content">
         <h1>Visualizar pontos</h1>
+
         <div className="point-menu-one">
           <div className="point-menu-searchbar">
             <img src={Search} alt="" />
@@ -212,32 +157,38 @@ function PointMenu() {
         </div>
 
         <div className="point-menu-cards">
-          {points.map((point, i) => (
-            <div
-              className="point-menu-card"
-              key={i}
-              onClick={() => {
-                navigate(`/visualizar-pontos/${point.workerID}`);
-              }}
-            >
-              <div className="point-menu-card-left">
-                <h2>{point.workerName}</h2>
-                <div>
-                  <p>Horas previstas: {point.settedHours}</p>
-                  <p>Ponto inicial: {point.firstPoint}</p>
-                  <p>Ponto final: {point.lastPoint}</p>
-                </div>
-              </div>
-              <h3
-                className={`point-menu-card-diff ${getDiffClass(
-                  point.hoursDiff,
-                  point.minutesDiff
-                )}`}
-              >
-                {point.hoursDiff}:{point.minutesDiff}h
-              </h3>
+          {isLoading ? (
+            <div className="point-menu-loading">
+              <Loading />
             </div>
-          ))}
+          ) : points.length > 0 ? (
+            points.map((point, i) => (
+              <div
+                className="point-menu-card"
+                key={i}
+                onClick={() => navigate(`/visualizar-pontos/${point.workerID}`)}
+              >
+                <div className="point-menu-card-left">
+                  <h2>{point.workerName}</h2>
+                  <div>
+                    <p>Horas previstas: {point.settedHours}</p>
+                    <p>Ponto inicial: {point.firstPoint}</p>
+                    <p>Ponto final: {point.lastPoint}</p>
+                  </div>
+                </div>
+                <h3
+                  className={`point-menu-card-diff ${getDiffClass(
+                    point.hoursDiff,
+                    point.minutesDiff
+                  )}`}
+                >
+                  {point.hoursDiff}:{point.minutesDiff}h
+                </h3>
+              </div>
+            ))
+          ) : (
+            <p className="point-menu-empty">Nenhum ponto encontrado</p>
+          )}
         </div>
       </section>
     </section>

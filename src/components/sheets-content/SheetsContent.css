@@ -19,22 +19,18 @@
 }
 
 .sheets-content-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 
     width: 20%;
     height: 40%;
     background-color: #FFF6F4;
     transition: all 0.3s ease;
 
-    div {
-        display: flex;
-        width: 80%;
-    }
-
     nav {
         position: relative;
         top: 45px;
-        left: 50%;
-        transform: translateX(-50%);
         width: 85%;
         display: flex;
         justify-content: space-between;
@@ -67,4 +63,66 @@
     img {
         width: 23px;
     }
+}
+
+
+
+
+
+.sheets-table-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 90%;
+    height: 90%;
+    overflow-x: auto;
+
+    overflow-y: auto;
+
+}
+
+.sheets-table {
+    border-collapse: collapse;
+
+    background-color: #ffffff;
+    border: 1px solid #0B1B54;
+    border-radius: 5px;
+    margin-left: 230px;
+}
+
+
+.sheets-table thead th {
+    color: #0B1B54;
+
+    font-weight: 700;
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #0B1B54;
+    white-space: nowrap;
+
+}
+
+
+.sheets-table tbody td {
+    padding: 8px 12px;
+    border: 1px solid #0B1B54;
+    max-width: 200px;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    color: #0B1B54;
+}
+
+
+.sheets-table tbody tr.rose {
+    background-color: #FFC3BD;
+}
+
+
+.sheets-table tbody tr.white {
+    background-color: #ffffff;
 }

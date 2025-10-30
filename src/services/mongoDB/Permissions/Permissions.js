@@ -12,12 +12,22 @@ export const getPermissionsByIdEmpresa = async (id) => {
     return response.data;
 }
 
+export const getPermissionById = async (id) => {
+    const response = await api.get(`/permissoes/${id}`);
+    return response.data;
+}
+
 export const createPermission = async (idEmpresa, nomePermissao, idFuncionario) => {
     const response = await api.post(`/permissoes/inserir`, {idEmpresa, nomePermissao, idFuncionario});
     return response.data;
 }
 
-export const editPermission = async (id, idEmpresa, nomePermissao, idFuncionario) => {
-    const response = await api.put(`/permissoes/atualizar/${id}`, {idEmpresa, nomePermissao, idFuncionario});
+export const editPermission = async (id, idEmpresa, nomePermissao, idOperario) => {
+    const response = await api.patch(`/permissoes/atualizar/${id}`, {idEmpresa, nomePermissao, idOperario});
+    return response.data;
+}
+
+export const insertWorkerInPermission = async (id, wokersId) => {
+    const response = await api.patch(`/permissoes/adicionar-ids-operario/${id}`, wokersId);
     return response.data;
 }

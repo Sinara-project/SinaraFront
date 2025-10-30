@@ -4,6 +4,12 @@
     box-sizing: border-box;
 }
 
+.point-menu-loading {
+    position: absolute;
+    top: 50px;
+    right: 50px;
+}
+
 .point-menu-content {
     display: flex;
     align-items: center;

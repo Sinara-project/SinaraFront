@@ -5,6 +5,8 @@ import BoletoCodebar from "../../../assets/boleto-codebar.svg";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect, use } from "react";
 import Snackbar from "../../../components/snackbar/Snackbar";
+import { getEmpresaIdCode, insertEmpresa } from "../../../services/sql/enterprise/Enterprise";
+import { insertPayment } from "../../../services/sql/payment/Payment";
 
 function Payment() {
   const navigate = useNavigate();
@@ -89,15 +91,29 @@ function Payment() {
       setFunctionExecute(true);
       await sleep(3000);
       let onLogon = JSON.parse(sessionStorage.getItem("onLogon"));
-      // const basicInfos = inserirEmpresa(itens).id;
-      const basicInfos = {
-        id: 2,
-        code: 'aaa001'
+      let basicInfos = {}
+      try {
+        await insertEmpresa(onLogon.cnpj, onLogon.name, onLogon.password, "", onLogon.image, onLogon.email, onLogon.sector, "", 2);
+        basicInfos = await getEmpresaIdCode(onLogon.cnpj);
+      } catch (err) {
+        showSnackbar("Erro", "Houve um erro. Tente novamente mais tarde.", "error");
       }
-      onLogon.id = basicInfos.id;
-      onLogon.code = basicInfos.code;
-      onLogon.password = null;
+      
+      onLogon = {
+        sector: basicInfos.ramoatuacao,
+        code: basicInfos.codigo,
+        id: basicInfos.id,
+        email: basicInfos.email,
+        image: basicInfos.imagemUrl,
+        name: basicInfos.name
+      };
       sessionStorage.setItem("onLogon", JSON.stringify(onLogon));
+
+      try {
+        await insertPayment(time == "mensal" ? 2499.90 : 24999.90, new Date(), "Pago", onLogon.id, onLogon.id);
+      } catch (err) {
+        showSnackbar("Erro", "Houve um erro. Tente novamente mais tarde.", "error");
+      }
       showSnackbar("Sucesso", "Pagamento efetuado! Redirecionando...", "success", 2000);
       await sleep(2000);
       navigate("/obrigado");

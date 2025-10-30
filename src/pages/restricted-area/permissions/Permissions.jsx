@@ -11,6 +11,8 @@ import {
   editPermission,
   getPermissionsByIdEmpresa,
 } from "../../../services/mongoDB/Permissions/Permissions";
+import { getWorkersByEnterpriseId } from "../../../services/sql/workers/Workers";
+import { getWorkerLastTurn } from "../../../services/sql/points/Points";
 
 function Permissions() {
   const [selectedPerm, selectPerm] = useState();
@@ -20,92 +22,75 @@ function Permissions() {
   const [allPerms, setAllPerms] = useState([]);
   const [isLoading, setLoading] = useState(false);
 
-  const funcionariosBD = [
-    {
-      id: 1,
-      nome: "João Batista",
-      setor: "Abatimento",
-      ultimo_ponto: { horario_saida: new Date(2025, 9, 21, 18, 30) },
-    },
-    {
-      id: 2,
-      nome: "Júlia Ramos",
-      setor: "Tratamento de água",
-      ultimo_ponto: { horario_saida: new Date(2025, 9, 21, 19, 0) },
-    },
-    {
-      id: 3,
-      nome: "Rodrigo Soares",
-      setor: "Tratamento de água",
-      ultimo_ponto: { horario_saida: new Date(2025, 9, 21, 20, 30) },
-    },
-  ];
+  const [workers, setWorkers] = useState([]);
+  const [allWorkers, setAllWorkers] = useState([]);
 
   const openAddWorker = (perm) => selectPerm(perm);
 
-  const toggleCreatePerm = async () => {
-    setLoading(true);
-    setCreate(!createPerm);
-    try {
-      const data = await getPermissionsByIdEmpresa(
-        JSON.parse(localStorage.getItem("user")).id
-      );
-      setPerms(data);
-      setAllPerms(data);
-    } catch (e) {
-      console.log(e);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const toggleAddWorker = async () => {
-    setLoading(true);
-    setAdd(!addWorker);
-    try {
-      const data = await getPermissionsByIdEmpresa(
-        JSON.parse(localStorage.getItem("user")).id
-      );
-      setPerms(data);
-      setAllPerms(data);
-    } catch (e) {
-      console.log(e);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const toggleCreatePerm = () => setCreate(!createPerm);
+  const toggleAddWorker = () => setAdd(!addWorker);
 
   useEffect(() => {
-    setLoading(true);
-    async function getPerms() {
+    const fetchPermissions = async () => {
+      return getPermissionsByIdEmpresa(
+        JSON.parse(localStorage.getItem("user")).id
+      );
+    };
+
+    const fetchWorkers = async () => {
+      const workersData = await getWorkersByEnterpriseId(
+        JSON.parse(localStorage.getItem("user")).id
+      );
+
+      const workersWithLastTurn = await Promise.all(
+        workersData.map(async (dat) => {
+          try {
+            const lastPoint = await getWorkerLastTurn(dat.id);
+            return { ...dat, ultimo_ponto: lastPoint };
+          } catch {
+            return { ...dat, ultimo_ponto: null };
+          }
+        })
+      );
+
+      return workersWithLastTurn;
+    };
+
+    const fetchAllData = async () => {
+      setLoading(true);
       try {
-        const data = await getPermissionsByIdEmpresa(
-          JSON.parse(localStorage.getItem("user")).id
-        );
-        setPerms(data);
-        setAllPerms(data);
-      } catch (e) {
-        console.log(e);
+        const [permissionsData, workersData] = await Promise.all([
+          fetchPermissions(),
+          fetchWorkers(),
+        ]);
+
+        setPerms(permissionsData);
+        setAllPerms(permissionsData);
+
+        setWorkers(workersData);
+        setAllWorkers(workersData);
+      } catch (err) {
+        console.log(err);
       } finally {
         setLoading(false);
       }
-    }
+    };
 
-    getPerms();
-  }, [selectedPerm]);
+    fetchAllData();
+  }, [addWorker]);
 
   const removeWorker = async (idFunc, perm) => {
     setLoading(true);
 
     const newPerm = { ...perm };
+    newPerm.idOperario = (newPerm.idOperario || []).filter((n) => n !== idFunc);
 
-    newPerm.idFuncionario = newPerm.idFuncionario.filter((n) => n !== idFunc);
     try {
       await editPermission(
         perm.id,
         newPerm.idEmpresa,
         newPerm.nomePermissao,
-        newPerm.idFuncionario
+        newPerm.idOperario
       );
 
       const updatedData = await getPermissionsByIdEmpresa(
@@ -121,12 +106,13 @@ function Permissions() {
   };
 
   const searchPerm = (item) => {
-    if (!item.trim()) {
+    const query = item.trim();
+    if (!query) {
       setPerms(allPerms);
       return;
     }
 
-    const regex = new RegExp(item, "i");
+    const regex = new RegExp(query, "i");
     const filteredPerms = allPerms.filter((perm) =>
       regex.test(perm.nomePermissao)
     );
@@ -183,43 +169,33 @@ function Permissions() {
                   </button>
                 </span>
                 <hr />
-                {funcionariosBD.map(
-                  (func) =>
-                    Array.isArray(perm.idFuncionario) &&
-                    perm.idFuncionario.includes(func.id) && (
-                      <span className="permissions-worker" key={func.id}>
-                        <div>
-                          <span>
-                            <h3>{func.nome}</h3>
-                            <p>Setor: {func.setor}</p>
-                            <p>
-                              Último turno:{" "}
-                              {func.ultimo_ponto.horario_saida
-                                .getDate()
-                                .toString()
-                                .padStart(2, "0")}
-                              /{func.ultimo_ponto.horario_saida.getMonth() + 1}/
-                              {func.ultimo_ponto.horario_saida.getFullYear()} -{" "}
-                              {func.ultimo_ponto.horario_saida.getHours()}:
-                              {func.ultimo_ponto.horario_saida
-                                .getMinutes()
-                                .toString()
-                                .padStart(2, "0")}
-                            </p>
-                          </span>
-                          <span
-                            className="permissions-delete"
-                            onClick={() => {
-                              removeWorker(func.id, perm);
-                            }}
-                          >
-                            <img src={Delete} />
-                          </span>
-                        </div>
-                        <hr />
-                      </span>
-                    )
-                )}
+                {workers
+                  .filter((worker) =>
+                    Array.isArray(perm.idOperario)
+                      ? perm.idOperario.includes(worker.id)
+                      : false
+                  )
+                  .map((func) => (
+                    <span className="permissions-worker" key={func.id}>
+                      <div>
+                        <span>
+                          <h3>{func.nome}</h3>
+                          <p>Setor: {func.setor}</p>
+                          <p>
+                            Último turno:{" "}
+                            {func.ultimo_ponto ? func.ultimo_ponto : "-"}
+                          </p>
+                        </span>
+                        <span
+                          className="permissions-delete"
+                          onClick={() => removeWorker(func.id, perm)}
+                        >
+                          <img src={Delete} />
+                        </span>
+                      </div>
+                      <hr />
+                    </span>
+                  ))}
               </div>
             ))
           ) : (
