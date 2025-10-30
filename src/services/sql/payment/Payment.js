@@ -10,7 +10,7 @@ const api = axios.create({
 });
 
 export const insertPayment = async (valor, dataPagamento, status, idCartaoCredito, idEmpresa) => {
-  const response = await api.patch(
+  const response = await api.post(
     `/api/admin/pagamento/inserir`,
     {valor, dataPagamento, status, idCartaoCredito, idEmpresa}
   );

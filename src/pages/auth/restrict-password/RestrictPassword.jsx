@@ -3,6 +3,7 @@ import ReturnArrow from "../../../components/return-arrow/ReturnArrow";
 import "./RestrictPassword.css";
 import Snackbar from "../../../components/snackbar/Snackbar";
 import { useLocation, useNavigate } from "react-router-dom";
+import { updateSenhaRestrita } from "../../../services/sql/enterprise/Enterprise";
 
 function RestrictPassword() {
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -15,15 +16,8 @@ function RestrictPassword() {
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirm] = useState("");
-
   const [passwordError, setPasswordError] = useState(false);
   const [confirmError, setConfirmError] = useState(false);
-
-  const testPassword = () =>
-    /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}\[\]:;<>,.?~\\/\-]).{8,}$/.test(
-      password
-    );
-
   const [snackbar, setSnackbar] = useState({
     title: "",
     message: "",
@@ -31,28 +25,32 @@ function RestrictPassword() {
     visible: false,
   });
 
-  const showSnackbar = async (title, message, type, timeSleeping) => {
+  const testPassword = () =>
+    /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}\[\]:;<>,.?~\\/\-]).{8,}$/.test(
+      password
+    );
+
+  const showSnackbar = async (title, message, type) => {
     setSnackbar({ title, message, type, visible: true });
     await sleep(4000);
     setSnackbar((prev) => ({ ...prev, visible: false }));
   };
 
-  const navigateHome = () => {
-    if (!confirmPassword || !password) {
-      showSnackbar("Erro", "Preencha todos os campos.", "error", 2000);
+  const navigateHome = async () => {
+    if (!password || !confirmPassword) {
+      showSnackbar("Erro", "Preencha todos os campos.", "error");
       return;
     }
     if (!testPassword()) {
       showSnackbar(
         "Erro",
         "A senha deve ter pelo menos 8 caracteres, 1 símbolo, 1 letra maiúscula e 1 número.",
-        "error",
-        2000
+        "error"
       );
       return;
     }
-    if (confirmPassword != password) {
-      showSnackbar("Erro", "As duas senhas devem ser iguais.", "error", 2000);
+    if (password !== confirmPassword) {
+      showSnackbar("Erro", "As duas senhas devem ser iguais.", "error");
       return;
     }
 
@@ -60,20 +58,27 @@ function RestrictPassword() {
 
     if (onLogin) {
       empresa = onLogin;
-      // saveSenhaRestritaPorId(empresa.id, password)
+      try {
+        await updateSenhaRestrita(onLogin.id, password);
+      } catch (err) {
+        showSnackbar(
+          "Erro",
+          "Houve um erro. Tente novamente mais tarde.",
+          "error"
+        );
+        return;
+      }
     } else if (onLogon) {
       empresa = onLogon;
-
-      if (empresa.plan == "gratis") {
-        // const basicInfos = inserirEmpresa(itens).id;
-        const basicInfos = {
-          id: 2,
-          code: "aaa001",
-        };
-        empresa.id = basicInfos.id;
-        empresa.code = basicInfos.code;
-      } else {
-        // saveSenhaRestritaPorId(empresa.id, password)
+      try {
+        await updateSenhaRestrita(onLogon.id, password);
+      } catch (err) {
+        showSnackbar(
+          "Erro",
+          "Houve um erro. Tente novamente mais tarde.",
+          "error"
+        );
+        return;
       }
     }
 
@@ -106,18 +111,14 @@ function RestrictPassword() {
               passwordError ? "error" : ""
             }`}
             type="password"
-            onChange={(e) => {
-              setPassword(e.target.value);
-            }}
+            onChange={(e) => setPassword(e.target.value)}
             placeholder="Senha"
             id="password"
           />
           <input
             className={`restrict-password-input ${confirmError ? "error" : ""}`}
             type="password"
-            onChange={(e) => {
-              setConfirm(e.target.value);
-            }}
+            onChange={(e) => setConfirm(e.target.value)}
             placeholder="Confirmar senha"
             id="confirmPassword"
           />

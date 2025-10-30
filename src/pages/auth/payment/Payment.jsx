@@ -3,10 +3,14 @@ import "./Payment.css";
 import PixIcon from "../../../assets/pix.svg";
 import BoletoCodebar from "../../../assets/boleto-codebar.svg";
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 import Snackbar from "../../../components/snackbar/Snackbar";
-import { getEmpresaIdCode, insertEmpresa } from "../../../services/sql/enterprise/Enterprise";
-import { insertPayment } from "../../../services/sql/payment/Payment";
+import {
+  getEmpresaIdCode,
+  insertEmpresa,
+} from "../../../services/sql/enterprise/Enterprise";
+import { insertCreditCard } from "../../../services/sql/credit-card/CreditCard";
+import Loading from "../../../components/loading/Loading";
 
 function Payment() {
   const navigate = useNavigate();
@@ -25,6 +29,7 @@ function Payment() {
   const [receiptName, setReceiptName] = useState("");
 
   const [isFunctionExecuted, setFunctionExecute] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [snackbar, setSnackbar] = useState({
     title: "",
@@ -32,30 +37,21 @@ function Payment() {
     type: "",
     visible: false,
   });
-  
-  const [errors, setErrors] = useState({
-    cnpj: false,
-    email: false,
-    password: false,
-    confirm: false,
-  });
 
-  const showSnackbar = async (title, message, type, timeSleeping) => {
+  const showSnackbar = async (title, message, type) => {
     setSnackbar({ title, message, type, visible: true });
     await sleep(4000);
     setSnackbar((prev) => ({ ...prev, visible: false }));
   };
 
   const adjustCardNumber = (e) => {
-    let value = e.target.value.replace(/\D/g, "");
-    value = value.slice(0, 16);
+    let value = e.target.value.replace(/\D/g, "").slice(0, 16);
     value = value.replace(/(\d{4})(?=\d)/g, "$1 ");
     setCardNumber(value);
   };
 
   const adjustExpireDate = (e) => {
-    let value = e.target.value.replace(/\D/g, "");
-    value = value.slice(0, 4);
+    let value = e.target.value.replace(/\D/g, "").slice(0, 4);
     value = value.replace(/(\d{2})(?=\d)/g, "$1/");
     setExpireDate(value);
   };
@@ -78,50 +74,84 @@ function Payment() {
   }, []);
 
   async function navigateThanks() {
-    if (paymentMethod == "cartao") {
+    if (paymentMethod === "cartao") {
       if (!cardNumber || !cvv || !expireDate || !nameInCard || !receiptName) {
-        showSnackbar("Erro", "Preencha os campos corretamente.", "error", 2000);
+        showSnackbar("Erro", "Preencha os campos corretamente.", "error");
         return;
       }
     }
 
     if (isFunctionExecuted) {
-      showSnackbar("Erro", "Pagamento em andamento. Aguarde.", "error", 1500);
-    } else {
-      setFunctionExecute(true);
-      await sleep(3000);
-      let onLogon = JSON.parse(sessionStorage.getItem("onLogon"));
-      let basicInfos = {}
-      try {
-        await insertEmpresa(onLogon.cnpj, onLogon.name, onLogon.password, "", onLogon.image, onLogon.email, onLogon.sector, "", 2);
-        basicInfos = await getEmpresaIdCode(onLogon.cnpj);
-      } catch (err) {
-        showSnackbar("Erro", "Houve um erro. Tente novamente mais tarde.", "error");
-      }
-      
-      onLogon = {
-        sector: basicInfos.ramoatuacao,
-        code: basicInfos.codigo,
-        id: basicInfos.id,
-        email: basicInfos.email,
-        image: basicInfos.imagemUrl,
-        name: basicInfos.name
-      };
-      sessionStorage.setItem("onLogon", JSON.stringify(onLogon));
-
-      try {
-        await insertPayment(time == "mensal" ? 2499.90 : 24999.90, new Date(), "Pago", onLogon.id, onLogon.id);
-      } catch (err) {
-        showSnackbar("Erro", "Houve um erro. Tente novamente mais tarde.", "error");
-      }
-      showSnackbar("Sucesso", "Pagamento efetuado! Redirecionando...", "success", 2000);
-      await sleep(2000);
-      navigate("/obrigado");
+      showSnackbar("Erro", "Pagamento em andamento. Aguarde.", "error");
+      return;
     }
+
+    setIsLoading(true);
+    setFunctionExecute(true);
+
+    await sleep(3000);
+    let onLogon = JSON.parse(sessionStorage.getItem("onLogon"));
+    let basicInfos = {};
+    try {
+      await insertEmpresa(
+        onLogon.cnpj,
+        onLogon.name,
+        onLogon.password,
+        "i23A5678",
+        onLogon.image,
+        onLogon.email,
+        onLogon.sector,
+        "",
+        2
+      );
+      basicInfos = await getEmpresaIdCode(onLogon.cnpj);
+    } catch (err) {
+      showSnackbar(
+        "Erro",
+        "Houve um erro. Tente novamente mais tarde.",
+        "error"
+      );
+      setIsLoading(false);
+      setFunctionExecute(false);
+      return;
+    }
+
+    onLogon = {
+      sector: basicInfos.ramoatuacao,
+      code: basicInfos.codigo,
+      id: basicInfos.id,
+      email: basicInfos.email,
+      image: basicInfos.imagemUrl,
+      name: basicInfos.name,
+    };
+    sessionStorage.setItem("onLogon", JSON.stringify(onLogon));
+
+    try {
+      await insertCreditCard(cardNumber, nameInCard, expireDate, cvv, onLogon.id);
+    } catch (err) {
+      showSnackbar(
+        "Erro",
+        "Houve um erro. Tente novamente mais tarde.",
+        "error"
+      );
+      setIsLoading(false);
+      setFunctionExecute(false);
+      return;
+    }
+
+    showSnackbar("Sucesso", "Pagamento efetuado! Redirecionando...", "success");
+    await sleep(2000);
+    setIsLoading(false);
+    navigate("/obrigado");
   }
 
   return (
     <section className="payment-section">
+      {isLoading && (
+        <div className="loading">
+          <Loading />
+        </div>
+      )}
       <Snackbar
         type={snackbar.type}
         title={snackbar.title}
@@ -229,6 +259,7 @@ function Payment() {
                 value={cardNumber}
                 onChange={adjustCardNumber}
                 className="payment-input"
+                disabled={isLoading}
               />
               <div className="payment-input-group">
                 <input
@@ -236,9 +267,11 @@ function Payment() {
                   placeholder="CVV*"
                   required
                   id="cvv"
-                  maxLength={3}
-                  onChange={(e) => setCvv(e.target.value)}
+                  maxLength="3"
+                  value={cvv}
+                  onChange={(e) => setCvv(e.target.value.replace(/\D/g, ""))}
                   className="payment-input"
+                  disabled={isLoading}
                 />
                 <input
                   type="text"
@@ -249,6 +282,7 @@ function Payment() {
                   onChange={adjustExpireDate}
                   id="cardExpireDate"
                   className="payment-input"
+                  disabled={isLoading}
                 />
               </div>
               <input
@@ -258,6 +292,7 @@ function Payment() {
                 id="cardEnterpriseName"
                 onChange={(e) => setNameInCard(e.target.value)}
                 className="payment-input"
+                disabled={isLoading}
               />
               <input
                 type="text"
@@ -265,67 +300,15 @@ function Payment() {
                 id="receiptEnterpriseName"
                 onChange={(e) => setReceiptName(e.target.value)}
                 className="payment-input"
+                disabled={isLoading}
               />
               <button
                 className="payment-navigate-thanks"
                 onClick={navigateThanks}
+                disabled={isLoading}
               >
                 Avançar
               </button>
-            </div>
-          )}
-          {paymentMethod === "pix" && (
-            <div className="payment-pix-pay">
-              <h3>
-                Pague em:{" "}
-                <span className="payment-regressive-time">{`${minutesLeft}:${secondsLeft}`}</span>
-              </h3>
-              <div className="payment-pix-area">
-                <h3>
-                  Código{" "}
-                  <img
-                    src={PixIcon}
-                    alt="Ícone PIX"
-                    className="payment-pix-icon"
-                  />
-                </h3>
-                <div className="payment-pix-code">
-                  <h3>
-                    00020126580014BR.GOV.BCB.PIX0136d4b5f7e8-3f4a-4e8e-9c3a-2b7b6e6c6f1a52040000530398654041.005802BR5925Sinara
-                    Tecnologia em Informática6009SAOPAULO62070503***6304B14F
-                  </h3>
-                </div>
-              </div>
-              {timeLeft.getMinutes() === 0 && timeLeft.getSeconds() === 0 ? (
-                <button className="payment-navigate-disabled">Avançar</button>
-              ) : (
-                <button
-                  className="payment-navigate-thanks"
-                  onClick={navigateThanks}
-                >
-                  Avançar
-                </button>
-              )}
-            </div>
-          )}
-          {paymentMethod === "boleto" && (
-            <div className="payment-boleto-pay">
-              <div className="payment-boleto-area">
-                <h3>Boleto</h3>
-                <div className="payment-boleto-codebar">
-                  <img src={BoletoCodebar} alt="Código de barras de boleto" />
-                </div>
-              </div>
-              {timeLeft.getMinutes() === 0 && timeLeft.getSeconds() === 0 ? (
-                <button className="payment-navigate-disabled">Avançar</button>
-              ) : (
-                <button
-                  className="payment-navigate-thanks"
-                  onClick={navigateThanks}
-                >
-                  Avançar
-                </button>
-              )}
             </div>
           )}
         </div>

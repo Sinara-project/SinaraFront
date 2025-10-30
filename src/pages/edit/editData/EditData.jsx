@@ -3,6 +3,12 @@ import { useState } from "react";
 import Snackbar from "../../../components/snackbar/Snackbar";
 import ReturnArrow from "../../../components/return-arrow/ReturnArrow";
 import { useLocation, useNavigate } from "react-router-dom";
+import {
+  editEmpresa,
+  getEnterpriseById,
+  updateSenhaRestrita,
+} from "../../../services/sql/enterprise/Enterprise";
+import Loading from "../../../components/loading/Loading";
 
 function EditData() {
   const location = useLocation();
@@ -10,7 +16,6 @@ function EditData() {
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
   const { type } = location.state;
-
   const id = JSON.parse(localStorage.getItem("user")).id;
 
   const [password, setPassword] = useState("");
@@ -21,6 +26,8 @@ function EditData() {
     type: "",
     visible: false,
   });
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const showSnackbar = async (title, message, type) => {
     setSnackbar({ title, message, type, visible: true });
@@ -41,9 +48,7 @@ function EditData() {
     navigate("/configuracoes");
   };
 
-  const edit = () => {
-    console.log("algo");
-
+  const edit = async () => {
     if (!testPassword()) {
       showSnackbar(
         "Erro",
@@ -58,17 +63,48 @@ function EditData() {
       return;
     }
 
-    type == "normal" ? {
-      // editarSenhaPorId(id);
-    } : {
-      // editarSenhaAreaRestrita(id);
-    }
+    setIsLoading(true);
 
-    showSnackbar("Sucesso", "A senha foi alterada com sucesso!", "success");
-    endScreen();
+    try {
+      if (type === "normal") {
+        const empresa = await getEnterpriseById(id);
+        await editEmpresa(
+          empresa.id,
+          empresa.cnpj,
+          empresa.nome,
+          password,
+          empresa.senhaAreaRestrita,
+          empresa.imagemUrl,
+          empresa.email,
+          empresa.ramoAtuacao,
+          empresa.telefone,
+          empresa.idPlano
+        );
+      } else {
+        await updateSenhaRestrita(id, password);
+      }
+
+      showSnackbar("Sucesso", "A senha foi alterada com sucesso!", "success");
+      await endScreen();
+    } catch (err) {
+      showSnackbar(
+        "Erro",
+        "Houve um erro. Tente novamente mais tarde.",
+        "error"
+      );
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
   };
+
   return (
     <section className="edit-section">
+      {isLoading && (
+        <div className="loading">
+          <Loading />
+        </div>
+      )}
       <ReturnArrow lastEndpoint={"/configuracoes"} />
       <Snackbar
         type={snackbar.type}
@@ -77,7 +113,7 @@ function EditData() {
         isVisible={snackbar.visible}
       />
       <div className="edit-container">
-        {type == "normal" ? (
+        {type === "normal" ? (
           <span className="edit-text-group">
             <h1 className="edit-h1">Editar senha</h1>
             <p>Edite a senha da sua conta</p>
@@ -94,9 +130,7 @@ function EditData() {
             className={`edit-input`}
             type="password"
             placeholder="Senha"
-            onChange={(e) => {
-              setPassword(e.target.value);
-            }}
+            onChange={(e) => setPassword(e.target.value)}
           />
           <input
             className={`edit-input`}

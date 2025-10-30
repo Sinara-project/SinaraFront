@@ -34,15 +34,44 @@ export const insertEmpresa = async (
   return response.data;
 };
 
-export const updateSenhaRestrita = async (id, senhaRestrita) => {
+export const editEmpresa = async (
+  id,
+  cnpj,
+  nome,
+  senha,
+  senhaAreaRestrita,
+  imagemUrl,
+  email,
+  ramoAtuacao,
+  telefone,
+  idPlano
+) => {
+  const response = await api.put(`/api/admin/empresa/atualizar/${id}`, {
+    cnpj,
+    nome,
+    senha,
+    senhaAreaRestrita,
+    imagemUrl,
+    email,
+    ramoAtuacao,
+    telefone,
+    idPlano,
+  });
+  return response.data;
+};
+
+export const updateSenhaRestrita = async (id, novaSenha) => {
   const response = await api.patch(
-    `/api/admin/empresa/atualizarSenhaAreaRestrita/${id}`
+    `/api/admin/empresa/atualizarSenhaAreaRestrita/${id}`,
+    { novaSenha }
   );
   return response.data;
 };
 
 export const getEmpresaIdCode = async (cnpj) => {
-  const response = await api.get(`/api/admin/empresa/obterId/${cnpj}`);
+  const response = await api.get(
+    `/api/admin/empresa/obterEmpresaPorCnpj/${cnpj}`
+  );
   return response.data;
 };
 

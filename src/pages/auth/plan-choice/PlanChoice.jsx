@@ -17,13 +17,9 @@ function PlanChoice() {
   const navigateRestrictPassword = () => {
     setPlan("gratis");
     let onLogon = JSON.parse(sessionStorage.getItem("onLogon"));
-    onLogon.plano_inicial = plan;
-    onLogon.id_plano = 1;
-    // createEmpresa(coisas)
+    onLogon.plan = plan;
     const id = 1;
-    // getIdDeEmpresaPorCnpj(cnpj)
     const code = "aaa001";
-    // getEmpresaCodigoPorCnpj(cnpj)
     onLogon = {
       id: id,
       cnpj: onLogon.cnpj,

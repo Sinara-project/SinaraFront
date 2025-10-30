@@ -3,6 +3,11 @@ import ReturnArrow from "../../../components/return-arrow/ReturnArrow";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import Snackbar from "../../../components/snackbar/Snackbar";
+import {
+  getEmpresaIdCode,
+  getEnterpriseById,
+} from "../../../services/sql/enterprise/Enterprise";
+import Loading from "../../../components/loading/Loading";
 
 function Login() {
   const navigate = useNavigate();
@@ -17,18 +22,7 @@ function Login() {
     visible: false,
   });
   const [errors, setErrors] = useState({ cnpj: false, password: false });
-
-  const empresas = [
-    {
-      id: 2,
-      cnpj: "43.442.344/0001-34",
-      email: "friboi@gmail.com",
-      nome: "Friboi",
-      senha: "Friboi@123",
-      senhaRestrita: "Friboi@123",
-      codigo: "aaa001"
-    },
-  ];
+  const [isLoading, setIsLoading] = useState(false);
 
   const adjustCNPJ = (e) => {
     let value = e.target.value.replace(/\D/g, "");
@@ -41,7 +35,7 @@ function Login() {
   };
 
   const testCnpj = () =>
-    /[0-9]{2}\.?[0-9]{3}\.?[0-9]{3}\/0001-?[0-9]{2}/.test(cnpj);
+    /[0-9]{2}\.?[0-9]{3}\.?[0-9]{3}\/?[0-9]{4}-?[0-9]{2}/.test(cnpj);
 
   const showSnackbar = async (title, message, type) => {
     setSnackbar({ title, message, type, visible: true });
@@ -63,9 +57,28 @@ function Login() {
       return;
     }
 
-    const empresa = empresas.find((e) => e.cnpj === cnpj);
+    setIsLoading(true);
 
-    if (!empresa) {
+    let idEmpresa;
+    try {
+      const enterprise = await getEmpresaIdCode(
+        Number(cnpj.replace(/\D/g, ""))
+      );
+      idEmpresa = enterprise.id;
+    } catch (err) {
+      console.log(err);
+    }
+
+    let empresa;
+    try {
+      empresa = await getEnterpriseById(idEmpresa);
+    } catch (err) {
+      console.log(err);
+    }
+
+    setIsLoading(false);
+
+    if (!idEmpresa) {
       setErrors((prev) => ({ ...prev, cnpj: true }));
       showSnackbar("Erro", "Empresa não encontrada.", "error");
       return;
@@ -77,24 +90,17 @@ function Login() {
       return;
     }
 
-    const imagemEmpresa =
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7R72IzYtgQMU72EdMg1Gyy1AGX9Rp7eu5Dg&s";
-      // getImagemDeEmpresaPorCnpjNoGoverno(empresa.cnpj)
-
-    const ramoDeAtuacao = "Alimentício";
-      // getRamoAtuacaoPorId(empresa.id)
-
-    const hasRestrictPassword = empresa.senhaRestrita ? true : false;
+    const hasRestrictPassword = empresa.senhaAreaRestrita ? true : false;
 
     const onLogin = {
       id: empresa.id,
       cnpj: empresa.cnpj,
       name: empresa.nome,
-      image: imagemEmpresa,
+      image: empresa.imagemUrl,
       email: empresa.email,
-      sector: ramoDeAtuacao,
+      sector: empresa.ramoAtuacao,
       code: empresa.codigo,
-      restrictPassword: hasRestrictPassword
+      restrictPassword: hasRestrictPassword,
     };
 
     sessionStorage.setItem("onLogin", JSON.stringify(onLogin));
@@ -108,6 +114,11 @@ function Login() {
 
   return (
     <section className="login-section">
+      {isLoading && (
+        <div className="loading">
+          <Loading />
+        </div>
+      )}
       <Snackbar
         type={snackbar.type}
         title={snackbar.title}
@@ -127,17 +138,20 @@ function Login() {
             onChange={adjustCNPJ}
             value={cnpj}
             maxLength={18}
+            disabled={isLoading}
           />
           <input
             className={`login-input ${errors.password ? "error" : ""}`}
             type="password"
             placeholder="Senha"
             onChange={(e) => setPassword(e.target.value)}
+            disabled={isLoading}
           />
           <button
             className="login-navigate-code"
             type="button"
             onClick={navigateLoginConfirm}
+            disabled={isLoading}
           >
             Avançar
           </button>
