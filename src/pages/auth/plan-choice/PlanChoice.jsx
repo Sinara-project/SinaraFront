@@ -17,20 +17,16 @@ function PlanChoice() {
   const navigateRestrictPassword = () => {
     setPlan("gratis");
     let onLogon = JSON.parse(sessionStorage.getItem("onLogon"));
-    onLogon.plano_inicial = plan;
-    onLogon.id_plano = 1;
-    // createEmpresa(coisas)
+    onLogon.plan = plan;
     const id = 1;
-    // getIdDeEmpresaPorCnpj(cnpj)
     const code = "aaa001";
-    // getEmpresaCodigoPorCnpj(cnpj)
     onLogon = {
       id: id,
       cnpj: onLogon.cnpj,
       email: onLogon.email,
-      image: onLogon.imagem_url,
-      name: onLogon.nome,
-      sector: onLogon.ramo_atuacao,
+      image: onLogon.image,
+      name: onLogon.name,
+      sector: onLogon.sector,
       code: code
     };
     sessionStorage.setItem("onLogon", JSON.stringify(onLogon));
@@ -40,18 +36,8 @@ function PlanChoice() {
 
   const navigatePremiumChoice = () => {
     setPlan("premium");
-    let onLogon = JSON.parse(sessionStorage.getItem("onLogon"));
-    onLogon.plano_inicial = plan;
-    onLogon.id_plano = 2;
-
-    // getIdDeEmpresaPorCnpj(cnpj)
-    onLogon = {
-      cnpj: onLogon.cnpj,
-      email: onLogon.email,
-      image: onLogon.imagem_url,
-      name: onLogon.nome,
-      firstPlan: plan
-    }
+    const onLogon = JSON.parse(sessionStorage.getItem("onLogon"));
+    onLogon.firstPlan = plan;
     sessionStorage.setItem("onLogon", JSON.stringify(onLogon));
 
     navigate("/pagamento");

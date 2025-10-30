@@ -7,6 +7,12 @@
     background-color: #FFF6F4;
 }
 
+.logon-worker-loading {
+    position: absolute;
+    top: 50px;
+    right: 50px;
+}
+
 .logon-worker-datadropdown-container {
     pointer-events: none;
     position: absolute;

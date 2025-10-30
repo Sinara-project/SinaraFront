@@ -4,6 +4,13 @@ import Snackbar from "../../../components/snackbar/Snackbar";
 import ReturnArrow from "../../../components/return-arrow/ReturnArrow";
 import Enter from "../../../assets/enter-blue.svg";
 import DataDropdown from "../../../components/data-dropdown/DataDropdown";
+import { getPermissionsByIdEmpresa } from "../../../services/mongoDB/Permissions/Permissions";
+import {
+  getWorkerIdByCpf,
+  insertWorker,
+} from "../../../services/sql/workers/Workers";
+import { insertWorkerInPermission } from "../../../services/mongoDB/Permissions/Permissions";
+import Loading from "../../../components/loading/Loading";
 
 function LogonWorker() {
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -23,28 +30,11 @@ function LogonWorker() {
   const [selectedPerms, selectPerms] = useState([]);
   const [workload, setWorkload] = useState("");
 
+  const [isLoading, setLoading] = useState(false);
+
   const [styleWorkload, setStyleWorkload] = useState("");
 
-  const permsBD = [
-    {
-      id: 1,
-      idEmpresa: 1,
-      nome_permissao: "Forms de captação",
-      id_funcionario: [1, 3],
-    },
-    {
-      id: 2,
-      idEmpresa: 1,
-      nome_permissao: "Forms de pré-tratamento",
-      id_funcionario: [3],
-    },
-    {
-      id: 3,
-      idEmpresa: 1,
-      nome_permissao: "Forms de tratamento primário",
-      id_funcionario: [2],
-    },
-  ];
+  const [permsBD, setPerms] = useState([]);
 
   const adjustCPF = (value) => {
     const digits = (value || "").replace(/\D/g, "");
@@ -57,31 +47,6 @@ function LogonWorker() {
       .replace(/\.(\d{3})(\d{1,2})$/, ".$1-$2");
 
     setCpf(formatted);
-  };
-
-  const adjustWorkload = (value) => {
-    if (!value) {
-      setWorkload("");
-      setStyleWorkload("");
-      return;
-    }
-
-    const digits = value.replace(/\D/g, "");
-
-    const limited = digits.slice(0, 3);
-
-    setWorkload(limited);
-
-    const isDeletingH =
-      value.endsWith("h") === false && styleWorkload.endsWith("h");
-
-    if (isDeletingH) {
-      setStyleWorkload(limited);
-      return;
-    }
-
-    const formatted = limited ? `${limited}h` : "";
-    setStyleWorkload(formatted);
   };
 
   const togglePerm = (permId) => {
@@ -101,18 +66,29 @@ function LogonWorker() {
   };
 
   useEffect(() => {
-    const newPerms = [];
-    permsBD.forEach((perm) => {
-      const data = {
-        name: perm.nome_permissao,
-        value: perm.id,
-      };
+    setLoading(true);
+    async function getPerms() {
+      try {
+        const data = await getPermissionsByIdEmpresa(
+          JSON.parse(localStorage.getItem("user")).id
+        );
 
-      newPerms.push(data);
-    });
+        setPerms(data);
 
-    setAdaptedPerms(newPerms);
-    console.log(adaptedPerms);
+        const newPerms = data.map((perm) => ({
+          name: perm.nomePermissao,
+          value: perm.id,
+        }));
+
+        setAdaptedPerms(newPerms);
+      } catch (e) {
+        console.log(e);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    getPerms();
   }, []);
 
   const generateDefaultPassword = () => {
@@ -125,91 +101,151 @@ function LogonWorker() {
 
     const digits = String(id % 1000).padStart(3, "0");
 
-    return `${l1}${l2}${l3}${digits}`;
+    return `S${l1}${l2}${l3}${digits}00`;
   };
 
-  const createWorker = () => {
-    const trueCpf = cpf.replace(/\D/g, "");
-    const workerEmail = email.trim();
-    const workerName = name.trim();
-    const workerSector = sector.trim();
-    const workerWorkload = parseInt(workload, 10);
-
-    if (!trueCpf || trueCpf.length !== 11) {
-      showSnackbar("Erro", "O CPF deve ter 11 caracteres", "error");
+  const adjustWorkload = (value) => {
+    if (!value) {
+      setWorkload("");
+      setStyleWorkload("");
       return;
     }
 
-    if (!workerName) {
-      showSnackbar("Erro", "O nome é obrigatório", "error");
-      return;
-    }
+    const digits = value.replace(/\D/g, "");
+    const limited = digits.slice(0, 3);
 
-    if (!workerEmail || !/.+@.+\.com/.test(workerEmail)) {
-      showSnackbar("Erro", "E-mail inválido", "error");
-      return;
-    }
+    setWorkload(limited);
+    setStyleWorkload(limited ? `${limited}h` : "");
+  };
 
-    if (!workerSector || workerSector.length < 2) {
-      showSnackbar("Erro", "O setor deve ter pelo menos 2 caracteres", "error");
-      return;
-    }
+  const createWorker = async () => {
+    setLoading(true);
 
-    if (!workload || isNaN(workerWorkload) || workerWorkload <= 0) {
-      showSnackbar("Erro", "Informe uma carga horária válida", "error");
-      return;
-    }
+    try {
+      const trueCpf = cpf.replace(/\D/g, "");
+      const workerEmail = email.trim();
+      const workerName = name.trim();
+      const workerSector = sector.trim();
 
-    if (workload > 744) {
+      const workerWorkload = parseInt(
+        workload || styleWorkload.replace(/\D/g, ""),
+        10
+      );
+
+      if (!trueCpf || trueCpf.length !== 11) {
+        showSnackbar("Erro", "O CPF deve ter 11 caracteres", "error");
+        setLoading(false);
+        return;
+      }
+
+      if (!workerName) {
+        showSnackbar("Erro", "O nome é obrigatório", "error");
+        setLoading(false);
+        return;
+      }
+
+      if (!workerEmail || !/.+@.+\.com/.test(workerEmail)) {
+        showSnackbar("Erro", "E-mail inválido", "error");
+        setLoading(false);
+        return;
+      }
+
+      if (!workerSector || workerSector.length < 2) {
+        showSnackbar(
+          "Erro",
+          "O setor deve ter pelo menos 2 caracteres",
+          "error"
+        );
+        setLoading(false);
+        return;
+      }
+
+      if (!workerWorkload || isNaN(workerWorkload) || workerWorkload <= 0) {
+        showSnackbar("Erro", "Informe uma carga horária válida", "error");
+        setLoading(false);
+        return;
+      }
+
+      if (workerWorkload > 744) {
+        showSnackbar(
+          "Erro",
+          "A carga horária não pode ultrapassar 744 horas (1 mês)",
+          "error"
+        );
+        setLoading(false);
+        return;
+      }
+
+      if (!selectedPerms.length) {
+        showSnackbar("Erro", "Selecione ao menos uma permissão", "error");
+        setLoading(false);
+        return;
+      }
+
+      const worker = {
+        cpf: trueCpf,
+        nome: workerName,
+        email: workerEmail,
+        setor: workerSector,
+        id_empresa: JSON.parse(localStorage.getItem("user")).id,
+        horasPrevistas: workerWorkload,
+        ferias: false,
+        ativo: true,
+        senha: generateDefaultPassword(),
+      };
+
+      // Insere no banco SQL
+      await insertWorker(
+        worker.id_empresa,
+        worker.cpf,
+        worker.nome,
+        worker.email,
+        worker.setor,
+        worker.senha,
+        worker.horasPrevistas
+      );
+
+      // Pega o ID do trabalhador recém-criado
+      const idFunc = [await getWorkerIdByCpf(worker.cpf)];
+
+      // Associa permissões
+      for (const permId of selectedPerms) {
+        await insertWorkerInPermission(permId, idFunc);
+      }
+
+      showSnackbar(
+        "Operário criado",
+        `O operário foi criado com sucesso! A senha padrão da sua empresa é ${generateDefaultPassword()}`,
+        "success"
+      );
+
+      // Limpa campos se quiser
+      setCpf("");
+      setName("");
+      setEmail("");
+      setSector("");
+      setWorkload("");
+      setStyleWorkload("");
+      selectPerms([]);
+    } catch (err) {
+      console.log(err);
       showSnackbar(
         "Erro",
-        "A carga horária não pode ultrapassar 744 horas (1 mês)",
-
+        "Houve um erro. Tente novamente mais tarde.",
         "error"
       );
-      return;
+    } finally {
+      setLoading(false);
     }
-
-    if (!selectedPerms.length) {
-      showSnackbar("Erro", "Selecione ao menos uma permissão", "error");
-      return;
-    }
-
-    const worker = {
-      cpf: trueCpf,
-      nome: workerName,
-      email: workerEmail,
-      setor: workerSector,
-      id_empresa: JSON.parse(localStorage.getItem("user")).id,
-      horas_previstas: workerWorkload,
-      ferias: false,
-      ativo: true,
-      senha: generateDefaultPassword(),
-    };
-
-    // criarFuncionario(worker) => {
-    // getFuncionarioPorCPF(cpf) => {
-    const funcionario = {
-      id: 1,
-    };
-
-    selectedPerms.forEach((id) => {
-      // salvarFuncionarioNaPermissao(funcionario.id)
-      console.log(`A permissão ${id} recebeu o id do funcionário!`);
-    });
-    // }
-    // }
-
-    console.log("Funcionário criado:", worker);
-    showSnackbar(
-      "Funcionário criado",
-      `Funcionário criado com sucesso! A senha padrão da sua empresa é: ${generateDefaultPassword()}`,
-      "success"
-    );
   };
 
   return (
     <section className="logon-worker-section">
+      {isLoading && (
+        <div className="logon-worker-loading">
+          <Loading />
+        </div>
+      )}
       <ReturnArrow lastEndpoint={"/menu-area-restrita"} sidebar={true} />
       <Snackbar
         type={snackbar.type}

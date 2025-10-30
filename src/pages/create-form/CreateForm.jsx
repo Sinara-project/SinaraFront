@@ -6,19 +6,21 @@ import Add from "../../assets/create.svg";
 import Dropdown from "../../assets/dropdown.svg";
 import Snackbar from "../../components/snackbar/Snackbar";
 import PermissionsDropdown from "../../components/permissions/permissions-dropdown/PermissionsDropdown";
+import Loading from "../../components/loading/Loading";
+import { getPermissionsByIdEmpresa } from "../../services/mongoDB/Permissions/Permissions";
+import { createForm } from "../../services/mongoDB/Forms/Forms";
 
 function CreateForm() {
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
   const user = JSON.parse(localStorage.getItem("user"));
 
   const [formTitle, setTitle] = useState("");
   const [formDesc, setDesc] = useState("");
   const [formPerms, setFormPerms] = useState([]);
   const [form, editForm] = useState([
-    { id: crypto.randomUUID(), type: "write", mandatory: false, name: "" },
+    { id: crypto.randomUUID(), tipo: "text", obrigatorio: false, label: "" },
   ]);
-
+  const [isLoading, setLoading] = useState(false);
   const [selectPerms, setSelectPerms] = useState(false);
   const [perms, setPerms] = useState([]);
   const [snackbar, setSnackbar] = useState({
@@ -28,35 +30,19 @@ function CreateForm() {
     visible: false,
   });
 
-  const getPerms = () => {
-    // perms = await getPerms(user.id)
-    setPerms([
-      {
-        id: 1,
-        idEmpresa: 1,
-        nome: "Forms de captação",
-      },
-      {
-        id: 2,
-        idEmpresa: 1,
-        nome: "Forms de pré-tratamento",
-      },
-      {
-        id: 3,
-        idEmpresa: 1,
-        nome: "Forms de tratamento primário",
-      },
-    ]);
-  };
-
-  useEffect(() => {
-    getPerms();
-  }, []);
-
   const showSnackbar = async (title, message, type = "error") => {
     setSnackbar({ title, message, type, visible: true });
     await sleep(4000);
     setSnackbar((prev) => ({ ...prev, visible: false }));
+  };
+
+  const resetForm = () => {
+    setTitle("");
+    setDesc("");
+    setFormPerms([]);
+    editForm([
+      { id: crypto.randomUUID(), tipo: "text", obrigatorio: false, label: "" },
+    ]);
   };
 
   const togglePermission = (permId) => {
@@ -70,16 +56,13 @@ function CreateForm() {
   const updateField = (index, key, value) => {
     editForm((prev) => {
       const newForm = [...prev];
-      let field = { ...newForm[index], [key]: value };
-
-      if (key === "type" && value === "choice" && !field.choices) {
-        field.choices = ["", ""];
+      const field = { ...newForm[index], [key]: value };
+      if (key === "tipo" && value === "select" && !field.opcoes) {
+        field.opcoes = ["", ""]; // duas opções iniciais
       }
-
-      if (key === "type" && value === "write") {
-        delete field.choices;
+      if (key === "tipo" && value !== "select") {
+        delete field.opcoes;
       }
-
       newForm[index] = field;
       return newForm;
     });
@@ -93,122 +76,130 @@ function CreateForm() {
     editForm((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const addQuestion = (type) => {
+  const addQuestion = (tipo) => {
     editForm((prev) => [
       ...prev,
-      type === "choice"
+      tipo === "select"
         ? {
             id: crypto.randomUUID(),
-            type: "choice",
-            mandatory: false,
-            name: "",
-            choices: ["", ""],
+            tipo: "select",
+            obrigatorio: false,
+            label: "",
+            opcoes: ["", ""],
           }
-        : {
-            id: crypto.randomUUID(),
-            type: "write",
-            mandatory: false,
-            name: "",
-          },
+        : { id: crypto.randomUUID(), tipo, obrigatorio: false, label: "" },
     ]);
   };
 
-  const addChoice = (fieldIndex) => {
+  const addOption = (fieldIndex) => {
     editForm((prev) => {
       const newForm = [...prev];
       const field = { ...newForm[fieldIndex] };
-      field.choices = [...(field.choices || []), ""];
+      field.opcoes = [...(field.opcoes || []), ""];
       newForm[fieldIndex] = field;
       return newForm;
     });
   };
 
-  const updateChoice = (fieldIndex, choiceIndex, value) => {
+  const updateOption = (fieldIndex, optionIndex, value) => {
     editForm((prev) => {
       const newForm = [...prev];
       const field = { ...newForm[fieldIndex] };
-      const newChoices = [...(field.choices || [])];
-      newChoices[choiceIndex] = value;
-      field.choices = newChoices;
+      const newOptions = [...(field.opcoes || [])];
+      newOptions[optionIndex] = value;
+      field.opcoes = newOptions;
       newForm[fieldIndex] = field;
       return newForm;
     });
   };
 
-  const removeChoice = (fieldIndex, choiceIndex) => {
+  const removeOption = (fieldIndex, optionIndex) => {
     editForm((prev) => {
       const newForm = [...prev];
       const field = { ...newForm[fieldIndex] };
-
-      if ((field.choices?.length || 0) <= 2) {
+      if ((field.opcoes?.length || 0) <= 2) {
         showSnackbar(
           "Erro",
-          "Uma pergunta de escolha precisa ter pelo menos duas opções"
+          "Uma pergunta de seleção precisa ter pelo menos duas opções"
         );
         return newForm;
       }
-
-      field.choices = field.choices.filter((_, i) => i !== choiceIndex);
+      field.opcoes = field.opcoes.filter((_, i) => i !== optionIndex);
       newForm[fieldIndex] = field;
       return newForm;
     });
   };
 
-  const createForm = () => {
-    if (!formTitle.trim()) {
-      return showSnackbar("Erro", "O formulário precisa de um título");
+  useEffect(() => {
+    setLoading(true);
+    async function getPerms() {
+      try {
+        const data = await getPermissionsByIdEmpresa(user.id);
+        setPerms(data);
+      } catch (e) {
+        showSnackbar(
+          "Erro",
+          "Houve um erro. Tente novamente mais tarde.",
+          "error"
+        );
+      } finally {
+        setLoading(false);
+      }
     }
+    getPerms();
+  }, []);
 
-    if (formPerms.length === 0) {
+  const createForms = async () => {
+    setLoading(true);
+    if (!formTitle.trim())
+      return showSnackbar("Erro", "O formulário precisa de um título");
+    if (formPerms.length === 0)
       return showSnackbar(
         "Erro",
         "O formulário precisa de permissões para ser respondido"
       );
-    }
 
     for (let i = 0; i < form.length; i++) {
       const field = form[i];
-      if (!field.name.trim()) {
+      if (!field.label.trim())
         return showSnackbar(
           "Erro",
           `A pergunta ${i + 1} precisa ter um campo preenchido`
         );
-      }
-
-      if (field.type === "choice") {
-        const emptyChoice = field.choices.some((choice) => !choice.trim());
-        if (emptyChoice) {
+      if (field.tipo === "select") {
+        const emptyOption = field.opcoes.some((opt) => !opt.trim());
+        if (emptyOption)
           return showSnackbar(
             "Erro",
-            `A pergunta ${i + 1} possui opções vazias. Preencha todas as opções`
+            `A pergunta ${i + 1} possui opções vazias`
           );
-        }
       }
     }
 
-    const dataForm = {
-      idCriador: user.id,
-      titulo: formTitle,
-      descricao: formDesc,
-      permissoes: formPerms,
-      campos: form,
-    };
-
-    // criarFormulario(dataForm)
-    console.log(dataForm);
-
-    showSnackbar("Sucesso", "Formulário criado com sucesso!", "success");
+    try {
+      await createForm(user.id, formTitle, formDesc, form, formPerms);
+      showSnackbar("Sucesso", "Formulário criado com sucesso!", "success");
+      resetForm();
+    } catch (e) {
+      showSnackbar(
+        "Erro",
+        "Houve um erro. Tente novamente mais tarde",
+        "error"
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <section className="create-form-section">
+      {isLoading && (
+        <div className="create-form-loading">
+          <Loading />
+        </div>
+      )}
       <section className="create-form-content">
-        <Snackbar
-          type={snackbar.type}
-          title={snackbar.title}
-          message={snackbar.message}
-          isVisible={snackbar.visible}
-        />
+        <Snackbar {...snackbar} isVisible={snackbar.visible} />
         <h1 className="create-form-title">Criar formulário</h1>
         <input
           className="create-form-input-title"
@@ -223,11 +214,7 @@ function CreateForm() {
           onChange={(e) => setDesc(e.target.value)}
         />
         <div className="create-form-select-perm">
-          <button
-            onClick={() => {
-              setSelectPerms(!selectPerms);
-            }}
-          >
+          <button onClick={() => setSelectPerms(!selectPerms)}>
             <h4>Quem verá?</h4>
             <img src={Dropdown} alt="" />
           </button>
@@ -237,77 +224,91 @@ function CreateForm() {
             togglePermissions={togglePermission}
           />
         </div>
+
         {form.map((field, i) => (
           <div key={field.id} className="create-form-question">
             <div className="create-form-header">
               <div className="create-form-type-toggle">
                 <h4>Tipo: </h4>
                 <button
-                  className={field.type === "write" ? "active" : ""}
-                  onClick={() => updateField(i, "type", "write")}
+                  className={field.tipo === "text" ? "active" : ""}
+                  onClick={() => updateField(i, "tipo", "text")}
                 >
-                  Escrita
+                  Texto
                 </button>
                 <button
-                  className={field.type === "choice" ? "active" : ""}
-                  onClick={() => updateField(i, "type", "choice")}
+                  className={field.tipo === "number" ? "active" : ""}
+                  onClick={() => updateField(i, "tipo", "number")}
                 >
-                  Escolha
+                  Número
+                </button>
+                <button
+                  className={field.tipo === "select" ? "active" : ""}
+                  onClick={() => updateField(i, "tipo", "select")}
+                >
+                  Seleção
                 </button>
               </div>
               <button onClick={() => removeQuestion(i)}>
                 <img src={Close} alt="Remover" />
               </button>
             </div>
+
             <label className="create-form-mandatory">
               <h4>Obrigatório:</h4>
               <input
                 type="checkbox"
-                checked={field.mandatory}
-                onChange={(e) => updateField(i, "mandatory", e.target.checked)}
+                checked={field.obrigatorio}
+                onChange={(e) =>
+                  updateField(i, "obrigatorio", e.target.checked)
+                }
               />
-              <span className="create-form-mandatory-select"></span>
             </label>
+
             <input
               className="create-form-input-field"
               placeholder="Campo"
-              value={field.name}
-              onChange={(e) => updateField(i, "name", e.target.value)}
+              value={field.label}
+              onChange={(e) => updateField(i, "label", e.target.value)}
             />
-            {field.type === "choice" &&
-              (field.choices || []).map((choice, j) => (
+
+            {field.tipo === "select" &&
+              (field.opcoes || []).map((opt, j) => (
                 <div key={j} className="create-form-choice">
                   <input
-                    value={choice}
+                    value={opt}
                     placeholder={`Opção ${j + 1}`}
-                    onChange={(e) => updateChoice(i, j, e.target.value)}
+                    onChange={(e) => updateOption(i, j, e.target.value)}
                   />
                   <img
                     src={CloseRose}
                     alt="Remover"
-                    onClick={() => removeChoice(i, j)}
+                    onClick={() => removeOption(i, j)}
                   />
                 </div>
               ))}
-            {field.type === "choice" && (
+
+            {field.tipo === "select" && (
               <button
                 className="create-form-add-option"
-                onClick={() => addChoice(i)}
+                onClick={() => addOption(i)}
               >
                 <img src={Add} alt="" /> Adicionar opção
               </button>
             )}
           </div>
         ))}
+
         <div className="create-form-buttons">
           <button
             className="create-form-add-question"
-            onClick={() => addQuestion("write")}
+            onClick={() => addQuestion("text")}
           >
             <img src={Add} alt="" /> Adicionar campo
           </button>
         </div>
-        <button className="create-form-submit" onClick={createForm}>
+
+        <button className="create-form-submit" onClick={createForms}>
           Criar formulário
         </button>
       </section>
@@ -315,4 +316,4 @@ function CreateForm() {
   );
 }
 
-export default CreateForm;
+export default CreateForm;

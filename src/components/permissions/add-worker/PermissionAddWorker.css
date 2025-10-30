@@ -17,6 +17,12 @@
     opacity: 1;
 }
 
+.permission-add-worker-loading {
+    position: absolute;
+    top: 50px;
+    right: 50px;
+}
+
 .permission-add-worker-card {
     display: flex;
     align-items: center;

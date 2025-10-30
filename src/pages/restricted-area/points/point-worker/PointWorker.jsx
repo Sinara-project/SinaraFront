@@ -4,10 +4,14 @@ import Dropdown from "../../../../assets/dropdown.svg";
 import Clear from "../../../../assets/close-blue.svg";
 import ReturnArrow from "../../../../components/return-arrow/ReturnArrow";
 import { useParams } from "react-router-dom";
+import { getWorkerById } from "../../../../services/sql/workers/Workers";
+import { getPoints } from "../../../../services/sql/points/Points";
+import Loading from "../../../../components/loading/Loading";
 
 function PointWorker() {
   const { workerID } = useParams();
   const workerIdNum = Number(workerID);
+
   const [points, setPoints] = useState({
     workerName: "",
     totalHoursDiff: "",
@@ -15,45 +19,7 @@ function PointWorker() {
     data: [],
   });
   const [date, setDate] = useState(null);
-
-  const funcionariosBD = [
-    { id: 1, nome: "João Batista", horas_previstas: 230 },
-    { id: 2, nome: "Júlia Ramos", horas_previstas: 0 },
-    { id: 3, nome: "Rodrigo Soares", horas_previstas: 280 },
-  ];
-
-  const pontosBD = [
-    {
-      id: 1,
-      horario_entrada: new Date("2025-10-23T08:00:00"),
-      horario_saida: new Date("2025-10-23T17:00:00"),
-      idOperario: 1,
-    },
-    {
-      id: 2,
-      horario_entrada: new Date("2025-10-23T08:15:00"),
-      horario_saida: new Date("2025-10-23T17:10:00"),
-      idOperario: 2,
-    },
-    {
-      id: 3,
-      horario_entrada: new Date("2025-10-23T07:50:00"),
-      horario_saida: new Date("2025-10-23T16:45:00"),
-      idOperario: 3,
-    },
-    {
-      id: 4,
-      horario_entrada: new Date("2025-10-22T08:05:00"),
-      horario_saida: new Date("2025-10-22T17:05:00"),
-      idOperario: 1,
-    },
-    {
-      id: 5,
-      horario_entrada: new Date("2025-10-22T08:10:00"),
-      horario_saida: new Date("2025-10-22T17:00:00"),
-      idOperario: 2,
-    },
-  ];
+  const [isLoading, setLoading] = useState(false);
 
   const getDiffClass = (hoursDiff, minutesDiff) => {
     const h = parseFloat(hoursDiff) || 0;
@@ -62,95 +28,113 @@ function PointWorker() {
   };
 
   useEffect(() => {
-    let pontosArray = [];
+    const fetchWorkerPoints = async () => {
+      setLoading(true);
+      try {
+        const func = await getWorkerById(workerIdNum);
+        if (!func) {
+          setPoints({
+            workerName: "",
+            totalHoursDiff: "",
+            totalMinutesDiff: "",
+            data: [],
+          });
+          return;
+        }
 
-    const func = funcionariosBD.find((f) => f.id === workerIdNum);
-    if (!func) {
-      setPoints({
-        workerName: "",
-        totalHoursDiff: "",
-        totalMinutesDiff: "",
-        data: [],
-      });
-      return;
-    }
+        const allPoints = await getPoints();
 
-    const pontosFiltrados = pontosBD.filter(
-      (p) => p.idOperario === workerIdNum
-    );
+        const pontosFiltrados = allPoints.filter(
+          (p) => Number(p.idOperario) === workerIdNum
+        );
 
-    const pontosFiltradosPorData = date
-      ? pontosFiltrados.filter((p) => {
-          const entrada = new Date(p.horario_entrada);
-          entrada.setHours(0, 0, 0, 0);
-          const target = new Date(date);
-          target.setHours(0, 0, 0, 0);
-          return entrada.getTime() === target.getTime();
-        })
-      : pontosFiltrados;
+        const pontosPorData = date
+          ? pontosFiltrados.filter((p) => {
+              const entrada = new Date(p.horarioEntrada);
+              entrada.setHours(0, 0, 0, 0);
+              const alvo = new Date(date);
+              alvo.setHours(0, 0, 0, 0);
+              return entrada.getTime() === alvo.getTime();
+            })
+          : pontosFiltrados;
 
-    let totalWorkedHours = 0;
+        let pontosArray = [];
+        let totalWorkedHours = 0;
 
-    pontosFiltradosPorData.forEach((p) => {
-      const diffMs = p.horario_saida - p.horario_entrada;
-      const diffHoras = Math.floor(diffMs / (1000 * 60 * 60));
-      const diffMinutos = Math.floor((diffMs / (1000 * 60)) % 60);
-      totalWorkedHours += diffHoras + diffMinutos / 60;
+        pontosPorData.forEach((p) => {
+          const entrada = new Date(p.horarioEntrada);
+          const saida = p.horarioSaida ? new Date(p.horarioSaida) : null;
+          if (isNaN(entrada)) return;
 
-      const horasPrevistasDia = Math.floor(func.horas_previstas / 22);
-      const diferencaTotal = diffHoras + diffMinutos / 60 - horasPrevistasDia;
-      const sign = diferencaTotal >= 0 ? "+" : "-";
-      const absDiff = Math.abs(diferencaTotal);
-      const horas = Math.floor(absDiff);
-      const minutos = Math.round((absDiff - horas) * 60);
+          let diffHoras = 0;
+          let diffMinutos = 0;
+          if (saida && !isNaN(saida)) {
+            const diffMs = saida - entrada;
+            diffHoras = Math.floor(diffMs / (1000 * 60 * 60));
+            diffMinutos = Math.floor((diffMs / (1000 * 60)) % 60);
+            totalWorkedHours += diffHoras + diffMinutos / 60;
+          }
 
-      pontosArray.push({
-        workerID: func.id,
-        workerName: func.nome,
-        settedHours: horasPrevistasDia,
-        firstPoint: `${p.horario_entrada
-          .getHours()
-          .toString()
-          .padStart(2, "0")}:${p.horario_entrada
-          .getMinutes()
-          .toString()
-          .padStart(2, "0")}`,
-        lastPoint: p.horario_saida
-          ? `${p.horario_saida
-              .getHours()
-              .toString()
-              .padStart(2, "0")}:${p.horario_saida
-              .getMinutes()
-              .toString()
-              .padStart(2, "0")}`
-          : "-",
-        hoursDiff: `${sign}${horas.toString().padStart(2, "0")}`,
-        minutesDiff: minutos.toString().padStart(2, "0"),
-        entryDate: p.horario_entrada,
-      });
-    });
+          const horasPrevistas = Number(func.horasPrevistas) || 0;
+          const diferencaTotal = diffHoras + diffMinutos / 60 - horasPrevistas;
+          const sign = diferencaTotal >= 0 ? "+" : "-";
+          const absDiff = Math.abs(diferencaTotal);
+          const horas = Math.floor(absDiff);
+          const minutos = Math.round((absDiff - horas) * 60);
 
-    const horasPrevistasDia = Math.floor(func.horas_previstas / 22);
-    const totalExpectedHours =
-      pontosFiltradosPorData.length * horasPrevistasDia;
+          pontosArray.push({
+            workerID: func.id,
+            workerName: func.nome,
+            settedHours: horasPrevistas,
+            firstPoint: entrada.toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            }),
+            lastPoint:
+              saida && !isNaN(saida)
+                ? saida.toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })
+                : "-",
+            hoursDiff: `${sign}${horas.toString().padStart(2, "0")}`,
+            minutesDiff: minutos.toString().padStart(2, "0"),
+            entryDate: entrada,
+          });
+        });
 
-    const totalDiff = totalWorkedHours - totalExpectedHours;
-    const totalSign = totalDiff >= 0 ? "+" : "-";
-    const absTotalDiff = Math.abs(totalDiff);
-    const totalHours = Math.floor(absTotalDiff);
-    const totalMinutes = Math.round((absTotalDiff - totalHours) * 60);
+        pontosArray.sort((a, b) => b.entryDate - a.entryDate);
 
-    setPoints({
-      workerName: func.nome,
-      data: pontosArray,
-      totalHoursDiff: `${totalSign}${totalHours.toString().padStart(2, "0")}`,
-      totalMinutesDiff: totalMinutes.toString().padStart(2, "0"),
-    });
-  }, [date]);
+        const horasPrevistas = Number(func.horasPrevistas) || 0;
+        const totalExpectedHours = pontosPorData.length * horasPrevistas;
+        const totalDiff = totalWorkedHours - totalExpectedHours;
+        const totalSign = totalDiff >= 0 ? "+" : "-";
+        const absTotalDiff = Math.abs(totalDiff);
+        const totalHours = Math.floor(absTotalDiff);
+        const totalMinutes = Math.round((absTotalDiff - totalHours) * 60);
+
+        setPoints({
+          workerName: func.nome,
+          data: pontosArray,
+          totalHoursDiff: `${totalSign}${totalHours
+            .toString()
+            .padStart(2, "0")}`,
+          totalMinutesDiff: totalMinutes.toString().padStart(2, "0"),
+        });
+      } catch (err) {
+        console.error("Erro ao buscar pontos:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchWorkerPoints();
+  }, [workerIdNum, date]);
 
   return (
     <section className="point-worker-section">
       <ReturnArrow lastEndpoint={"/visualizar-pontos"} sidebar={true} />
+
       <section className="point-worker-content">
         <h1>Visualizar pontos - {points.workerName}</h1>
 
@@ -181,24 +165,28 @@ function PointWorker() {
               }}
             />
             {date && (
-              <img
-                src={Clear}
-                alt=""
-                onClick={() => {
-                  setDate(null);
-                }}
-              />
+              <img src={Clear} alt="limpar" onClick={() => setDate(null)} />
             )}
           </div>
+
           <h3
             className={`point-worker-bank ${getDiffClass(
               points.totalHoursDiff,
               points.totalMinutesDiff
             )}`}
           >
-            Banco de horas: <span>{points.totalHoursDiff}:{points.totalMinutesDiff}h</span>
+            Banco de horas:{" "}
+            <span>
+              {points.totalHoursDiff}:{points.totalMinutesDiff}h
+            </span>
           </h3>
         </div>
+
+        {isLoading && (
+          <div className="point-worker-loading">
+            <Loading />
+          </div>
+        )}
 
         <div className="point-worker-cards">
           {points.data.length === 0 ? (
@@ -216,7 +204,7 @@ function PointWorker() {
                       .padStart(2, "0")}/${point.entryDate.getFullYear()}`}
                   </h2>
                   <div>
-                    <p>Horas previstas: {point.settedHours}</p>
+                    <p>Horas previstas: {point.settedHours}h</p>
                     <p>Ponto inicial: {point.firstPoint}</p>
                     <p>Ponto final: {point.lastPoint}</p>
                   </div>

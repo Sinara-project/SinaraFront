@@ -3,10 +3,14 @@ import Snackbar from "../../../components/snackbar/Snackbar";
 import ReturnArrow from "../../../components/return-arrow/ReturnArrow";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { getEnterpriseById } from "../../../services/sql/enterprise/Enterprise";
+import Loading from "../../../components/loading/Loading";
 
 function RestrictedAreaEnter() {
   const navigate = useNavigate();
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+  const [isLoading, setLoading] = useState(false);
 
   const [password, setPassword] = useState();
   const [snackbar, setSnackbar] = useState({
@@ -15,8 +19,6 @@ function RestrictedAreaEnter() {
     type: "",
     visible: false,
   });
-
-  const truePassword = "Friboi@123";
 
   useEffect(() => {
     if (sessionStorage.getItem("rAreaLogged")) {
@@ -30,18 +32,39 @@ function RestrictedAreaEnter() {
     setSnackbar((prev) => ({ ...prev, visible: false }));
   };
 
-  const enter = () => {
+  const enter = async () => {
+    setLoading(true);
+    let truePassword;
+    try {
+      const data = await getEnterpriseById(
+        JSON.parse(localStorage.getItem("user")).id
+      );
+      truePassword = data.senhaAreaRestrita;
+    } catch (err) {
+      showSnackbar(
+        "Erro",
+        "Houve um erro. Tente novamente mais tarde.",
+        "error"
+      );
+    } finally {
+      setLoading(false);
+    }
+
     if (password != truePassword) {
       showSnackbar("Erro", "A senha está incorreta", "error");
       return;
     }
-
     sessionStorage.setItem("rAreaLogged", "true");
     navigate("/menu-area-restrita");
   };
 
   return (
     <section className="restricted-area-enter-section">
+      {isLoading && (
+        <div className="loading">
+          <Loading />
+        </div>
+      )}
       <Snackbar
         type={snackbar.type}
         title={snackbar.title}

@@ -7,6 +7,12 @@
     background-color: #FFF6F4;
 }
 
+.edit-worker-loading {
+    position: absolute;
+    top: 50px;
+    right: 50px;
+}
+
 .edit-worker-permsdropdown-container {
     pointer-events: none;
     position: absolute;

@@ -2,48 +2,95 @@ import Sidebar from "../../components/sidebar/Sidebar";
 import "./Home.css";
 import ETAImage from "../../assets/eta-image.png";
 import Dashboards from "../../assets/dashboards.svg";
-import Sheet from "../../assets/sheet.svg";
+import Worker from "../../assets/worker.svg";
 import Notification from "../../assets/notification.svg";
 import Notifications from "../../components/notifications/Notifications";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { getAllNotifications } from "../../services/mongoDB/Notifications/Notifications";
+import Loading from "../../components/loading/Loading";
+import {
+  getFormsQuantity,
+  getLastResponseId,
+} from "../../services/mongoDB/Forms/Forms";
+import {
+  getWorkerById,
+  getWorkersByEnterpriseId,
+} from "../../services/sql/workers/Workers";
 
 function Home() {
   const navigate = useNavigate();
 
-  const registeredReports = 30;
-  const lastResponse = "João Batista";
+  const [notifications, setNotifications] = useState([]);
+  const [notificationsLoading, setNotificationLoading] = useState(true);
 
-  const notifications = [
-    {
-      _id: 1,
-      data: new Date(2025, 9, 12, 13, 40),
-      mensagem: "O(a) operário(a) João Batista respondeu um formulário!",
-      tipo: "Operário",
-      categoria: "Formulário respondido",
-    },
-    {
-      _id: 2,
-      data: new Date(2025, 9, 12, 13, 40),
-      mensagem: "O(a) operário(a) Lucas Silvestre registrou um relatório!",
-      tipo: "Operário",
-      categoria: "Formulário registrado",
-    },
-  ];
-  
-  const [notificationsVisibility, setNotifications] = useState(false);
+  const [registeredForms, setRegisteredForms] = useState("-");
+  const [lastResponse, setLastResponse] = useState("-");
+
+  const [notificationsVisibility, setNotificationsVis] = useState(false);
+  const [isLoading, setLoading] = useState(false);
 
   const openNotifications = () => {
-    setNotifications(true);
-  }
+    setNotificationsVis(true);
+  };
 
   const closeNotifications = () => {
-    setNotifications(false);
-  }
+    setNotificationsVis(false);
+  };
+
+  useEffect(() => {
+    setLoading(true);
+
+    async function fetchData() {
+      try {
+        const userId = JSON.parse(localStorage.getItem("user")).id;
+
+        const notificationsPromise = getAllNotifications();
+        const lastResponseIdPromise = getLastResponseId(userId);
+        const quantityPromise = getFormsQuantity(userId);
+
+        const [notificationsData, lastResponseId, quantityData] =
+          await Promise.all([
+            notificationsPromise,
+            lastResponseIdPromise,
+            quantityPromise,
+          ]);
+
+        setNotifications(notificationsData);
+
+        try {
+          const worker = await getWorkerById(lastResponseId);
+          setLastResponse(worker.nome || "-");
+        } catch (err) {
+          console.log("Erro ao buscar worker:", err);
+          setLastResponse("-");
+        }
+
+        setRegisteredForms(quantityData);
+      } catch (err) {
+        console.log("Erro ao buscar dados:", err);
+      } finally {
+        setLoading(false);
+        setNotificationLoading(false);
+      }
+    }
+
+    fetchData();
+  }, []);
 
   return (
     <section className="home-section">
-      <Notifications isVisible={notificationsVisibility} closeNotifications={closeNotifications} notifications={notifications} />
+      <Notifications
+        isVisible={notificationsVisibility}
+        closeNotifications={closeNotifications}
+        notifications={notifications}
+        isLoading={notificationsLoading}
+      />
+      {isLoading && (
+        <div className="home-loading">
+          <Loading />
+        </div>
+      )}
       <div className="home-content">
         <section className="home-pone">
           <div className="home-pone-content">
@@ -62,8 +109,8 @@ function Home() {
         </section>
         <section className="home-ptwo">
           <div className="home-registered-reports">
-            <h1>{registeredReports}</h1>
-            <p>Relatórios registrados</p>
+            <h1>{registeredForms}</h1>
+            <p>Formulários registrados</p>
           </div>
           <div className="home-last-response">
             <h2>Último a responder: </h2>
@@ -73,7 +120,12 @@ function Home() {
         <section className="home-pthree">
           <h1>Principais ações</h1>
           <div className="home-options">
-            <div className="home-option" onClick={() => {navigate("/dashboards")}}>
+            <div
+              className="home-option"
+              onClick={() => {
+                navigate("/dashboards");
+              }}
+            >
               <img
                 src={Dashboards}
                 alt="Imagem de dashboard"
@@ -81,13 +133,18 @@ function Home() {
               />
               <h3 className="home-option-text">Acessar dashboards</h3>
             </div>
-            <div className="home-option" onClick={() => {navigate("/planilhas")}}>
+            <div
+              className="home-option"
+              onClick={() => {
+                navigate("/entrar-area-restrita");
+              }}
+            >
               <img
-                src={Sheet}
+                src={Worker}
                 alt="Imagem de planilha"
                 className="home-option-img"
               />
-              <h3 className="home-option-text">Abrir planilhas</h3>
+              <h3 className="home-option-text">Abrir área restrita</h3>
             </div>
             <div className="home-option" onClick={openNotifications}>
               <img
@@ -95,7 +152,7 @@ function Home() {
                 alt="Imagem de histórico/relógio"
                 className="home-option-img"
               />
-              <h3 className="home-option-text">Acessar histórico</h3>
+              <h3 className="home-option-text">Acessar notificações</h3>
             </div>
           </div>
         </section>

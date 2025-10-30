@@ -6,6 +6,12 @@
     overflow-x: hidden;
 }
 
+.permission-loading {
+    position: absolute;
+    top: 50px;
+    right: 50px;
+}
+
 .permissions-content {
     display: flex;
     justify-content: center;
@@ -24,6 +30,11 @@
         margin-top: 60px;
         margin-bottom: 60px;
         color: #FF7655;
+    }
+
+    h2 {
+        font-size: 30px;
+        color: #0B1B54;
     }
 
     hr {
@@ -120,6 +131,7 @@
 
         h2 {
             color: #0B1B54;
+            font-size: 22px;
         }
     }
 }
@@ -158,10 +170,7 @@
     border-radius: 10px;
     transition: all 0.3s ease;
 
-    span {
-        mask: url("../../../assets/delete.svg") no-repeat center;
-        mask-size: contain;
-        background-color: #F5F5F5;
+    img {
         width: 17px;
         height: 17px;
         padding: 0;

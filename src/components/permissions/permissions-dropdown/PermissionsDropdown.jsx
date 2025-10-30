@@ -10,7 +10,7 @@ function PermissionsDropdown({ isVisible, permissions, togglePermissions }) {
       {permissions.map((permission, i) => (
         <div key={permission.id}>
           <label className="permissions-dropdown-choice">
-            <h4>{permission.nome}</h4>
+            <h4>{permission.nomePermissao}</h4>
             <input
               type="checkbox"
               className="permissions-dropdown-checkbox"

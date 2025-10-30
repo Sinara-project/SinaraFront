@@ -6,6 +6,12 @@
     overflow-x: hidden;
 }
 
+.workers-loading {
+    position: absolute;
+    top: 50px;
+    right: 50px;
+}
+
 .workers-content {
     display: flex;
     align-items: center;

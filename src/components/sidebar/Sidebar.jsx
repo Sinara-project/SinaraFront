@@ -53,17 +53,6 @@ function Sidebar({ openNotifications }) {
         </span>
         <span
           className={`sidebar-option ${extended ? "extended" : ""}`}
-          onClick={() => {
-            navigate("/planilhas");
-          }}
-        >
-          <p className={`sidebar-text ${extended ? "extended" : ""}`}>
-            Acessar planilhas
-          </p>
-          <img src={Sheet} alt="" className="sidebar-icon" />
-        </span>
-        <span
-          className={`sidebar-option ${extended ? "extended" : ""}`}
           onClick={notifications}
         >
           <p className={`sidebar-text ${extended ? "extended" : ""}`}>

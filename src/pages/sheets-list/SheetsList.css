@@ -5,6 +5,12 @@
     background-color: #FFF6F4;
 }
 
+.sheets-loading {
+    position: absolute;
+    top: 50px;
+    right: 50px;
+}
+
 .sheets-content {
     display: flex;
     justify-content: center;

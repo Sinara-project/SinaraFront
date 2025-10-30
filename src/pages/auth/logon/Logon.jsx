@@ -2,13 +2,15 @@ import "./Logon.css";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Snackbar from "../../../components/snackbar/Snackbar";
+import { getEnterprise } from "../../../services/external/enterprise/Enterprise";
+import { getEnterpriseLogo } from "../../../services/external/image/Image";
+import Loading from "../../../components/loading/Loading";
 
 function Logon() {
   const navigate = useNavigate();
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
   const [empresa, setEmpresa] = useState("");
-
   const [cnpj, setCnpj] = useState("");
   const [sector, setSector] = useState("");
   const [email, setEmail] = useState("");
@@ -26,10 +28,10 @@ function Logon() {
     password: false,
     confirm: false,
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     document.title = "Cadastro";
-
     localStorage.removeItem("currentCNPJ");
     sessionStorage.removeItem("inLogonCNPJ");
   }, []);
@@ -45,15 +47,12 @@ function Logon() {
   };
 
   const testCnpj = () =>
-    /[0-9]{2}\.?[0-9]{3}\.?[0-9]{3}\/0001-?[0-9]{2}/.test(cnpj);
-
+    /[0-9]{2}\.?[0-9]{3}\.?[0-9]{3}\/?[0-9]{4}-?[0-9]{2}/.test(cnpj);
   const testEmail = () => /.+@.+\.com/.test(email);
-
   const testPassword = () =>
     /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}\[\]:;<>,.?~\\/\-]).{8,}$/.test(
       password
     );
-
   const testConfirmPasswordIsEqualToPassword = () =>
     password === confirmPassword;
 
@@ -61,6 +60,26 @@ function Logon() {
     setSnackbar({ title, message, type, visible: true });
     await sleep(4000);
     setSnackbar((prev) => ({ ...prev, visible: false }));
+  };
+
+  const getEnterpriseInExternal = async () => {
+    try {
+      const data = await getEnterprise(cnpj.replace(/\D/g, ""));
+      return data;
+    } catch (e) {
+      console.log(e);
+      return null;
+    }
+  };
+
+  const getEnterpriseLogoInExternal = async (domain) => {
+    try {
+      const data = await getEnterpriseLogo(domain);
+      return data;
+    } catch (e) {
+      console.log(e);
+      return null;
+    }
   };
 
   const navigateInsertCode = async () => {
@@ -107,19 +126,32 @@ function Logon() {
       return;
     }
 
-    const nome = "Friboi";
-    // getNomePorCnpjNoGoverno(cnpj)
+    setIsLoading(true);
 
-    const imagemEmpresa =
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7R72IzYtgQMU72EdMg1Gyy1AGX9Rp7eu5Dg&s";
-      // getImagemDeEmpresaPorCnpjNoGoverno(empresa.cnpj)
+    const enterprise = await getEnterpriseInExternal();
+
+    setIsLoading(false);
+
+    if (!enterprise || enterprise.code == 404) {
+      showSnackbar("Erro", "A empresa não existe", "error");
+      return;
+    }
+
+    setIsLoading(true);
+
+    const image = await getEnterpriseLogoInExternal(
+      enterprise.emails[0].domain
+    );
+
+    setIsLoading(false);
 
     const onLogon = {
-      cnpj: cnpj,
-      nome: nome,
-      imagem_url: imagemEmpresa,
-      ramo_atuacao: sector,
-      senha: password,
+      cnpj: Number(cnpj.replace(/\D/g, "")),
+      name: enterprise.company.name,
+      image: image,
+      sector: sector,
+      password: password,
+      email: email,
     };
 
     sessionStorage.setItem("onLogon", JSON.stringify(onLogon));
@@ -131,6 +163,11 @@ function Logon() {
 
   return (
     <section className="logon-section">
+      {isLoading && (
+        <div className="loading">
+          <Loading />
+        </div>
+      )}
       <Snackbar
         type={snackbar.type}
         title={snackbar.title}
@@ -152,6 +189,7 @@ function Logon() {
               onChange={adjustCNPJ}
               id="cnpj"
               maxLength={18}
+              disabled={isLoading}
             />
             <input
               className="logon-input"
@@ -160,6 +198,7 @@ function Logon() {
               value={sector}
               onChange={(e) => setSector(e.target.value)}
               id="sector"
+              disabled={isLoading}
             />
           </span>
           <input
@@ -169,6 +208,7 @@ function Logon() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             id="email"
+            disabled={isLoading}
           />
           <input
             className={`logon-input ${errors.password ? "error" : ""}`}
@@ -177,6 +217,7 @@ function Logon() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             id="password"
+            disabled={isLoading}
           />
           <input
             className={`logon-input ${errors.confirm ? "error" : ""}`}
@@ -185,11 +226,13 @@ function Logon() {
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             id="confirmPassword"
+            disabled={isLoading}
           />
           <button
             className="logon-navigate-code"
             onClick={navigateInsertCode}
             type="button"
+            disabled={isLoading}
           >
             Avançar
           </button>

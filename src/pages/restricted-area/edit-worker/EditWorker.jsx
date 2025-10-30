@@ -6,6 +6,13 @@ import Enter from "../../../assets/enter-blue.svg";
 import Dropdown from "../../../assets/dropdown-blue.svg";
 import DataDropdown from "../../../components/data-dropdown/DataDropdown";
 import { useLocation } from "react-router-dom";
+import { editWorker } from "../../../services/sql/workers/Workers";
+import Loading from "../../../components/loading/Loading";
+import {
+  editPermission,
+  getPermissionById,
+  getPermissionsByIdEmpresa,
+} from "../../../services/mongoDB/Permissions/Permissions";
 
 function EditWorker() {
   const location = useLocation();
@@ -22,6 +29,8 @@ function EditWorker() {
   const [adaptedPerms, setAdaptedPerms] = useState([]);
   const [adaptedVacation, setAdaptedVacation] = useState([]);
 
+  const [isLoading, setLoading] = useState(false);
+
   const { worker } = location.state;
 
   const [name, setName] = useState("");
@@ -33,47 +42,18 @@ function EditWorker() {
 
   const [styleWorkload, setStyleWorkload] = useState("");
 
-  const permsBD = [
-    {
-      id: 1,
-      idEmpresa: 1,
-      nome_permissao: "Forms de captação",
-      id_funcionario: [1, 3],
-    },
-    {
-      id: 2,
-      idEmpresa: 1,
-      nome_permissao: "Forms de pré-tratamento",
-      id_funcionario: [3],
-    },
-    {
-      id: 3,
-      idEmpresa: 1,
-      nome_permissao: "Forms de tratamento primário",
-      id_funcionario: [2],
-    },
-  ];
+  const [permsBD, setPerms] = useState([]);
 
   const adjustWorkload = (value) => {
-    if (!value) {
+    if (value == null || value === "") {
       setWorkload("");
       setStyleWorkload("");
       return;
     }
 
     const digits = value.toString().replace(/\D/g, "");
-
     const limited = digits.slice(0, 3);
-
     setWorkload(limited);
-
-    const isDeletingH =
-      value.toString().endsWith("h") === false && styleWorkload.endsWith("h");
-
-    if (isDeletingH) {
-      setStyleWorkload(limited);
-      return;
-    }
 
     const formatted = limited ? `${limited}h` : "";
     setStyleWorkload(formatted);
@@ -110,47 +90,74 @@ function EditWorker() {
   };
 
   useEffect(() => {
-  setName(worker.nome);
-  setSector(worker.setor);
-  setEmail(worker.email);
-  setVacation(worker.ferias);
-  setWorkload(worker.horas_previstas);
-  adjustWorkload(worker.horas_previstas);
+    console.log(worker);
 
-  // montar adaptedPerms
-  const newPerms = permsBD.map((perm) => {
-    const isChecked = perm.id_funcionario.includes(worker.id);
-    return {
-      name: perm.nome_permissao,
-      value: perm.id,
-      isChecked,
-    };
-  });
+    setName(worker.nome);
+    setSector(worker.setor);
+    setEmail(worker.email);
+    setVacation(worker.ferias);
+    let horas = "";
 
-  const initialSelectedPerms = newPerms
-    .filter((perm) => perm.isChecked)
-    .map((perm) => perm.value);
+    if (worker.horasprevistas !== null && worker.horasprevistas !== undefined) {
+      const str = worker.horasprevistas.toString();
 
-  setAdaptedPerms(newPerms);
-  selectPerms(initialSelectedPerms);
+      const digits = str.match(/\d+/)?.[0] || "";
 
-  const newVacation = [
-    {
-      name: "Férias",
-      value: true,
-      isChecked: worker.ferias,
-    },
-    {
-      name: "Sem férias",
-      value: false,
-      isChecked: !worker.ferias,
-    },
-  ];
-  setAdaptedVacation(newVacation);
-}, []);
+      horas = digits;
+    }
 
+    setWorkload(horas);
+    setStyleWorkload(horas ? `${horas}h` : "");
 
-  const editWorker = () => {
+    setLoading(true);
+
+    async function getPerms() {
+      try {
+        const data = await getPermissionsByIdEmpresa(
+          JSON.parse(localStorage.getItem("user")).id
+        );
+
+        setPerms(data);
+
+        const newPerms = data.map((perm) => ({
+          name: perm.nomePermissao,
+          value: perm.id,
+          isChecked: perm.idOperario.includes(worker.id),
+        }));
+
+        const initialSelectedPerms = newPerms
+          .filter((perm) => perm.isChecked)
+          .map((perm) => perm.value);
+
+        setAdaptedPerms(newPerms);
+        selectPerms(initialSelectedPerms);
+      } catch (e) {
+        console.log(e);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    getPerms();
+
+    const newVacation = [
+      {
+        name: "Férias",
+        value: true,
+        isChecked: worker.ferias,
+      },
+      {
+        name: "Sem férias",
+        value: false,
+        isChecked: !worker.ferias,
+      },
+    ];
+    setAdaptedVacation(newVacation);
+  }, []);
+
+  const editWorkerIn = async () => {
+    setLoading(true);
+
     const workerEmail = email.trim();
     const workerName = name.trim();
     const workerSector = sector.trim();
@@ -191,19 +198,63 @@ function EditWorker() {
       return;
     }
 
-    const worker = {
-      nome: workerName,
-      email: workerEmail,
-      setor: workerSector,
-      horas_previstas: workerWorkload,
-      ferias: vacation,
-    };
+    try {
+      await editWorker(
+        worker.id,
+        worker.idEmpresa,
+        worker.url,
+        worker.imagemUrl,
+        worker.cpf,
+        name,
+        email,
+        sector,
+        sector,
+        vacation,
+        worker.ativo,
+        worker.senha,
+        Number(workload)
+      );
+    } catch (err) {
+      showSnackbar(
+        "Erro",
+        "Houve um erro. Tente novamente mais tarde.",
+        "error"
+      );
+    }
 
-    // editarFuncionario(worker) => {
-    // getFuncionarioPorCPF(cpf) => {
-    const funcionario = {
-      id: 1,
-    };
+    await Promise.all(
+      selectedPerms.map(async (permId) => {
+        try {
+          const perm = await getPermissionById(permId);
+
+          let updatedIds = [...perm.idOperario];
+
+          if (!updatedIds.includes(worker.id)) {
+            updatedIds.push(worker.id);
+          }
+
+          const newPerm = {
+            ...perm,
+            idOperario: updatedIds,
+          };
+
+          await editPermission(
+            newPerm.id,
+            newPerm.idEmpresa,
+            newPerm.nomePermissao,
+            newPerm.idOperario
+          );
+        } catch (err) {
+          showSnackbar(
+            "Erro",
+            "Houve um erro ao atualizar as permissões.",
+            "error"
+          );
+        }
+      })
+    );
+
+    setLoading(false);
 
     showSnackbar(
       "Funcionário editado",
@@ -214,6 +265,11 @@ function EditWorker() {
 
   return (
     <section className="edit-worker-section">
+      {isLoading && (
+        <div className="edit-worker-loading">
+          <Loading />
+        </div>
+      )}
       <div className="edit-worker-vacationdropdown-container">
         <DataDropdown
           isVisible={vacationDropdown}
@@ -243,7 +299,9 @@ function EditWorker() {
               type="text"
               placeholder="Nome"
               id="text"
-              onChange={(e) => {setName(e.target.value)}}
+              onChange={(e) => {
+                setName(e.target.value);
+              }}
               value={name}
             />
             <input
@@ -251,7 +309,9 @@ function EditWorker() {
               type="text"
               placeholder="Setor"
               id="text"
-              onChange={(e) => {setSector(e.target.value)}}
+              onChange={(e) => {
+                setSector(e.target.value);
+              }}
               value={sector}
             />
           </span>
@@ -303,7 +363,7 @@ function EditWorker() {
           <button
             className="edit-worker-navigate-code"
             type="button"
-            onClick={editWorker}
+            onClick={editWorkerIn}
           >
             Editar
           </button>
