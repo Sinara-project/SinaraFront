@@ -180,3 +180,37 @@
 .permissions-delete:hover {
     background-color: transparent;
 }
+
+/* Responsividade */
+@media (max-width: 700px) {
+    .permissions-content {
+        h1 {
+            font-size: 28px;
+        }
+    }
+}
+
+@media (max-width: 600px) {
+    .permissions-main-actions {
+        flex-direction: column;
+        gap: 20px;
+
+        h2 {
+            text-align: center;
+        }
+    }
+}
+
+@media (max-width: 400px) {
+    .permissions-content {
+        padding-left: 40px;
+    }
+}
+
+@media (max-width: 360px) {
+    .permissions-content {
+        h1 {
+            margin-top: 120px;
+        }
+    }
+}

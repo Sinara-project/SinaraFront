@@ -127,6 +127,7 @@
 
     h2 {
         color: #F5F5F5;
+        min-width: 50px;
     }
 }
 
@@ -151,6 +152,7 @@
     align-items: center;
     flex-direction: column;
     width: 100%;
+    box-sizing: border-box;
 }
 
 .workers-nav {
@@ -210,7 +212,7 @@
 
     button {
         height: 30px;
-        width: 15%;
+        width: 140px;
     }
 
     .workers-delete {
@@ -219,7 +221,81 @@
     }
 
     .workers-delete:hover {
-         background-color: transparent;
+        background-color: transparent;
         color: #FF7655;
+    }
+}
+
+/* Responsividade */
+@media (max-width: 820px) {
+    .workers-main-actions {
+        flex-direction: column;
+    }
+
+    .workers-photo {
+        margin-right: 0;
+    }
+
+    .workers-infos {
+        gap: 15px;
+    }
+
+    .workers-nav {
+        justify-content: center;
+        gap: 10px;
+
+        h2 {
+            max-width: 85px;
+        }
+    }
+
+    .workers-main {
+        gap: 0;
+        h2 {
+            font-size: 18px;
+        }
+    }
+}
+
+@media (max-width: 700px) {
+    .workers-content {
+        h1 {
+            margin-top: 120px;
+            font-size: 28px;
+        }
+    }
+}
+
+@media (max-width: 500px) {
+    .workers-card {
+        width: 80%;
+
+        p {
+            font-size: 12px;
+        }
+    }
+
+    .workers-one {
+        width: 80%;
+
+        button {
+            width: 100%;
+        }
+    }
+
+    .workers-options {
+        justify-content: space-between;
+        box-sizing: border-box;
+        button {
+            width: 50%;
+            font-size: 12px;
+            box-sizing: border-box;
+        }
+    }
+}
+
+@media (max-width: 400px) {
+    .workers-content {
+        padding-left: 40px;
     }
 }

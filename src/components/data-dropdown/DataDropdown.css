@@ -11,6 +11,7 @@
     max-height: 380px;
     overflow-x: hidden;
     overflow-y: scroll;
+    max-height: 200px;
 
     label {
         cursor: pointer;
@@ -18,7 +19,7 @@
         justify-content: space-between;
         align-items: center;
         gap: 15px;
-        height: 40px;
+        min-height: 40px;
         padding: 10px 20px;
         transition: all 0.3s ease;
 
@@ -26,6 +27,7 @@
             font-size: 15px;
             font-weight: 600;
             color: #0B1B54;
+            width: 60%;
         }
     }
 

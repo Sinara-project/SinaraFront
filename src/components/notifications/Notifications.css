@@ -54,7 +54,7 @@
     border-radius: 20px;
     margin-top: 10px;
     width: 90%;
-    height: 200px;
+    min-height: 200px;
     padding: 20px;
     box-sizing: border-box;
     background-color: #0B1B54;
@@ -62,7 +62,7 @@
 
     h4 {
         margin-top: 20px;
-        height: 50px;
+        min-height: 50px;
         font-weight: 400;
     }
 
@@ -77,6 +77,30 @@
         img {
             width: 30px;
             padding-bottom: 10px;
+        }
+    }
+}
+
+@media (max-width: 1000px) {
+    .notification-content {
+        width: 50%;
+    }
+}
+
+@media (max-width: 600px) {
+    .notification-content {
+        width: 70%;
+    }
+
+    .notification-card {
+        h4 {
+            font-size: 13px;
+        }
+
+        div {
+            img {
+                width: 22px;
+            }
         }
     }
 }

@@ -81,8 +81,8 @@
     }
 
     img {
-    width: 20px;
-}
+        width: 20px;
+    }
 }
 
 .create-form-select-perm {
@@ -125,23 +125,23 @@
     }
 
     button {
-    font-size: 13px;
-    font-weight: 600;
-    padding: 5px;
-    border-radius: 50px;
-    border: 2px solid #FF7655;
-    cursor: pointer;
-    background-color: #F5F5F5;
-    transition: all 0.2s ease;
-    color: #FF7655;
-    width: 90px;
-}
+        font-size: 13px;
+        font-weight: 600;
+        padding: 5px;
+        border-radius: 50px;
+        border: 2px solid #FF7655;
+        cursor: pointer;
+        background-color: #F5F5F5;
+        transition: all 0.2s ease;
+        color: #FF7655;
+        width: 90px;
+    }
 
-button.active {
-    background-color: #FF7655;
-    padding: 5px;
-    color: #FFF6F4;
-}
+    button.active {
+        background-color: #FF7655;
+        padding: 5px;
+        color: #FFF6F4;
+    }
 }
 
 
@@ -204,37 +204,37 @@ button.active {
     width: 40%;
 
     input {
-    flex: 1;
-    padding: 8px 10px;
-    border-radius: 50px;
-    background-color: #FFFFFF;
-    color: #0B1B54;
-    font-size: 14px;
-    outline: none;
-    border: none;
-    font-weight: 600;
-}
+        flex: 1;
+        padding: 8px 10px;
+        border-radius: 50px;
+        background-color: #FFFFFF;
+        color: #0B1B54;
+        font-size: 14px;
+        outline: none;
+        border: none;
+        font-weight: 600;
+    }
 
-input::placeholder {
-    opacity: 0.6;
-    color: #0B1B54;
-}
+    input::placeholder {
+        opacity: 0.6;
+        color: #0B1B54;
+    }
 
-img {
-    width: 20px;
-    background-color: transparent;
-    border: none;
-    color: #FFF6F4;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-    cursor: pointer;
+    img {
+        width: 20px;
+        background-color: transparent;
+        border: none;
+        color: #FFF6F4;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+        cursor: pointer;
 
-}
+    }
 
-button:hover {
-    background-color: #FF7655;
-}
+    button:hover {
+        background-color: #FF7655;
+    }
 }
 
 .create-form-add-option {
@@ -315,4 +315,123 @@ button:hover {
 
 .create-form-submit:hover {
     background-color: #384994;
+}
+
+/* Responsividade */
+@media (max-width: 700px) {
+    .create-form-title {
+        font-size: 28px;
+    }
+}
+
+@media (max-width: 600px) {
+    .create-form-content {
+        padding: 20px;
+        gap: 16px;
+    }
+
+    .create-form-title {
+        font-size: 28px;
+        margin-top: 40px;
+        margin-bottom: 30px;
+        text-align: center;
+    }
+
+    .create-form-input-title,
+    .create-form-input-desc {
+        font-size: 16px;
+        padding: 10px;
+    }
+
+    .create-form-question {
+        padding: 14px 15px;
+        border-radius: 12px;
+        gap: 10px;
+    }
+
+    .create-form-header {
+        align-items: flex-start;
+        gap: 8px;
+
+        img {
+            width: 18px;
+        }
+    }
+
+    .create-form-type-toggle {
+        flex-direction: column;
+
+        h4 {
+            font-size: 14px;
+        }
+
+        button {
+            width: auto;
+            font-size: 12px;
+            padding: 4px 10px;
+        }
+    }
+
+    .create-form-choice {
+        flex-direction: row;
+        width: 100%;
+        box-sizing: border-box;
+
+        input {
+            font-size: 13px;
+            padding: 6px 10px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        img {
+            width: 18px;
+        }
+    }
+
+    .create-form-add-option {
+        font-size: 12px;
+        padding: 7px 12px;
+        align-self: center;
+    }
+
+    .create-form-add-question {
+        font-size: 12px;
+        padding: 7px 12px;
+        align-self: center;
+    }
+
+    .create-form-select-perm button {
+        width: 100%;
+        height: 35px;
+    }
+
+    .create-form-input-field {
+        width: 100%;
+        font-size: 13px;
+        padding: 8px 10px;
+        box-sizing: border-box;
+    }
+
+    .create-form-mandatory {
+        h4 {
+            font-size: 10px;
+        }
+    }
+
+    .create-form-buttons {
+        justify-content: center;
+    }
+
+    .create-form-submit {
+        width: 90%;
+        font-size: 14px;
+        padding: 10px;
+    }
+}
+
+@media (max-width: 400px) {
+    .create-form-content {
+        margin-left: 40px;
+    }
 }

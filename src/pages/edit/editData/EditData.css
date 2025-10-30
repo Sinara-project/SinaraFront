@@ -93,3 +93,36 @@
     align-items: center;
     gap: 5px;
 }
+
+/* Responsividade */
+@media (max-width: 480px) {
+    .edit-container {
+        width: 80%;
+        height: 290px;
+        padding: 20px 10px;
+        gap: 10px;
+    }
+
+    .edit-input-group {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .edit-navigate-code {
+        font-size: 14px;
+        height: 40px;
+    }
+
+    .edit-navigate-logon {
+        font-size: 7px;
+    }
+
+    .edit-text-group p {
+        text-align: start;
+        font-size: 14px;
+    }
+
+    .edit-input {
+        height: 40px;
+    }
+}

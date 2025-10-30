@@ -44,7 +44,6 @@ function PlanChoice() {
     onLogon.firstPlan = plan;
     sessionStorage.setItem("onLogon", JSON.stringify(onLogon));
 
-    setPlan("premium");
     navigate("/pagamento");
   };
 
