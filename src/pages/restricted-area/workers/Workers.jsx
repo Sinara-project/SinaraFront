@@ -20,14 +20,8 @@ function Workers() {
   const [loadPage, setLoad] = useState(false);
 
   const [isLoading, setLoading] = useState(false);
-  const [selectedPerm, selectPerm] = useState();
-  const [createPerm, setCreate] = useState(false);
   const [workers, setWorkers] = useState([]);
   const [allWorkers, setAllWorkers] = useState([]);
-
-  const openAddWorker = (perm) => {
-    selectPerm(perm);
-  };
 
   useEffect(() => {
     const fetchWorkers = async () => {
@@ -75,12 +69,9 @@ function Workers() {
   const deleteWorker = async (id) => {
     try {
       setLoading(true);
-      console.log(id);
       
       const data = await deleteWorkerById(id);
 
-      console.log(data);
-      
       setLoad(!loadPage);
     } catch (err) {
       console.log(err);
@@ -141,7 +132,7 @@ function Workers() {
         </div>
 
         <div className="workers-container">
-          {workers.map((worker) => (
+          {allWorkers.length > 0 ? workers.map((worker) => (
             <div key={worker.id} className="workers-card">
               <span className="workers-main-actions">
                 <img
@@ -204,7 +195,11 @@ function Workers() {
                 </div>
               </span>
             </div>
-          ))}
+          )) : (
+            <h2 style={{ marginTop: "80px", textAlign: "center" }}>
+              Sua empresa ainda não tem operários!
+            </h2>
+          )}
         </div>
       </section>
     </section>

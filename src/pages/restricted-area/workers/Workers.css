@@ -31,6 +31,11 @@
         color: #FF7655;
     }
 
+    h2 {
+        font-size: 30px;
+        color: #0B1B54;
+    }
+
     hr {
         border: 2px solid #FFF6F4;
         width: 100%;

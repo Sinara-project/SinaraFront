@@ -7,7 +7,7 @@ import Notification from "../../assets/notification.svg";
 import Notifications from "../../components/notifications/Notifications";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { getAllNotifications } from "../../services/mongoDB/Notifications/Notifications";
+import { getNotificationByEnterpriseId } from "../../services/mongoDB/Notifications/Notifications";
 import Loading from "../../components/loading/Loading";
 import {
   getFormsQuantity,
@@ -45,7 +45,7 @@ function Home() {
       try {
         const userId = JSON.parse(localStorage.getItem("user")).id;
 
-        const notificationsPromise = getAllNotifications();
+        const notificationsPromise = getNotificationByEnterpriseId(JSON.parse(localStorage.getItem("user")).id);
         const lastResponseIdPromise = getLastResponseId(userId);
         const quantityPromise = getFormsQuantity(userId);
 

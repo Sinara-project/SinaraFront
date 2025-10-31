@@ -5,12 +5,12 @@ import "./Profile.css";
 function Profile() {
   const navigate = useNavigate();
 
-  const image = JSON.parse(localStorage.getItem("user")).image;
-  const name = JSON.parse(localStorage.getItem("user")).name;
-  const code = JSON.parse(localStorage.getItem("user")).code;
+  const image = JSON.parse(localStorage.getItem("user")).imagemUrl;
+  const name = JSON.parse(localStorage.getItem("user")).nome;
+  const code = JSON.parse(localStorage.getItem("user")).codigo;
   const cnpj = JSON.parse(localStorage.getItem("user")).cnpj;
   const email = JSON.parse(localStorage.getItem("user")).email;
-  const sector = JSON.parse(localStorage.getItem("user")).sector;
+  const sector = JSON.parse(localStorage.getItem("user")).ramoAtuacao;
 
   const exit = () => {
     localStorage.removeItem("user");

@@ -1,5 +1,5 @@
 .permissions-dropdown-section {
-    position: relative;
+    position: absolute;
     background-color: #0B1B54;
     width: 40%;
     border-radius: 20px;
@@ -10,6 +10,7 @@
     overflow-x: hidden;
     overflow-y: scroll;
     max-height: 200px;
+    margin-top: 10px;
 
     label {
         cursor: pointer;

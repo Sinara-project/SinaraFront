@@ -3,7 +3,7 @@
   import { useEffect, useState } from 'react'
   import Sidebar from './components/sidebar/Sidebar';
   import Notifications from './components/notifications/Notifications';
-  import { getAllNotifications } from './services/mongoDB/Notifications/Notifications';
+import { getNotificationByEnterpriseId } from './services/mongoDB/Notifications/Notifications';
 
   function App() {
     const location = useLocation();
@@ -38,7 +38,7 @@
 
       async function getNotifications() {
         try {
-          const data = await getAllNotifications();
+          const data = await getNotificationByEnterpriseId(JSON.parse(localStorage.getItem("user")).id);
           setNotifications(data);
         } catch (err) {
           console.log(err);

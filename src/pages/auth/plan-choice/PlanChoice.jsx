@@ -27,7 +27,8 @@ function PlanChoice() {
       image: onLogon.image,
       name: onLogon.name,
       sector: onLogon.sector,
-      code: code
+      code: code,
+      password: onLogon.password
     };
     sessionStorage.setItem("onLogon", JSON.stringify(onLogon));
 

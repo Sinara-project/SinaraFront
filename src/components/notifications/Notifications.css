@@ -29,6 +29,10 @@
 .notification-section.active {
     opacity: 1;
     pointer-events: all;
+
+    h1 {
+        color: #0B1B54;
+    }
 }
 
 .notification-content {

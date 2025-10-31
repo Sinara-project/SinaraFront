@@ -9,6 +9,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
+    gap: 20px;
     margin-left: 65px;
     color: #FF7655;
 
@@ -16,6 +18,11 @@
         font-size: 45px;
         margin-top: 60px;
         margin-bottom: 60px;
+    }
+
+    iframe {
+        width: 70%;
+        height: 520px;
     }
 }
 

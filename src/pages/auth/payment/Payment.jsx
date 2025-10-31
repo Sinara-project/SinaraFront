@@ -91,20 +91,18 @@ function Payment() {
 
     await sleep(3000);
     let onLogon = JSON.parse(sessionStorage.getItem("onLogon"));
-    let basicInfos = {};
     try {
-      await insertEmpresa(
+      onLogon = await insertEmpresa(
         onLogon.cnpj,
         onLogon.name,
         onLogon.password,
-        "i23A5678",
+        "Senha123",
         onLogon.image,
         onLogon.email,
         onLogon.sector,
         "",
         2
       );
-      basicInfos = await getEmpresaIdCode(onLogon.cnpj);
     } catch (err) {
       showSnackbar(
         "Erro",
@@ -116,28 +114,8 @@ function Payment() {
       return;
     }
 
-    onLogon = {
-      sector: basicInfos.ramoatuacao,
-      code: basicInfos.codigo,
-      id: basicInfos.id,
-      email: basicInfos.email,
-      image: basicInfos.imagemUrl,
-      name: basicInfos.name,
-    };
+    onLogon.plan = "premium";
     sessionStorage.setItem("onLogon", JSON.stringify(onLogon));
-
-    // try {
-    //   await insertCreditCard(cardNumber, nameInCard, expireDate, cvv, onLogon.id);
-    // } catch (err) {
-    //   showSnackbar(
-    //     "Erro",
-    //     "Houve um erro. Tente novamente mais tarde.",
-    //     "error"
-    //   );
-    //   setIsLoading(false);
-    //   setFunctionExecute(false);
-    //   return;
-    // }
 
     showSnackbar("Sucesso", "Pagamento efetuado! Redirecionando...", "success");
     await sleep(2000);
@@ -147,11 +125,6 @@ function Payment() {
 
   return (
     <section className="payment-section">
-      {isLoading && (
-        <div className="loading">
-          <Loading />
-        </div>
-      )}
       <Snackbar
         type={snackbar.type}
         title={snackbar.title}
@@ -165,20 +138,20 @@ function Payment() {
           <div className="payment-infos">
             <div className="payment-info">
               <h3>
-                <strong>Plano: </strong>Sinara Premium
+                <strong>Plano:</strong> Sinara Premium
               </h3>
-              <h3>'Acesso completo ao sistema'</h3>
+              <h3>“Acesso completo ao sistema”</h3>
             </div>
             <div className="payment-info">
               <h3>
-                <strong>Perído: </strong>
+                <strong>Período:</strong>{" "}
                 {time.replace(time[0], time[0].toUpperCase())}
               </h3>
               <h3>
                 <strong>
                   Valor:{" "}
                   <span className="payment-price">
-                    R${time === "mensal" ? "2.499,90" : "24.999,90"}
+                    R$ {time === "mensal" ? "2.499,90" : "24.999,90"}
                   </span>
                 </strong>
               </h3>
@@ -265,9 +238,7 @@ function Payment() {
                 <input
                   type="text"
                   placeholder="CVV*"
-                  required
-                  id="cvv"
-                  maxLength="3"
+                  maxLength={3}
                   value={cvv}
                   onChange={(e) => setCvv(e.target.value.replace(/\D/g, ""))}
                   className="payment-input"
@@ -300,8 +271,54 @@ function Payment() {
                 id="receiptEnterpriseName"
                 onChange={(e) => setReceiptName(e.target.value)}
                 className="payment-input"
-                disabled={isLoading}
               />
+              <button onClick={navigateThanks} className="payment-navigate-thanks">Avançar</button>
+            </div>
+          )}
+          {paymentMethod === "pix" && (
+            <div className="payment-pix-pay">
+              <h3>
+                Pague em:{" "}
+                <span className="payment-regressive-time">
+                  {`${minutesLeft}:${secondsLeft}`}
+                </span>
+              </h3>
+              <div className="payment-pix-area">
+                <h3>
+                  Código{" "}
+                  <img
+                    src={PixIcon}
+                    alt="Ícone PIX"
+                    className="payment-pix-icon"
+                  />
+                </h3>
+                <div className="payment-pix-code">
+                  <h3>
+                    00020126580014BR.GOV.BCB.PIX0136d4b5f7e8-3f4a-4e8e-9c3a-2b7b6e6c6f1a52040000530398654041.005802BR5925Sinara
+                    Tecnologia6009SAOPAULO62070503***6304B14F
+                  </h3>
+                </div>
+              </div>
+              <button
+                className={
+                  timeLeft.getMinutes() === 0 && timeLeft.getSeconds() === 0
+                    ? "payment-navigate-disabled"
+                    : "payment-navigate-thanks"
+                }
+                onClick={navigateThanks}
+              >
+                Avançar
+              </button>
+            </div>
+          )}
+          {paymentMethod === "boleto" && (
+            <div className="payment-boleto-pay">
+              <div className="payment-boleto-area">
+                <h3>Boleto</h3>
+                <div className="payment-boleto-codebar">
+                  <img src={BoletoCodebar} alt="Código de barras do boleto" />
+                </div>
+              </div>
               <button
                 className="payment-navigate-thanks"
                 onClick={navigateThanks}
