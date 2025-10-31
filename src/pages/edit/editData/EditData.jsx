@@ -6,6 +6,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import {
   editEmpresa,
   getEnterpriseById,
+  updateSenha,
   updateSenhaRestrita,
 } from "../../../services/sql/enterprise/Enterprise";
 import Loading from "../../../components/loading/Loading";
@@ -67,19 +68,7 @@ function EditData() {
 
     try {
       if (type === "normal") {
-        const empresa = await getEnterpriseById(id);
-        await editEmpresa(
-          empresa.id,
-          empresa.cnpj,
-          empresa.nome,
-          password,
-          empresa.senhaAreaRestrita,
-          empresa.imagemUrl,
-          empresa.email,
-          empresa.ramoAtuacao,
-          empresa.telefone,
-          empresa.idPlano
-        );
+        await updateSenha(id, password);
       } else {
         await updateSenhaRestrita(id, password);
       }
