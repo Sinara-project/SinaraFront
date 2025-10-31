@@ -8,6 +8,7 @@ import CreatePermission from "../../../components/permissions/create-permission/
 import PermissionAddWorker from "../../../components/permissions/add-worker/PermissionAddWorker";
 import Loading from "../../../components/loading/Loading";
 import {
+  deletePermById,
   editPermission,
   getPermissionsByIdEmpresa,
 } from "../../../services/mongoDB/Permissions/Permissions";
@@ -25,22 +26,37 @@ function Permissions() {
   const [workers, setWorkers] = useState([]);
   const [allWorkers, setAllWorkers] = useState([]);
 
+  const [reload, setReload] = useState(false);
+
   const openAddWorker = (perm) => selectPerm(perm);
 
-  const toggleCreatePerm = () => setCreate(!createPerm);
-  const toggleAddWorker = () => setAdd(!addWorker);
+  const toggleCreatePerm = () => {
+    setCreate(!createPerm);
+    setReload(!reload);
+  };
+
+  const toggleAddWorker = () => {
+    setAdd(!addWorker);
+    setReload(!reload);
+  };
 
   useEffect(() => {
     const fetchPermissions = async () => {
-      return getPermissionsByIdEmpresa(
+      const data = await getPermissionsByIdEmpresa(
         JSON.parse(localStorage.getItem("user")).id
       );
+
+      setPerms(data);
+      setAllPerms(data);
     };
 
     const fetchWorkers = async () => {
       const workersData = await getWorkersByEnterpriseId(
         JSON.parse(localStorage.getItem("user")).id
       );
+
+      setWorkers(workersData);
+      setAllWorkers(workersData);
 
       const workersWithLastTurn = await Promise.all(
         workersData.map(async (dat) => {
@@ -64,11 +80,8 @@ function Permissions() {
           fetchWorkers(),
         ]);
 
-        setPerms(permissionsData);
-        setAllPerms(permissionsData);
-
-        setWorkers(workersData);
-        setAllWorkers(workersData);
+        console.log(permissionsData);
+        console.log("Há algo aqui");
       } catch (err) {
         console.log(err);
       } finally {
@@ -77,7 +90,7 @@ function Permissions() {
     };
 
     fetchAllData();
-  }, [addWorker]);
+  }, [addWorker, reload]);
 
   const removeWorker = async (idFunc, perm) => {
     setLoading(true);
@@ -103,6 +116,12 @@ function Permissions() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const deletePerm = async (idPerm) => {
+    setLoading(true);
+    await deletePermById(idPerm);
+    setReload(!reload);
   };
 
   const searchPerm = (item) => {
@@ -153,20 +172,35 @@ function Permissions() {
         </div>
 
         <div className="permissions-container">
-          {perms.length > 0 ? (
+          {allPerms.length > 0 ? (
             perms.map((perm) => (
               <div key={perm.id}>
                 <span className="permissions-main-actions">
                   <h2>{perm.nomePermissao}</h2>
-                  <button
-                    onClick={() => {
-                      openAddWorker(perm);
-                      toggleAddWorker();
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: "10px",
+                      alignItems: "center",
+                      width: "auto",
                     }}
                   >
-                    <h4>Adicionar</h4>
-                    <img src={Add} alt="" />
-                  </button>
+                    <span
+                      className="permissions-delete"
+                      onClick={() => deletePerm(perm.id)}
+                    >
+                      <img src={Delete} />
+                    </span>
+                    <button
+                      onClick={() => {
+                        openAddWorker(perm);
+                        toggleAddWorker();
+                      }}
+                    >
+                      <h4>Adicionar</h4>
+                      <img src={Add} alt="" />
+                    </button>
+                  </div>
                 </span>
                 <hr />
                 {workers
@@ -199,7 +233,7 @@ function Permissions() {
               </div>
             ))
           ) : (
-            <h2 style={{ marginTop: "80px" }}>
+            <h2 style={{ marginTop: "80px", textAlign: "center" }}>
               Sua empresa ainda não tem permissões!
             </h2>
           )}

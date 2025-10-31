@@ -3,7 +3,7 @@ import Snackbar from "../../../components/snackbar/Snackbar";
 import ReturnArrow from "../../../components/return-arrow/ReturnArrow";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getEnterpriseById } from "../../../services/sql/enterprise/Enterprise";
+import { getEnterpriseById, loginRestrictedArea } from "../../../services/sql/enterprise/Enterprise";
 import Loading from "../../../components/loading/Loading";
 
 function RestrictedAreaEnter() {
@@ -34,12 +34,12 @@ function RestrictedAreaEnter() {
 
   const enter = async () => {
     setLoading(true);
-    let truePassword;
+    let isCorrect;
     try {
-      const data = await getEnterpriseById(
-        JSON.parse(localStorage.getItem("user")).id
+      isCorrect = await loginRestrictedArea(
+        JSON.parse(localStorage.getItem("user")).id,
+        password
       );
-      truePassword = data.senhaAreaRestrita;
     } catch (err) {
       showSnackbar(
         "Erro",
@@ -50,10 +50,11 @@ function RestrictedAreaEnter() {
       setLoading(false);
     }
 
-    if (password != truePassword) {
+    if (!isCorrect) {
       showSnackbar("Erro", "A senha está incorreta", "error");
       return;
     }
+    
     sessionStorage.setItem("rAreaLogged", "true");
     navigate("/menu-area-restrita");
   };

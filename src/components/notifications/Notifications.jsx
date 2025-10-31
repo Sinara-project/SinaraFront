@@ -22,6 +22,13 @@ function Notifications({
       onClick={close}
     >
       <div className={`notification-content ${isVisible ? "active" : ""}`}>
+        {notifications.length == 0 && (
+          <div className="notification-loading">
+            <div className="notification-loading-content">
+              <h1>Histórico vazio</h1>
+            </div>
+          </div>
+        )}
         {isLoading ? (
           <div className="notification-loading">
             <div className="notification-loading-content">
@@ -48,9 +55,18 @@ function Notifications({
                     <img src={Stop} />
                   )}
                   <p>
-                    {new Date(usage.data).getDate()}/{new Date(usage.data).getMonth() + 1}/
-                    {new Date(usage.data).getFullYear()} - {new Date(usage.data).getHours().toString().padStart(2, "0")}:
-                    {new Date(usage.data).getMinutes().toString().padStart(2, "0")}
+                    {new Date(usage.data).getDate()}/
+                    {new Date(usage.data).getMonth() + 1}/
+                    {new Date(usage.data).getFullYear()} -{" "}
+                    {new Date(usage.data)
+                      .getHours()
+                      .toString()
+                      .padStart(2, "0")}
+                    :
+                    {new Date(usage.data)
+                      .getMinutes()
+                      .toString()
+                      .padStart(2, "0")}
                   </p>
                 </div>
               </div>

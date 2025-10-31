@@ -75,6 +75,11 @@ export const getWorkersByEnterpriseId = async (id) => {
   const response = await api.get(
     `/api/user/operario/listarOperariosPorIdEmpresa/${id}`
   );
+
+  if (response.status == 404) {
+    return [];
+  }
+  
   return response.data;
 };
 

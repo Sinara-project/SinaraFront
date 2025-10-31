@@ -6,6 +6,7 @@ import Snackbar from "../../../components/snackbar/Snackbar";
 import {
   getEmpresaIdCode,
   getEnterpriseById,
+  login,
 } from "../../../services/sql/enterprise/Enterprise";
 import Loading from "../../../components/loading/Loading";
 
@@ -59,49 +60,20 @@ function Login() {
 
     setIsLoading(true);
 
-    let idEmpresa;
+    let onLogin;
     try {
-      const enterprise = await getEmpresaIdCode(
-        Number(cnpj.replace(/\D/g, ""))
-      );
-      idEmpresa = enterprise.id;
+      onLogin = await login(cnpj.replace(/\D/g, ""), password);
+      console.log(onLogin);
+      
     } catch (err) {
-      console.log(err);
-    }
-
-    let empresa;
-    try {
-      empresa = await getEnterpriseById(idEmpresa);
-    } catch (err) {
-      console.log(err);
+      if(err.status == 404) {
+        showSnackbar("Erro", "Credenciais inválidas", "error")
+      } else {
+        showSnackbar("Erro", "Houve um erro. Tente novamente mais tarde", "error");
+      }
     }
 
     setIsLoading(false);
-
-    if (!idEmpresa) {
-      setErrors((prev) => ({ ...prev, cnpj: true }));
-      showSnackbar("Erro", "Empresa não encontrada.", "error");
-      return;
-    }
-
-    if (empresa.senha !== password) {
-      setErrors((prev) => ({ ...prev, password: true }));
-      showSnackbar("Erro", "Senha incorreta.", "error");
-      return;
-    }
-
-    const hasRestrictPassword = empresa.senhaAreaRestrita ? true : false;
-
-    const onLogin = {
-      id: empresa.id,
-      cnpj: empresa.cnpj,
-      name: empresa.nome,
-      image: empresa.imagemUrl,
-      email: empresa.email,
-      sector: empresa.ramoAtuacao,
-      code: empresa.codigo,
-      restrictPassword: hasRestrictPassword,
-    };
 
     sessionStorage.setItem("onLogin", JSON.stringify(onLogin));
 

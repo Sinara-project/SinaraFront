@@ -81,32 +81,10 @@ function LoginConfirm() {
       return;
     }
 
-    if (onLogin.restrictPassword) {
-      const data = {
-        id: onLogin.id,
-        cnpj: onLogin.cnpj,
-        email: onLogin.email,
-        code: onLogin.code,
-        name: onLogin.name,
-        image: onLogin.image,
-        sector: onLogin.sector
-      };
-      localStorage.setItem("user", JSON.stringify(data));
-      sessionStorage.removeItem("onLogin");
-      navigate("/home");
-    } else {
-      const data = {
-        id: onLogin.id,
-        cnpj: onLogin.cnpj,
-        email: onLogin.email,
-        code: onLogin.code,
-        name: onLogin.name,
-        image: onLogin.image,
-        sector: onLogin.sector
-      };
-      sessionStorage.setItem("onLogin", JSON.stringify(data));
-      navigate("/senha-restrita");
-    }
+    const empresa = onLogin;
+    sessionStorage.removeItem("onLogin");
+    localStorage.setItem("user", JSON.stringify(empresa));
+    navigate("/home");
   };
 
   return (

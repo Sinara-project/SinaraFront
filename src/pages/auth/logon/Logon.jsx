@@ -139,9 +139,11 @@ function Logon() {
 
     setIsLoading(true);
 
-    const image = await getEnterpriseLogoInExternal(
-      enterprise.emails[0].domain
-    );
+    let image = "semImagem";
+
+    if (enterprise.emails.length > 0) {
+      image = await getEnterpriseLogoInExternal(enterprise.emails[0].domain);
+    }
 
     setIsLoading(false);
 

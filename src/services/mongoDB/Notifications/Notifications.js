@@ -7,7 +7,7 @@ const api = axios.create(
     }
 );
 
-export const getAllNotifications = async () => {
-    const response = await api.get("/notificacoes/listar");
+export const getNotificationByEnterpriseId = async (id) => {
+    const response = await api.get(`/notificacoes/buscar-por-empresa/${id}`);
     return response.data;
 }

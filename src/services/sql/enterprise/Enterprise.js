@@ -60,6 +60,22 @@ export const editEmpresa = async (
   return response.data;
 };
 
+export const login = async (cnpj, senha) => {
+    const response = await api.post(
+        "/api/admin/empresa/loginEmpresa",
+        { cnpj, senha }
+    );
+    return response.data;
+}
+
+export const loginRestrictedArea = async (idEmpresa, senha) => {
+    const response = await api.post(
+        "/api/admin/empresa/loginAreaRestrita",
+        { idEmpresa, senha }
+    );
+    return response.data;
+}
+
 export const updateSenhaRestrita = async (id, novaSenha) => {
   const response = await api.patch(
     `/api/admin/empresa/atualizarSenhaAreaRestrita/${id}`,

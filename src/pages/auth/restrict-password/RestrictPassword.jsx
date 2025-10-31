@@ -4,6 +4,7 @@ import "./RestrictPassword.css";
 import Snackbar from "../../../components/snackbar/Snackbar";
 import { useLocation, useNavigate } from "react-router-dom";
 import { updateSenhaRestrita } from "../../../services/sql/enterprise/Enterprise";
+import { insertEmpresa } from "../../../services/sql/enterprise/Enterprise";
 
 function RestrictPassword() {
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -70,15 +71,42 @@ function RestrictPassword() {
       }
     } else if (onLogon) {
       empresa = onLogon;
-      try {
-        await updateSenhaRestrita(onLogon.id, password);
-      } catch (err) {
-        showSnackbar(
-          "Erro",
-          "Houve um erro. Tente novamente mais tarde.",
-          "error"
-        );
-        return;
+
+      if (empresa.plan == "premium") {
+        try {
+          await updateSenhaRestrita(onLogon.id, password);
+        } catch (err) {
+          showSnackbar(
+            "Erro",
+            "Houve um erro. Tente novamente mais tarde.",
+            "error"
+          );
+          return;
+        }
+      } else {
+        try {
+          empresa = await insertEmpresa(
+            empresa.cnpj,
+            empresa.name,
+            empresa.password,
+            password,
+            empresa.image,
+            empresa.email,
+            empresa.sector,
+            "",
+            1
+          );
+        } catch (err) {
+          showSnackbar(
+            "Erro",
+            "Houve um erro. Tente novamente mais tarde.",
+            "error"
+          );
+          // setIsLoading(false);
+          return;
+        }
+
+        empresa.plan = "gratis";
       }
     }
 
