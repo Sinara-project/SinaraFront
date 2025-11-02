@@ -105,18 +105,20 @@ function LoginConfirm() {
             <strong>{email}</strong>
           </p>
         </span>
-        <form className="login-confirm-form" action="submit">
+        <form
+          className="login-confirm-form"
+          onSubmit={(e) => {
+            e.preventDefault();
+            login();
+          }}
+        >
           <div className="login-confirm-input-group">
             <input className="login-confirm-input" type="text" maxLength="1" />
             <input className="login-confirm-input" type="text" maxLength="1" />
             <input className="login-confirm-input" type="text" maxLength="1" />
             <input className="login-confirm-input" type="text" maxLength="1" />
           </div>
-          <button
-            className="login-confirm-advance"
-            type="button"
-            onClick={login}
-          >
+          <button className="login-confirm-advance" type="submit">
             Fazer login
           </button>
         </form>

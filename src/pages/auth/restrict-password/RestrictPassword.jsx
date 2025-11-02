@@ -133,7 +133,13 @@ function RestrictPassword() {
           <h1 className="restrict-password-h1">Área restrita</h1>
           <p>Crie a senha da sua área restrita</p>
         </span>
-        <form className="restrict-password-form" action="submit">
+        <form
+          className="restrict-password-form"
+          onSubmit={(e) => {
+            e.preventDefault();
+            navigateHome();
+          }}
+        >
           <input
             className={`restrict-password-input ${
               passwordError ? "error" : ""
@@ -150,11 +156,7 @@ function RestrictPassword() {
             placeholder="Confirmar senha"
             id="confirmPassword"
           />
-          <button
-            className="restrict-password-navigate-code"
-            type="button"
-            onClick={navigateHome}
-          >
+          <button className="restrict-password-navigate-code" type="submit">
             Avançar
           </button>
         </form>

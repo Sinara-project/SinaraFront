@@ -64,12 +64,25 @@ function Login() {
     try {
       onLogin = await login(cnpj.replace(/\D/g, ""), password);
       console.log(onLogin);
-      
+
+      if (onLogin == "Senha incorreta") {
+        showSnackbar("Erro", "Credenciais inválidas", "error");
+        setIsLoading(false);
+        return;
+      }
     } catch (err) {
-      if(err.status == 404) {
-        showSnackbar("Erro", "Credenciais inválidas", "error")
+      if (err.status == 404) {
+        showSnackbar("Erro", "Credenciais inválidas", "error");
+        setIsLoading(false);
+        return;
       } else {
-        showSnackbar("Erro", "Houve um erro. Tente novamente mais tarde", "error");
+        showSnackbar(
+          "Erro",
+          "Houve um erro. Tente novamente mais tarde",
+          "error"
+        );
+        setIsLoading(false);
+        return;
       }
     }
 
@@ -102,7 +115,13 @@ function Login() {
           <h1 className="login-h1">Faça login</h1>
           <p>Faça login como uma empresa!</p>
         </span>
-        <form className="login-form" action="submit">
+        <form
+          className="login-form"
+          onSubmit={(e) => {
+            e.preventDefault();
+            navigateLoginConfirm();
+          }}
+        >
           <input
             className={`login-input ${errors.cnpj ? "error" : ""}`}
             type="text"
@@ -121,8 +140,7 @@ function Login() {
           />
           <button
             className="login-navigate-code"
-            type="button"
-            onClick={navigateLoginConfirm}
+            type="submit"
             disabled={isLoading}
           >
             Avançar
