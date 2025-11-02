@@ -3,7 +3,10 @@ import Snackbar from "../../../components/snackbar/Snackbar";
 import ReturnArrow from "../../../components/return-arrow/ReturnArrow";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getEnterpriseById, loginRestrictedArea } from "../../../services/sql/enterprise/Enterprise";
+import {
+  getEnterpriseById,
+  loginRestrictedArea,
+} from "../../../services/sql/enterprise/Enterprise";
 import Loading from "../../../components/loading/Loading";
 
 function RestrictedAreaEnter() {
@@ -54,7 +57,7 @@ function RestrictedAreaEnter() {
       showSnackbar("Erro", "A senha está incorreta", "error");
       return;
     }
-    
+
     sessionStorage.setItem("rAreaLogged", "true");
     navigate("/menu-area-restrita");
   };
@@ -78,7 +81,13 @@ function RestrictedAreaEnter() {
           <p>Insira a senha para continuar</p>
         </span>
 
-        <form className="restricted-area-enter-form" action="submit">
+        <form
+          className="restricted-area-enter-form"
+          onSubmit={(e) => {
+            e.preventDefault();
+            enter();
+          }}
+        >
           <input
             className={`restricted-area-enter-input`}
             type="password"
@@ -89,8 +98,7 @@ function RestrictedAreaEnter() {
           />
           <button
             className="restricted-area-enter-navigate-code"
-            type="button"
-            onClick={enter}
+            type="submit"
           >
             Avançar
           </button>

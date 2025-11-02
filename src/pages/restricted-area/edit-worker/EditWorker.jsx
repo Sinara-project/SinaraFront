@@ -292,7 +292,13 @@ function EditWorker() {
           <h1 className="edit-worker-h1">Editar operário</h1>
           <p>Edite um operário!</p>
         </span>
-        <form className="edit-worker-form">
+        <form
+          className="edit-worker-form"
+          onSubmit={(e) => {
+            e.preventDefault();
+            editWorker();
+          }}
+        >
           <span className="edit-worker-input-group">
             <input
               className={`edit-worker-input`}
@@ -360,11 +366,7 @@ function EditWorker() {
               }}
             />
           </span>
-          <button
-            className="edit-worker-navigate-code"
-            type="button"
-            onClick={editWorkerIn}
-          >
+          <button className="edit-worker-navigate-code" type="submit">
             Editar
           </button>
         </form>

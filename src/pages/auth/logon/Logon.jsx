@@ -31,7 +31,6 @@ function Logon() {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    document.title = "Cadastro";
     localStorage.removeItem("currentCNPJ");
     sessionStorage.removeItem("inLogonCNPJ");
   }, []);
@@ -181,7 +180,13 @@ function Logon() {
           <h1 className="logon-h1">Faça cadastro</h1>
           <p>Faça o cadastro de sua empresa!</p>
         </span>
-        <form className="logon-form" action="submit">
+        <form
+          className="logon-form"
+          onSubmit={(e) => {
+            e.preventDefault();
+            navigateInsertCode();
+          }}
+        >
           <span className="logon-input-group">
             <input
               className={`logon-input ${errors.cnpj ? "error" : ""}`}
@@ -232,8 +237,7 @@ function Logon() {
           />
           <button
             className="logon-navigate-code"
-            onClick={navigateInsertCode}
-            type="button"
+            type="submit"
             disabled={isLoading}
           >
             Avançar

@@ -114,7 +114,13 @@ function EditData() {
           </span>
         )}
 
-        <form className="edit-form" action="submit">
+        <form
+          className="edit-form"
+          onSubmit={(e) => {
+            e.preventDefault();
+            edit();
+          }}
+        >
           <input
             className={`edit-input`}
             type="password"
@@ -127,7 +133,7 @@ function EditData() {
             placeholder="Confirmar senha"
             onChange={(e) => setConfirm(e.target.value)}
           />
-          <button className="edit-navigate-code" type="button" onClick={edit}>
+          <button className="edit-navigate-code" type="submit">
             Editar
           </button>
         </form>

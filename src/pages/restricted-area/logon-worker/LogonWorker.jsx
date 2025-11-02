@@ -194,7 +194,6 @@ function LogonWorker() {
         senha: generateDefaultPassword(),
       };
 
-      // Insere no banco SQL
       await insertWorker(
         worker.id_empresa,
         worker.cpf,
@@ -205,10 +204,8 @@ function LogonWorker() {
         worker.horasPrevistas
       );
 
-      // Pega o ID do trabalhador recém-criado
       const idFunc = [await getWorkerIdByCpf(worker.cpf)];
 
-      // Associa permissões
       for (const permId of selectedPerms) {
         await insertWorkerInPermission(permId, idFunc);
       }
@@ -219,7 +216,6 @@ function LogonWorker() {
         "success"
       );
 
-      // Limpa campos se quiser
       setCpf("");
       setName("");
       setEmail("");
@@ -258,7 +254,13 @@ function LogonWorker() {
           <h1 className="logon-worker-h1">Faça um cadastro</h1>
           <p>Faça o cadastro de um operário!</p>
         </span>
-        <form className="logon-worker-form">
+        <form
+          className="logon-worker-form"
+          onSubmit={(e) => {
+            e.preventDefault();
+            createWorker();
+          }}
+        >
           <span className="logon-worker-input-group">
             <input
               className={`logon-worker-input`}
@@ -322,11 +324,7 @@ function LogonWorker() {
               }}
             />
           </span>
-          <button
-            className="logon-worker-navigate-code"
-            type="button"
-            onClick={createWorker}
-          >
+          <button className="logon-worker-navigate-code" type="submit">
             Cadastrar
           </button>
         </form>

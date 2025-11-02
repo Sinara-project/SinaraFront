@@ -95,18 +95,20 @@ function LogonInsertCode() {
             <strong>{email}</strong>
           </p>
         </span>
-        <form className="code-form" action="submit">
+        <form
+          className="code-form"
+          onSubmit={(e) => {
+            e.preventDefault();
+            navigatePlanChoice();
+          }}
+        >
           <div className="code-input-group">
             <input className="code-input" type="text" maxLength="1" />
             <input className="code-input" type="text" maxLength="1" />
             <input className="code-input" type="text" maxLength="1" />
             <input className="code-input" type="text" maxLength="1" />
           </div>
-          <button
-            className="code-advance"
-            onClick={navigatePlanChoice}
-            type="button"
-          >
+          <button className="code-advance" type="submit">
             Fazer cadastro
           </button>
         </form>
